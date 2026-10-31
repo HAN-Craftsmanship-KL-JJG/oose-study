@@ -55,6 +55,19 @@ html {
   height: auto;
 }
 
+/* Full screen: the diagram fits the screen, or shows at its real size and scrolls. */
+.uml.uml-fit svg {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.uml.uml-real svg {
+  max-width: none;
+  min-width: 0;
+}
+
 .uml svg text {
   font-family: var(--font-serif);
 }
