@@ -8,6 +8,7 @@ import { PAGES } from "@/lib/pages";
 import MobileMenu from "./nav/MobileMenu";
 import { normalise } from "./nav/PageTree";
 import { useSections } from "./nav/SectionsProvider";
+import { useHideOnScroll } from "./nav/useHideOnScroll";
 
 export default function Header() {
   const pathname = normalise(usePathname());
@@ -15,13 +16,17 @@ export default function Header() {
   // The menu belongs to the page it was opened on, so it closes by itself on navigation.
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === pathname;
+  // On phones the header makes room while reading down; the progress bar stays in view.
+  const hidden = useHideOnScroll();
 
   const page = PAGES.find((p) => p.href === pathname);
   const section = sections.find((s) => s.id === active);
 
   return (
     <>
-      <header className="sticky top-0 z-20 border-b border-stone-200 bg-[#fbf8f1]/95 backdrop-blur dark:border-stone-800 dark:bg-[#1a1814]/95">
+      <header
+        className={`sticky top-0 z-20 border-b border-stone-200 bg-[#fbf8f1]/95 backdrop-blur transition-transform duration-200 dark:border-stone-800 dark:bg-[#1a1814]/95 ${hidden ? "max-lg:-translate-y-full" : ""}`}
+      >
         <div className="mx-auto flex h-14 max-w-7xl items-center px-4">
           <Link
             href="/"
@@ -53,7 +58,7 @@ export default function Header() {
         </div>
         <span
           aria-hidden
-          className="absolute inset-x-0 -bottom-px h-0.5 origin-left bg-accent-600/70 dark:bg-accent-400/70"
+          className="absolute inset-x-0 -bottom-0.5 h-0.5 origin-left bg-accent-600/70 dark:bg-accent-400/70"
           style={{ transform: `scaleX(${String(progress)})` }}
         />
       </header>
