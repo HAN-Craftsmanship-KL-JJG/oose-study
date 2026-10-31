@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
+import SectionsProvider from "@/components/nav/SectionsProvider";
 import Pager from "@/components/Pager";
 import Sidebar from "@/components/Sidebar";
 import "./globals.css";
@@ -28,14 +29,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="relative min-h-dvh bg-[#fbf8f1] font-sans text-stone-900 antialiased dark:bg-[#1a1814] dark:text-stone-100">
-        <Header />
-        <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-[17rem_minmax(0,1fr)]">
-          <Sidebar />
-          <main className="min-w-0 px-4 pt-8 pb-24 sm:px-8 lg:px-12">
-            <article className={prose}>{children}</article>
-            <Pager />
-          </main>
-        </div>
+        <SectionsProvider>
+          <Header />
+          <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-[17rem_minmax(0,1fr)]">
+            <Sidebar />
+            <main className="min-w-0 px-4 pt-8 pb-24 sm:px-8 lg:px-12">
+              <article className={prose}>{children}</article>
+              <Pager />
+            </main>
+          </div>
+        </SectionsProvider>
       </body>
     </html>
   );
