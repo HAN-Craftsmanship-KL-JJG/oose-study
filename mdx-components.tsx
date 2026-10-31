@@ -5,6 +5,7 @@ import Callout from "@/components/Callout";
 import Checklist from "@/components/Checklist";
 import { Compare, Side } from "@/components/Compare";
 import Example from "@/components/Example";
+import { H2, H3 } from "@/components/HeadingLink";
 import UmlSymbol from "@/components/UmlSymbol";
 import Questions from "@/components/quiz/Questions";
 import Reveal from "@/components/Reveal";
@@ -51,6 +52,8 @@ function A({ href, children, ...props }: ComponentPropsWithoutRef<"a">) {
 
 const components: MDXComponents = {
   a: A,
+  h2: H2,
+  h3: H3,
   pre: Pre,
   Callout,
   Checklist,
