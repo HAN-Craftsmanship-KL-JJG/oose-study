@@ -78,9 +78,9 @@ export default function SearchDialog({ onClose }: { onClose: () => void }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) dialog.current?.close();
       }}
-      className="m-0 h-dvh max-h-none w-screen max-w-none bg-[#fbf8f1] p-0 text-stone-900 backdrop:bg-black/40 sm:bottom-auto sm:mx-auto sm:mt-[10vh] sm:h-auto sm:max-h-[75vh] sm:w-[min(40rem,calc(100vw-2rem))] sm:rounded-sm sm:border sm:border-stone-200 sm:shadow-xl dark:bg-[#1a1814] dark:text-stone-100 sm:dark:border-stone-800"
+      className="bottom-auto mx-auto mt-2 h-auto max-h-[70dvh] w-[calc(100vw-1rem)] max-w-xl rounded-sm border border-stone-200 bg-[#fbf8f1] p-0 text-stone-900 shadow-xl backdrop:bg-stone-900/10 sm:mt-[10vh] sm:max-h-[75vh] dark:border-stone-800 dark:bg-[#1a1814] dark:text-stone-100 dark:backdrop:bg-black/30"
     >
-      <div className="flex max-h-[inherit] flex-col max-sm:h-full">
+      <div className="flex max-h-[inherit] flex-col">
         <div className="flex shrink-0 items-center gap-3 border-b border-stone-200 px-4 dark:border-stone-800">
           <SearchIcon className="size-5 shrink-0 text-stone-400" />
           <input
