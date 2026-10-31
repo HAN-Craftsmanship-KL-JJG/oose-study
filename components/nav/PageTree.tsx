@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PAGES, SECTIONS } from "@/lib/pages";
+import { QuizTick } from "./QuizTicks";
 import { useSections } from "./SectionsProvider";
 
 /** The path without a trailing slash, so "/solid/" and "/solid" match. */
@@ -44,6 +45,7 @@ export default function PageTree({ onNavigate }: { onNavigate?: (() => void) | u
                     className={pageLink}
                   >
                     {page.title}
+                    <QuizTick href={page.href} />
                   </Link>
                   {current && sections.length > 0 && (
                     <ol className="my-1 ml-2 border-l border-stone-200 dark:border-stone-800">
