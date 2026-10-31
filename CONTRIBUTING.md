@@ -63,6 +63,7 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
 | `content/questions/`   | The question bank, one file per topic                                          |
 | `components/`          | The React components that pages use                                            |
 | `lib/`                 | Shared types and helpers                                                       |
+| `lib/search-index.ts`  | Builds the search index from the MDX pages, served as `/search-index.json`     |
 | `uml/`                 | The diagram style and the rendered diagrams                                    |
 
 ## Components you can use in a page

@@ -9,6 +9,7 @@ import MobileMenu from "./nav/MobileMenu";
 import { normalise } from "./nav/PageTree";
 import { useSections } from "./nav/SectionsProvider";
 import { useHideOnScroll } from "./nav/useHideOnScroll";
+import Search from "./search/Search";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
@@ -57,6 +58,7 @@ export default function Header() {
             <ChevronDown className="size-4 shrink-0 text-stone-400" />
           </button>
           <div className="ml-auto flex shrink-0 items-center gap-1 pl-2">
+            <Search />
             <ThemeToggle />
           </div>
         </div>
