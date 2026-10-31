@@ -1,0 +1,3 @@
+{
+  "powershell": "PowerShell has no abstract, protected or final. The steps in the base class throw, so a subclass must override them, and nothing stops a subclass from overriding Generate."
+}

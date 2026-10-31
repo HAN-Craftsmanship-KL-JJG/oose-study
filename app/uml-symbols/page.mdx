@@ -1,0 +1,225 @@
+export const metadata = { title: "UML symbols" };
+
+# UML symbols
+
+UML (Unified Modeling Language) is a standard set of pictures for software.
+Every symbol has one fixed meaning.
+
+## A class
+
+```plantuml
+class Keeper {
+  -name : String
+  #badgeNumber : int
+  +{static} count : int
+  +Keeper(name : String)
+  +feed(animal : Animal) : void
+  -checkBadge() : boolean
+}
+```
+
+| Part                            | Meaning                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| Top part                        | The name of the class                                                    |
+| Middle part                     | The attributes: the data of each object                                  |
+| Bottom part                     | The methods (operations): what you can ask the object                    |
+| `-name : String`                | A private attribute `name` of type `String`                              |
+| `+feed(animal : Animal) : void` | A public method `feed` with one parameter of type `Animal`; returns nothing |
+| `+Keeper(name : String)`        | A constructor: same name as the class, no return type                    |
+| Underlined, such as `count`     | Static: it belongs to the class, not to one object                       |
+
+In Java, the type comes before the name: `private String name;`.
+In UML, the type comes after the name and a colon: `-name : String`.
+
+## + - # ~
+
+The sign before an attribute or method is its visibility: which other code may use it.
+
+| Sign | Visibility | Java              | Who may use it                                 |
+| ---- | ---------- | ----------------- | ---------------------------------------------- |
+| `+`  | public     | `public`          | Every class                                    |
+| `-`  | private    | `private`         | Only the class itself                          |
+| `#`  | protected  | `protected`       | The class, its package and its subclasses      |
+| `~`  | package    | no modifier       | Only classes in the same package               |
+
+See [Visibility and class diagrams](/visibility) for the details.
+
+## Interfaces and abstract classes
+
+```plantuml
+interface Animal {
+  +makeSound() : String
+}
+abstract class Bird {
+  -name : String
+  +{abstract} fly() : void
+}
+```
+
+| Symbol                         | Meaning                                                   |
+| ------------------------------ | --------------------------------------------------------- |
+| «interface» above the name     | An interface: methods without code                        |
+| «abstract» or a name in italics | An abstract class: you cannot create an object of it     |
+| A method in italics            | An abstract method: a subclass must give it a body        |
+
+Text between « and » is a stereotype: a label that tells what kind of thing the box is.
+
+## Lines between classes
+
+The line, and the symbol at its end, tell how two classes are related.
+
+```plantuml
+left to right direction
+interface Animal
+Vet ..> Medicine : uses
+Animal <|.. Lion : implements
+Bird <|-- Penguin : is a
+Pen o-- Goat : has
+Zoo *-- Area : owns
+Enclosure --> Keeper : knows
+```
+
+The word on each line is how you read the line, not its name.
+The table gives the name: the dashed line with the open triangle is a realization, and you read it as "implements".
+
+| Symbol                            | Name           | Read it as                                         | In Java                                            |
+| --------------------------------- | -------------- | -------------------------------------------------- | -------------------------------------------------- |
+| <UmlSymbol kind="association" /> | Association    | Enclosure knows a Keeper                           | A field `private Keeper keeper;` in Enclosure      |
+| <UmlSymbol kind="composition" /> | Composition   | A Zoo owns its Areas; they die with the Zoo        | A field, and the Zoo creates the Areas with `new`  |
+| <UmlSymbol kind="aggregation" /> | Aggregation    | A Pen has Goats; a Goat can move to another Pen    | A field; the Goats come from outside               |
+| <UmlSymbol kind="generalization" /> | Generalization | A Penguin is a Bird                                | `class Penguin extends Bird`                       |
+| <UmlSymbol kind="realization" /> | Realization    | A Lion implements Animal                           | `class Lion implements Animal`                     |
+| <UmlSymbol kind="dependency" /> | Dependency     | A Vet uses Medicine for a moment                   | A parameter or a local variable, not a field       |
+
+Where the symbol sits:
+
+- The arrow head points to the class that is known or used.
+- The diamond sits at the whole, not at the part.
+- The triangle points to the superclass or the interface.
+
+A line without an arrow head is an association in both directions, or in a domain model, a relation without a direction.
+
+## Numbers and names on a line
+
+```plantuml
+left to right direction
+class Enclosure
+class Animal
+Enclosure "1" --> "-animals\n0..*" Animal
+```
+
+| Text at a line end | Meaning                                                    |
+| ------------------ | ---------------------------------------------------------- |
+| `1`                | Exactly one                                                |
+| `0..1`             | Zero or one: the field may be `null`                       |
+| `*` or `0..*`      | Zero or more: a list                                       |
+| `1..*`             | One or more                                                |
+| `-animals`         | The role name: the name of the field, here private         |
+
+Read each number from the other class.
+The diagram says: one Enclosure holds zero or more Animals, in the field `animals`; every Animal is in exactly one Enclosure.
+
+## Objects
+
+```plantuml
+object "anna : Keeper" as a {
+  name = "Anna"
+}
+object ":Lion" as l
+a --> l
+```
+
+| Symbol           | Meaning                                                 |
+| ---------------- | ------------------------------------------------------- |
+| `anna : Keeper`  | An object called `anna` of the class `Keeper`           |
+| `:Lion`          | An object of the class `Lion`; its name does not matter |
+| `name = "Anna"`  | The value of an attribute in this object                |
+
+A class box shows a name; an object box shows a name, a colon and the class.
+In strict UML the object name is underlined.
+
+## Sequence diagrams
+
+A sequence diagram shows which object calls which method, in time order from top to bottom.
+
+```plantuml
+actor Visitor
+participant ":TicketDesk" as D
+participant ":Ticket" as T
+Visitor -> D : buy(2)
+activate D
+create T
+D -> T : new(2)
+D -> T : price()
+activate T
+T --> D : 30.00
+deactivate T
+D --> Visitor : ticket
+deactivate D
+```
+
+| Symbol                         | Meaning                                                    |
+| ------------------------------ | ---------------------------------------------------------- |
+| <UmlSymbol kind="actor" /> | An actor: a person or system outside the software          |
+| <UmlSymbol kind="participant" /> | An object that takes part                                  |
+| <UmlSymbol kind="lifeline" /> | The lifeline: the object exists during this time           |
+| <UmlSymbol kind="activation" /> | The activation: a method of this object is running         |
+| <UmlSymbol kind="message" /> | A message: a method call, such as `price()`                |
+| <UmlSymbol kind="return" /> | A return: the answer of the call, such as `30.00`          |
+| <UmlSymbol kind="create" /> | The object is created at that moment                       |
+| <UmlSymbol kind="lost" /> | The message does not arrive                                |
+
+```plantuml
+participant ":Enclosure" as E
+participant ":Animal" as A
+loop for each animal
+  E -> A : foodPerDay()
+end
+alt animal is sick
+  E -> A : giveMedicine()
+else
+  E -> A : feed()
+end
+```
+
+| Frame  | Meaning                                      |
+| ------ | -------------------------------------------- |
+| <UmlSymbol kind="frame" label="loop" /> | The messages inside repeat                   |
+| <UmlSymbol kind="frame" label="alt" /> | Choose one part: the one whose condition is true, like `if` and `else` |
+| <UmlSymbol kind="frame" label="opt" /> | The part runs only if the condition is true  |
+
+## Activity diagrams
+
+An activity diagram is a flowchart: it shows steps and choices.
+
+```plantuml
+start
+:Check the ticket;
+if (valid?) then (yes)
+  :Open the gate;
+else (no)
+  :Show an error;
+endif
+stop
+```
+
+| Symbol              | Meaning                                       |
+| ------------------- | --------------------------------------------- |
+| <UmlSymbol kind="start" /> | Start                                         |
+| <UmlSymbol kind="action" /> | One step                                      |
+| <UmlSymbol kind="decision" /> | A choice; each way out has a condition        |
+| <UmlSymbol kind="end" /> | End                                           |
+
+## Notes
+
+```plantuml
+class Lion
+note right of Lion : A note explains\nthe diagram.
+```
+
+A box with a folded corner is a note.
+It explains something and is not part of the design.
+
+## Practice questions
+
+<Questions topic="uml-symbols" />

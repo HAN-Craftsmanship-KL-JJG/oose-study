@@ -1,0 +1,247 @@
+## What a technical design contains
+
+A technical design solves one feature.
+It has three parts:
+
+- Diagrams: a type that fits the problem, with correct UML syntax.
+  Add one sentence about why you chose that type.
+- The design itself: it covers every requirement of the feature, functional and non-functional.
+  Classes and methods have clear names, and the structure is easy to follow.
+- A motivation: at least one alternative and why it is worse, a link from each part of the design to a requirement, and the principles you applied.
+
+Design only the parts that the feature needs.
+
+## A method in eight steps
+
+```plantuml
+start
+:1. Read the feature text two times;
+:2. Underline every requirement;
+:3. Find what varies or will change;
+:4. Choose a pattern or technique;
+:5. Draw the class diagram;
+if (Does the order of the calls matter?) then (yes)
+  :6. Draw a sequence diagram;
+else (no)
+endif
+:7. Name 1 or 2 alternatives;
+:8. Write the motivation;
+stop
+```
+
+Step 2: one sentence often hides several requirements.
+F5 has four: text files now, a database later, optional encryption, and encryption set in a configuration file.
+
+Step 3: words like "later", "in the future", "easy to extend", "can choose", "another" and "is not sure" show what varies.
+Put that part behind an interface (Protected Variations).
+
+<Checklist
+  id="technical-design-method"
+  title="Making a technical design"
+  items={[
+    "I read the feature text two times.",
+    "I underlined every requirement, also the non-functional ones.",
+    "I found what varies and put it behind an interface.",
+    "I chose a pattern or technique and can name it.",
+    "I drew a class diagram with types, visibility, arrows and multiplicity.",
+    "I drew a sequence diagram if the order of the calls matters.",
+    "I wrote 1 sentence about why I chose these diagram types.",
+    "I named at least 1 alternative and why it is worse.",
+    "I linked each part of my design to a requirement.",
+    "I used the names of techniques, principles and patterns.",
+  ]}
+/>
+
+### Which diagram?
+
+| You want to show                                         | Draw                         |
+| -------------------------------------------------------- | ---------------------------- |
+| Which classes, interfaces and relations the design has   | Design class diagram         |
+| How objects work together, in which order                | Sequence diagram             |
+| Both structure and collaboration                         | Both: first the class diagram |
+
+Write down why: "I use a class diagram because it shows the interfaces and classes that make the feature extensible."
+
+## From "what varies" to a pattern
+
+| Words in the feature text                                   | What varies                  | Pattern or technique                      |
+| ----------------------------------------------------------- | ---------------------------- | ----------------------------------------- |
+| "easy to add new tariffs", "the user chooses the scoring"   | A calculation or rule        | Strategy                                  |
+| "always these steps, but ... differs per type"              | Some steps                   | Template Method                           |
+| "a library from a supplier", "a different API"              | An external interface        | Adapter                                   |
+| "set in a configuration file", "choose which one at start"  | Which class is made          | Factory                                   |
+| "optionally encrypted", "only for admins", "log every call" | Extra work around an object  | Decorator or Proxy                        |
+| "more question types in the future"                         | Kinds of objects             | Polymorphism, abstract class or interface |
+
+A factory often chooses the Adapter or the Strategy.
+
+## Write the motivation
+
+Say what is flexible, which requirement that solves, and which principle it follows.
+
+### Word bank
+
+| Techniques    | Principles                                 | Patterns                         |
+| ------------- | ------------------------------------------ | -------------------------------- |
+| interface     | low coupling                               | Strategy                         |
+| polymorphism  | high cohesion                              | Template Method                  |
+| delegation    | encapsulation                              | Factory, Factory Method          |
+| composition   | SRP: one reason to change                  | Adapter                          |
+| inheritance   | OCP: extend without changing               | Proxy                            |
+| abstraction   | DIP: depend on an abstraction              | Decorator                        |
+|               | Information Expert, Creator, Controller    | Facade                           |
+|               | Protected Variations                       |                                  |
+
+Composition is often more flexible than inheritance: you can swap the behaviour while the program runs.
+With inheritance, the behaviour is fixed when you create the object.
+
+### A template to copy
+
+```text
+For feature [F?] I use the pattern [pattern].
+The part that varies is [what varies].
+I put it behind the interface [interface] (Protected Variations).
+[Main class] only knows this interface, so the coupling is low (DIP).
+A new [variant] is a new class; no existing class changes (OCP).
+Each class has one task, so the cohesion is high (SRP).
+
+Requirement "[requirement 1]" is covered by [classes].
+Requirement "[requirement 2]" is covered by [classes].
+
+An alternative is [alternative].
+It is worse, because [reason, with a principle].
+
+I drew a class diagram, because it shows the [interfaces/classes] that make the feature possible.
+I drew a sequence diagram, because it shows how [object] and [object] work together.
+```
+
+<Compare>
+<Side kind="bad" title="Weak motivation">
+"I used the Strategy pattern, because Strategy is a good and flexible pattern.
+It follows the SOLID principles."
+
+No link to a requirement, no alternative, and the principles are only names.
+</Side>
+<Side kind="good" title="Strong motivation">
+"Ride delegates the price to a RateStrategy (Strategy).
+This covers E1: a new tariff is a new class and Ride does not change (OCP).
+A switch in Ride is worse: every new tariff changes Ride, and Ride must know all tariff rules (low cohesion)."
+
+A link to the requirement, a principle with a reason, and an alternative.
+</Side>
+</Compare>
+
+## Worked example E1: tariffs (Strategy)
+
+TrapNu rents out shared bikes through an app.
+A user unlocks a bike, makes a ride and locks the bike again.
+Then the price is calculated.
+
+<Callout type="note" title="Requirement E1">
+The price calculation must be easy to extend.
+Now there is a price per minute and a price per day.
+Later there will be, for example, a student subscription and a weekend offer.
+The tariff that applies is chosen per ride.
+</Callout>
+
+What varies: the price calculation.
+"Easy to extend" and "chosen per ride" point to Strategy.
+
+### The class diagram
+
+```plantuml
+    class Ride {
+        -startTime: LocalDateTime
+        -endTime: LocalDateTime
+        +Ride(rate: RateStrategy)
+        +calculatePrice() double
+        +getMinutes() int
+    }
+    interface RateStrategy {
+        +calculate(ride: Ride) double
+    }
+    class PerMinuteRate {
+        +calculate(ride: Ride) double
+    }
+    class DayRate {
+        +calculate(ride: Ride) double
+    }
+    class StudentSubscription {
+        +calculate(ride: Ride) double
+    }
+    Ride o--> "1" RateStrategy : rate
+    RateStrategy <|.. PerMinuteRate
+    RateStrategy <|.. DayRate
+    RateStrategy <|.. StudentSubscription
+```
+
+### The sequence diagram
+
+`Ride` delegates the price.
+
+```plantuml
+    participant ":App" as A
+    participant "ride : Ride" as R
+    participant "rate : PerMinuteRate" as T
+    A -> R : create(rate)
+    A -> R : price = calculatePrice()
+    activate R
+    R -> T : calculate(this)
+    activate T
+    T -> R : getMinutes()
+    R --> T : minutes
+    T --> R : minutes * 0.25
+    deactivate T
+    R --> A : price
+    deactivate R
+```
+
+### The code
+
+<Example name="technical-design/e1-strategy" title="Strategy: a new tariff is a new class" />
+
+### The motivation
+
+The part that varies, the price calculation, is behind the interface `RateStrategy` (Strategy, Protected Variations).
+`Ride.calculatePrice()` delegates to the strategy (delegation, polymorphism).
+A new tariff is a new class; `Ride` does not change (Open/Closed Principle).
+Each tariff class has one task (high cohesion, SRP), and `Ride` only knows the interface (low coupling).
+Each tariff class can be unit-tested on its own.
+Because `Ride` gets the strategy through its constructor, the tariff is chosen per ride, as E1 asks.
+
+### Two alternatives
+
+<Compare>
+<Side kind="bad" title="Alternative 1: Template Method">
+An abstract class `Ride` with a subclass per tariff: `PerMinuteRide`, `DayRide`.
+
+```plantuml
+    abstract class Ride {
+        {abstract} +calculatePrice() double
+    }
+    PerMinuteRide --|> Ride
+    DayRide --|> Ride
+```
+
+Why it is worse: the tariff is fixed to the type of the Ride object.
+You cannot change the tariff of a ride.
+Combinations, such as a weekend offer on top of a subscription, need extra subclasses.
+Composition is more flexible than inheritance here.
+</Side>
+<Side kind="bad" title="Alternative 2: a switch in Ride">
+`Ride` has an attribute `rateType` and `calculatePrice()` has a `switch`.
+
+```plantuml
+    class Ride {
+        -rateType: String
+        +calculatePrice() double
+    }
+```
+
+Why it is worse: every new tariff changes `Ride` (breaks OCP).
+`Ride` must know all tariff rules, so its cohesion drops.
+One big method is harder to test, and it scales badly.
+</Side>
+</Compare>
+
+<Example name="technical-design/e1-switch" title="Alternative 2 in code: it works, but every new tariff changes this method" />

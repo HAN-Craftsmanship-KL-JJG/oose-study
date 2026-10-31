@@ -1,0 +1,375 @@
+export const metadata = { title: "OO terms" };
+
+# OO terms
+
+## The terms in one picture
+
+```plantuml
+class Zoo {
+  -enclosures : List<Enclosure>
+  +foodPerDay() : double
+}
+class Enclosure {
+  -animals : List<Animal>
+  -keeper : Keeper
+  +foodPerDay() : double
+}
+class Keeper {
+  -name : String
+}
+interface Animal {
+  +makeSound() : String
+}
+class Lion {
+  +makeSound() : String
+}
+class Penguin {
+  +makeSound() : String
+}
+Zoo *-- Enclosure : composition
+Enclosure --> Keeper : association
+Animal <|.. Lion : implements
+Animal <|.. Penguin : implements
+```
+
+| Term          | In the picture                                                          |
+| ------------- | ----------------------------------------------------------------------- |
+| Class         | Every box is a class                                                    |
+| Interface     | `Animal`, with the label «interface»                                    |
+| Encapsulation | The minus sign (`-`) on `enclosures`, `animals` and `name`: private data |
+| Association   | The arrow from `Enclosure` to `Keeper`: an Enclosure knows its Keeper   |
+| Delegation    | `Zoo.foodPerDay()` asks each `Enclosure` for its `foodPerDay()` and adds them up |
+| Composition   | The filled diamond: a Zoo owns its Enclosures                           |
+| Polymorphism  | `makeSound()` does something different in `Lion` and in `Penguin`      |
+
+## Class and object
+
+A class is a blueprint: it gives the attributes (data) and methods (operations) of a family of objects.
+An object is one instance of a class, with its own attribute values.
+
+*"A blueprint for a family of objects. It describes which properties the objects of that family have, and which functions you can use on them."*
+
+```plantuml
+class Keeper {
+  name
+  area
+  description()
+}
+object "a : Keeper" as a {
+  name = "Anna"
+  area = "Reptiles"
+}
+object "b : Keeper" as b {
+  name = "Ben"
+  area = "Birds"
+}
+Keeper ..> a : new
+Keeper ..> b : new
+```
+
+<Example name="oo-terms/class" title="One class, two objects" />
+
+## Interface
+
+An interface is a type that names operations but does not implement them.
+A class that implements it must give every operation a body.
+Code that uses the interface does not know which class does the work.
+
+*"A type with which behaviour can be defined without implementing it."*
+
+The dashed arrow with an open triangle means "implements".
+
+```plantuml
+interface Animal {
+  +makeSound() : String
+}
+class Lion {
+  +makeSound() : String
+}
+class Penguin {
+  +makeSound() : String
+}
+Animal <|.. Lion
+Animal <|.. Penguin
+```
+
+<Example name="oo-terms/interface" title="The interface Animal with two implementations" />
+
+## Encapsulation
+
+Encapsulation puts data and the functions that use it together in one class.
+It also shields the internal state: other objects change it only through public methods, which can check every change.
+
+*"Collecting in one module the properties and the functions that have access to these properties."*
+*Or: "Shielding the internal state of an object,
+so that other objects can use that state only through the public operations of that object."*
+
+<Compare>
+<Side kind="bad" title="No encapsulation">
+```java
+class FoodStore {
+    public double stockKg;
+}
+
+// Anyone can do this:
+store.stockKg = -500;
+```
+
+Every class can change `stockKg`.
+Nobody checks the value.
+</Side>
+<Side kind="good" title="Encapsulation">
+```java
+class FoodStore {
+    private double stockKg;
+
+    public void take(double kg) {
+        if (kg > stockKg) throw ...;
+        stockKg -= kg;
+    }
+}
+```
+
+Only `FoodStore` can change `stockKg`.
+Every change goes through a method that checks it.
+</Side>
+</Compare>
+
+```plantuml
+participant "Other object" as O
+participant ":FoodStore" as F
+O -> F : add(50)
+O -> F : take(20)
+O ->x F : stockKg = -500
+note right : not allowed:\nstockKg is private
+```
+
+<Example name="oo-terms/encapsulation" title="Nobody can set the stock directly; every change goes through a method that checks it" />
+
+## Coupling
+
+Coupling is how much classes depend on each other.
+If A uses B, a change in B can force a change in A.
+You want low coupling; see [Coupling and cohesion](/coupling-cohesion).
+
+*"The degree to which classes depend on each other."*
+
+<Compare>
+<Side kind="bad" title="High coupling">
+```plantuml
+A --> B
+A --> C
+A --> D
+B --> C
+C --> D
+D --> B
+```
+One change spreads everywhere.
+</Side>
+<Side kind="good" title="Low coupling">
+```plantuml
+interface I
+A --> I
+I <|.. B
+I <|.. C
+```
+You can change B or C without touching A.
+</Side>
+</Compare>
+
+## Association
+
+An association is a structural relation: an object of A knows an object of B, so A may call methods of B.
+In code it is almost always a field of A that holds a B.
+In UML it is a solid line, often with an arrow that shows who knows whom.
+
+*"A relation between classes that shows that an object of class A may call functions of an object of class B."*
+
+An Enclosure knows its Keeper; the Keeper does not know the Enclosure.
+
+```plantuml
+left to right direction
+class Enclosure {
+  -keeper : Keeper
+  +sign() : String
+}
+class Keeper {
+  +description() : String
+}
+Enclosure --> "1" Keeper
+```
+
+<Example name="oo-terms/association" title="Enclosure has an association with Keeper: it keeps a Keeper in a field" />
+
+## Delegation
+
+Delegation means a class passes a task to another class that can do it better, often because that class has the data.
+
+*"Handing over the responsibility of a class to another class that can do it better."*
+
+Example: `CashRegister` delegates the total to `Order`, which delegates each line to `OrderLine`.
+
+```plantuml
+participant ":CashRegister" as K
+participant ":Order" as B
+participant "line1 : OrderLine" as R1
+participant "line2 : OrderLine" as R2
+K -> B : getTotal()
+activate B
+B -> R1 : subtotal()
+R1 --> B : 10.00
+B -> R2 : subtotal()
+R2 --> B : 4.50
+B --> K : 14.50
+deactivate B
+```
+
+## Composition and delegation
+
+Composition is about structure: what an object owns.
+Delegation is about behaviour: who does the work.
+They often appear together, but they answer different questions.
+
+|                     | Composition                                  | Delegation                                           |
+| ------------------- | -------------------------------------------- | ---------------------------------------------------- |
+| Question            | What does this object consist of?            | Who does this task?                                  |
+| How long            | As long as the whole lives                   | During one method call                               |
+| In Java             | A field that the whole fills with `new`      | A method that calls a method of another object       |
+| In UML              | A filled diamond in a class diagram          | A message in a sequence diagram                      |
+
+`Order` and `OrderLine` show both at once.
+`Order` creates and owns its lines: composition.
+`getTotal()` asks each line for its subtotal: delegation.
+
+<Compare>
+<Side kind="neutral" title="Composition: a class diagram">
+```plantuml
+class Order {
+  -lines : List<OrderLine>
+  +getTotal() : double
+}
+class OrderLine {
+  +subtotal() : double
+}
+Order "1" *-- "1..*" OrderLine
+```
+</Side>
+<Side kind="neutral" title="Delegation: a sequence diagram">
+```plantuml
+participant ":Order" as O
+participant "line1 : OrderLine" as L1
+participant "line2 : OrderLine" as L2
+O -> L1 : subtotal()
+L1 --> O : 10.00
+O -> L2 : subtotal()
+L2 --> O : 4.50
+```
+</Side>
+</Compare>
+
+<Example name="oo-terms/composition-delegation" title="Order owns its lines (composition) and asks them for the subtotals (delegation)" />
+
+One can exist without the other:
+
+- `CashRegister` gets the `Order` as a parameter.
+  It does not own the order, but it still delegates: `order.getTotal()`.
+- If `Order` only stored its lines and never called them, it would own them without delegating anything.
+
+| Ask                                                        | If yes      |
+| ---------------------------------------------------------- | ----------- |
+| Does A keep B in a field, create B itself, and B dies with A? | Composition |
+| Does a method of A hand the work to a method of B?          | Delegation  |
+
+## Composition and aggregation
+
+A filled diamond is composition; an open diamond is aggregation (a weak "has a").
+The diamond is on the side of the whole.
+
+```plantuml
+left to right direction
+Zoo "1" *-- "1..*" Enclosure : composition
+Enclosure "1" o-- "0..*" Animal : aggregation
+```
+
+An animal can move to another enclosure, so Enclosure and Animal is aggregation.
+
+## Composition in design patterns
+
+In design patterns, and in the rule "favour composition over inheritance", composition has a wider meaning.
+It means: an object holds another object in a field and delegates work to it.
+The held object may come from outside, so in UML the line is often a plain association, not a filled diamond.
+
+Example: in the [Strategy pattern](/patterns), `Ride` holds a `RateStrategy` and delegates the price to it.
+You can swap the strategy while the program runs; with inheritance you cannot.
+
+| Term        | What it describes                     | In the example                          |
+| ----------- | ------------------------------------- | --------------------------------------- |
+| Delegation  | Passing a task to another object      | `CashRegister` calls `order.getTotal()` |
+| Composition | A whole owns its parts                | `Order` owns its `OrderLine` objects    |
+| Aggregation | A whole has parts that live on their own | An `Enclosure` has `Animal` objects   |
+| Association | An object knows another object        | `Enclosure` keeps a `Keeper`            |
+
+## Inheritance
+
+Inheritance is an "is a" relation.
+A subclass takes over the non-private attributes and methods of its superclass, and can add or change them.
+`Penguin` cannot use the private `name` directly; it uses the inherited public method `getName()`.
+
+*"An 'is a' relation in which a subclass takes over the non-private properties and operations of a superclass and can extend them."*
+
+The open triangle points to the superclass.
+
+```plantuml
+class Bird {
+  -name : String
+  +getName() : String
+}
+class Penguin {
+  -dives : int
+  +dive() : String
+}
+Bird <|-- Penguin
+```
+
+<Example name="oo-terms/inheritance" title="Penguin extends Bird" />
+
+## Polymorphism
+
+Polymorphism: the same call gives different behaviour, depending on the concrete object that receives it.
+The caller knows only the interface or superclass; at run time the method of the real object runs.
+
+*"The fact that the same call, for example paymentMethod.pay(amount),
+gives different behaviour depending on the concrete object that receives the call."*
+
+Same message, two different answers.
+
+```plantuml
+participant "Calling code" as C
+participant ":Lion" as L
+participant ":Penguin" as P
+note over C : knows only Animal
+C -> L : makeSound()
+L --> C : "Roar"
+C -> P : makeSound()
+P --> C : "Squawk"
+```
+
+<Example name="oo-terms/polymorphism" title="The same call makeSound() runs a different method for each object" />
+
+## How to tell the terms apart
+
+| Key words in the description            | Term          |
+| --------------------------------------- | ------------- |
+| A blueprint for objects                 | Class         |
+| Operations without code                 | Interface     |
+| Hiding data behind methods              | Encapsulation |
+| How much classes depend on each other   | Coupling      |
+| A may call methods of B                 | Association   |
+| Passing a task to another class         | Delegation    |
+| A whole owns its parts                  | Composition   |
+| "Is a", a subclass takes over           | Inheritance   |
+| Same call, different behaviour          | Polymorphism  |
+
+## Practice questions
+
+<Questions topic="oo-terms" />

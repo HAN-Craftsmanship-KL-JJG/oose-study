@@ -1,0 +1,11 @@
+.next/
+node_modules/
+package-lock.json
+next-env.d.ts
+
+# MDX pages keep one sentence per line; Prettier would reflow them.
+**/*.mdx
+
+# Rendered diagrams and the fonts to draw them.
+uml/svg/
+.cache/

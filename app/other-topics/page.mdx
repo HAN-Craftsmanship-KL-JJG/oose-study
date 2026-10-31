@@ -1,0 +1,246 @@
+export const metadata = { title: "Other topics" };
+
+# Other topics
+
+## Use cases
+
+A use case describes how a user reaches a goal with the system.
+Example: "Buy a ticket".
+An actor is a person or another system outside the system that uses it, such as Visitor, Keeper or PaymentSystem.
+
+The box is the system; the actors stand outside.
+
+```plantuml
+left to right direction
+actor Visitor
+actor Keeper
+rectangle ZooSystem {
+  usecase "Buy a ticket" as U1
+  usecase "Find an animal" as U2
+  usecase "Register a feeding" as U3
+}
+Visitor -- U1
+Visitor -- U2
+Keeper -- U3
+```
+
+In UML an actor is a stick figure and a use case is an ellipse.
+
+| Form          | What it has                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| Brief         | One short paragraph about the main success scenario, such as "An employee scans the card of a borrower..." |
+| Fully dressed | All details: primary actor, preconditions, main success scenario in numbered steps, extensions (alternative paths) and postconditions |
+
+The main success scenario is the path where everything goes well.
+An extension is another path, for example "3a. The zoo is full today: the system shows a message."
+
+## FURPS+
+
+FURPS+ is a checklist for the kinds of requirements.
+
+| Letter | Category       | Example                                              |
+| ------ | -------------- | ---------------------------------------------------- |
+| F      | Functionality  | The system registers a ticket sale.                  |
+| U      | Usability      | A new keeper can register a feeding without training. |
+| R      | Reliability    | The system is available 99.9% of the time.           |
+| P      | Performance    | A search for an animal gives a result within 1 second. |
+| S      | Supportability | A new payment provider can be added without changing the domain. |
+| +      | Constraints    | The system must be written in Java.                  |
+
+F is functional.
+URPS and + are non-functional: they say how well the system works.
+
+## Operation contracts
+
+An operation contract describes what a system operation changes in the domain model.
+It does not say how; the sequence diagram says how.
+
+- Operation: the name and parameters, such as `adoptAnimal(memberNumber, animalId)`.
+- Cross references: the use case it belongs to.
+- Preconditions: what is true before the operation. Example: a Member with this memberNumber exists.
+- Postconditions: what has changed after the operation.
+
+1. An object was created (instance creation): an Adoption `a` was created.
+2. An association was formed or broken: `a` was linked to the Member and to the Animal.
+3. An attribute was changed: `a.endDate` became today plus one year.
+
+The postconditions describe exactly the difference between before and after.
+
+<Compare>
+<Side kind="neutral" title="Before adoptAnimal">
+
+```plantuml
+object "m : Member" as M
+object "leo : Lion" as L
+```
+
+</Side>
+<Side kind="neutral" title="After adoptAnimal">
+
+```plantuml
+left to right direction
+object "m : Member" as M
+object "a : Adoption" as A {
+  endDate = today + 1 year
+}
+object "leo : Lion" as L
+M -- A
+A -- L
+```
+
+</Side>
+</Compare>
+
+## Activity diagram
+
+An activity diagram shows the steps of a process and the choices in it, like a flowchart.
+Use it for a business process or for the steps of a complex use case.
+
+```plantuml
+start
+:Scan the ticket;
+if (Ticket valid and zoo not full?) then (yes)
+  :Open the gate;
+  :Count the visitor;
+else (no)
+  :Show why entry is not possible;
+endif
+stop
+```
+
+| Symbol           | Meaning                                  |
+| ---------------- | ---------------------------------------- |
+| <UmlSymbol kind="start" /> | Start                                    |
+| <UmlSymbol kind="action" /> | An action (one step)                     |
+| <UmlSymbol kind="decision" /> | A decision or a merge                    |
+| `[guard]`        | The condition for one way out            |
+| <UmlSymbol kind="fork" /> | Fork or join: steps that run in parallel |
+| <UmlSymbol kind="end" /> | End                                      |
+
+## State machine diagram
+
+A state machine diagram shows the states of one object and the events that change its state.
+Use it when an object reacts differently to the same event, depending on its state.
+
+```plantuml
+    [*] --> Closed
+    Closed --> Open : open
+    Open --> Closed : close
+    Open --> Maintenance : reportDamage
+    Closed --> Maintenance : reportDamage
+    Maintenance --> Closed : repair
+```
+
+<Compare>
+<Side kind="neutral" title="Activity diagram">
+
+The steps of a process.
+Who does what, in which order.
+
+</Side>
+<Side kind="neutral" title="State machine diagram">
+
+The life of one object.
+Which states it has, and which events change them.
+
+</Side>
+</Compare>
+
+## Observer
+
+Problem: when one object changes, other objects must hear about it.
+But the object should not know all those other classes.
+
+Solution: the subject keeps a list of observers behind an interface.
+Observers register themselves.
+When the subject changes, it calls one method on every observer.
+
+Animal only knows `FeedingObserver`, never KeeperApp or FeedingLog.
+
+```plantuml
+    left to right direction
+    class Animal {
+        -observers: List<FeedingObserver>
+        +subscribe(o: FeedingObserver) void
+        +unsubscribe(o: FeedingObserver) void
+        +feed() void
+    }
+    interface FeedingObserver {
+        +animalFed(animal: Animal) void
+    }
+    class KeeperApp {
+        +animalFed(animal: Animal) void
+    }
+    class FeedingLog {
+        +animalFed(animal: Animal) void
+    }
+    Animal --> "*" FeedingObserver : observers
+    KeeperApp ..|> FeedingObserver
+    FeedingLog ..|> FeedingObserver
+```
+
+```plantuml
+    participant "leo : Animal" as L
+    participant ":KeeperApp" as K
+    participant ":FeedingLog" as F
+    L -> L : feed()
+    loop for each observer
+        L -> K : animalFed(leo)
+        L -> F : animalFed(leo)
+    end
+```
+
+<Example name="other-topics/observer" title="Observer: Animal tells its observers that it was fed" />
+
+Recognise it: a list of an interface type, methods to add and remove, and a loop that calls all of them.
+A new kind of listener (for example a VetReport) needs no change in Animal (low coupling, OCP).
+
+## State
+
+Problem: an object behaves differently in each state.
+With an `if` or `switch` on the state in every method, the class grows with every new state.
+
+Solution: put each state in its own class behind one interface.
+The object (the context) holds its current state and delegates to it.
+A state decides which state comes next.
+
+```plantuml
+    left to right direction
+    class Enclosure {
+        -state: EnclosureState
+        +open() void
+        +close() void
+    }
+    interface EnclosureState {
+        +open() EnclosureState
+        +close() EnclosureState
+    }
+    class OpenState
+    class ClosedState
+    Enclosure --> "1" EnclosureState : state
+    OpenState ..|> EnclosureState
+    ClosedState ..|> EnclosureState
+```
+
+<Example name="other-topics/state" title="State: Enclosure delegates to its current state" />
+
+State and Strategy have the same class diagram, but a different intent.
+
+<Compare>
+<Side kind="neutral" title="Strategy">
+
+The client chooses the algorithm from outside, for example a RateStrategy per Ride.
+The strategy does not change by itself.
+
+</Side>
+<Side kind="neutral" title="State">
+
+The object changes its own state when events happen.
+The states know which state comes next.
+
+</Side>
+</Compare>
+
+## Practice questions
+
+<Questions topic="other-topics" />

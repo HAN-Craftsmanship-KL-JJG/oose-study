@@ -1,0 +1,339 @@
+## What a good check contains
+
+You check a design against its requirements: the use case text and the domain model.
+For each problem you give four things:
+
+- The place: which diagram, which message or class.
+- The reason: which requirement or design rule the design breaks.
+  A problem without a reason is only half an answer.
+- The fix: describe it, or draw only the part that changes.
+- An alternative: another way to fix it, and why your fix is better.
+
+```plantuml
+start
+:Read the use case text (the requirements);
+:Compare it with the domain model,
+the sequence diagrams and the DCD;
+:Name each problem
+with a reason;
+:Give a fix per problem
+and an alternative;
+stop
+```
+
+## Read a sequence diagram
+
+A sequence diagram (SD) shows one system operation.
+Time goes from top to bottom.
+
+```plantuml
+    actor "Employee" as M
+    participant ":LoanScreen" as UI
+    participant "b : Library" as B
+    participant "l : Borrower" as L
+    M -> UI : lendBook(cardNumber, isbn)
+    activate UI
+    UI -> B : lendBook(cardNumber, isbn)
+    activate B
+    B -> B : l = findBorrower(cardNumber)
+    B -> L : ok = canBorrow()
+    activate L
+    L --> B : ok
+    deactivate L
+    alt ok
+        create participant "u : Loan" as U
+        B -> U : create(l, bk)
+    else not ok
+        B --> UI : errorMessage
+    end
+    deactivate B
+    deactivate UI
+```
+
+1. Actor (`Employee`): a person outside the system.
+   Only the first message may come from the actor.
+2. Lifeline: `object : Class`, such as `b : Library`.
+   `:LoanScreen` is an object without a name.
+3. Message (solid arrow): a method call.
+   The receiver must have this method.
+4. Activation bar: a method is running.
+   Calls that start on it are made inside that method.
+5. Return value: an assignment such as `l = findBorrower(cardNumber)`, or a dashed arrow back.
+   One of the two is enough.
+6. Message to yourself: a call to your own method.
+7. `create`: a new object; its lifeline starts lower.
+8. Fragment: `alt` is if/else, `opt` is if without else, `loop` repeats.
+   The condition is in square brackets, such as `[ok]`.
+
+```plantuml
+    participant "b : Order" as B
+    participant "r : OrderLine" as R
+    loop for each line
+        B -> R : s = subtotal()
+    end
+    opt total > 100
+        B -> B : giveDiscount()
+    end
+```
+
+## Read a design class diagram
+
+A design class diagram (DCD) shows the classes of the code.
+
+```plantuml
+    left to right direction
+    class Borrower {
+        -cardNumber: int
+        -name: String
+        +canBorrow() boolean
+        +lendBook(bk: Book) void
+    }
+    class Loan {
+        -loanDate: LocalDate
+        -dueDate: LocalDate
+        +fine() double
+    }
+    class Book {
+        -isbn: String
+        -finePerDay: double
+    }
+    Borrower "1" --> "*" Loan : loans
+    Loan "*" --> "1" Book
+```
+
+1. Class box: name, attributes, methods.
+2. Visibility: `+` public, `-` private, `#` protected, `~` package-private.
+3. Attribute with type: `-dueDate: LocalDate`.
+4. Method with parameter types and return type: `+lendBook(bk: Book) void`.
+5. Arrow (navigability): `Borrower --> Loan` means Borrower knows its loans and can call them.
+   Loan does not know its Borrower.
+6. Multiplicity: `1` exactly one, `*` many, `0..1` zero or one, `1..*` one or more.
+7. Role name, such as `loans`: the field name in code.
+
+## The consistency rules
+
+Consistent: the design covers the requirements, and the diagrams agree.
+
+1. Every sentence of the use case text has a place in the design.
+   An option ("search by name or by strength") is a system operation.
+   A rule ("at most five books") is a check somewhere.
+2. Every SD message is a method of the receiver in the DCD, with the same name and parameters.
+3. The sender can reach the receiver: an association with the right arrow, a parameter, a local variable or a return value.
+4. Domain model attributes that a requirement needs are in the DCD, with a type.
+5. The UI only passes the system operation to a controller in the domain layer (GRASP Controller).
+6. Each task is at the class with the information (Information Expert); the class that contains objects creates them (Creator).
+7. Messages go to objects, never to an actor.
+8. Types are sensible: a word is a `String`, a date is a `LocalDate`.
+
+Not a mistake:
+
+- A missing return arrow, when an assignment shows the return value.
+- Methods on a class that has no attributes in the domain model.
+- Things the case says it left out on purpose.
+- Missing getters and setters.
+
+## A method in seven steps
+
+```plantuml
+start
+:1. Read the use case text.
+Underline every action and every rule.;
+:2. For each underlined part,
+find its place in the SD and DCD.;
+:3. Walk through each SD, message by message.
+Is it a method in the DCD?
+Can the sender reach the receiver?;
+:4. Check the activation bars,
+parameter types and the actor.;
+:5. Compare domain model and DCD:
+missing attributes or associations?;
+:6. Check GRASP: Controller,
+Information Expert, Creator.;
+:7. Write each problem: id, place,
+reason, fix, alternative.;
+stop
+```
+
+<Checklist
+  id="check-design-method"
+  title="Checking a design"
+  items={[
+    "I underlined every action and every rule in the use case text.",
+    "Every underlined part has a place in the SD or the DCD.",
+    "Every SD message is a method of the receiver in the DCD.",
+    "The sender can reach the receiver (association, parameter or return value).",
+    "Calls hang on the right activation bar.",
+    "Parameter and attribute types make sense.",
+    "No message goes to an actor.",
+    "The attributes of the domain model that I need are in the DCD.",
+    "The UI only calls a controller in the domain layer.",
+    "Each task is at the Information Expert, and Creator is followed.",
+    "Each problem has an id and a reason.",
+    "Each fix is drawn (only the part that changes) and has an alternative.",
+  ]}
+/>
+
+## Case 1: Lend a book
+
+### The requirements
+
+Use case Lend a book:
+
+> An employee scans the card of a borrower and the barcode (isbn) of a book.
+> The system checks that the borrower has fewer than five books and no open fine.
+> If so, the system registers the loan, with a due date three weeks after today.
+> If not, the system says why lending is not possible.
+
+Domain model:
+
+```plantuml
+    left to right direction
+    class Library
+    class Borrower {
+        cardNumber
+        name
+    }
+    class Loan {
+        loanDate
+        dueDate
+    }
+    class Book {
+        isbn
+        title
+        finePerDay
+    }
+    Library "1" -- "*" Borrower : has
+    Library "1" -- "*" Book : owns
+    Borrower "1" -- "*" Loan : has
+    Loan "*" -- "1" Book : concerns
+```
+
+### The design to check
+
+SD of `lendBook`:
+
+```plantuml
+    actor "Employee" as M
+    participant ":LoanScreen" as UI
+    participant "b : Library" as B
+    participant "bk : Book" as BK
+    participant "l : Borrower" as L
+    M -> UI : lendBook(cardNumber, isbn)
+    activate UI
+    UI -> B : l = findBorrower(cardNumber)
+    UI -> B : bk = findBook(isbn)
+    UI -> BK : fine = hasFine(l)
+    create participant "u : Loan" as U
+    UI -> U : create(l, bk)
+    UI -> L : add(u)
+    deactivate UI
+```
+
+DCD:
+
+```plantuml
+    left to right direction
+    class LoanScreen
+    class Library
+    class Borrower
+    class Book
+    class Loan
+    LoanScreen --> Library
+    Library "1" --> "*" Borrower
+    Library "1" --> "*" Book
+    Loan "*" --> "1" Book
+```
+
+### Your turn
+
+<Questions ids={["check-design-21a", "check-design-21b", "check-design-21c"]} />
+
+<Reveal title="Show a possible answer for case 1">
+
+Five real problems:
+
+| Id | Place | Problem and reason | Fix |
+| --- | --- | --- | --- |
+| P1 | SD, LoanScreen | The UI coordinates the system operation and creates the Loan. That breaks GRASP Controller: logic in the UI cannot be reused or tested without the UI. | The UI only calls `b.lendBook(cardNumber, isbn)`. Library is the controller (a facade controller). |
+| P2 | SD and DCD | The rule "fewer than five books" is in the text but not in the design. | Add `Borrower.canBorrow() : boolean`, which counts the open loans. |
+| P3 | SD, `hasFine(l)` on Book | Book cannot know whether a borrower has a fine; that is in the loans of the borrower. This breaks Information Expert. | `Borrower.hasOpenFine()` asks each own Loan for its `fine()`. |
+| P4 | DCD, Loan | The return date is a requirement and in the domain model, but not in the design. | Add `-dueDate: LocalDate`, set to `loanDate.plusWeeks(3)` in the constructor. |
+| P5 | SD `l.add(u)` against the DCD | The SD sends a message to Borrower about loans, but in the DCD Borrower cannot keep loans. SD and DCD are not consistent. | Add the association `Borrower "1" --> "*" Loan`. |
+
+Alternatives:
+
+- P1: a separate controller class `LoanController` instead of Library.
+  Library is better here because it already knows the borrowers and books, so you add no extra class.
+- P3: let Loan calculate the fine with a static helper.
+  Worse: it moves the task away from the class with the data, so coupling goes up and cohesion goes down.
+- P5: let Library keep a list of all loans.
+  Worse: to count the loans of one borrower you search the whole list, and Borrower is no longer the expert.
+
+Improved SD:
+
+```plantuml
+    actor "Employee" as M
+    participant ":LoanScreen" as UI
+    participant "b : Library" as B
+    participant "l : Borrower" as L
+    M -> UI : lendBook(cardNumber, isbn)
+    activate UI
+    UI -> B : lendBook(cardNumber, isbn)
+    activate B
+    B -> B : l = findBorrower(cardNumber)
+    B -> B : bk = findBook(isbn)
+    B -> L : ok = canBorrow()
+    activate L
+    note over L : fewer than 5 loans\nand not hasOpenFine()
+    deactivate L
+    alt ok
+        B -> L : lendBook(bk)
+        activate L
+        create participant "u : Loan" as U
+        L -> U : create(this, bk, today)
+        note over L, U : dueDate = today + 3 weeks
+        deactivate L
+    else not ok
+        B --> UI : errorMessage
+    end
+    deactivate B
+    deactivate UI
+```
+
+Improved DCD:
+
+```plantuml
+    class LoanScreen
+    class Library {
+        +lendBook(cardNumber: int, isbn: String) void
+        -findBorrower(cardNumber: int) Borrower
+        -findBook(isbn: String) Book
+    }
+    class Borrower {
+        -cardNumber: int
+        -name: String
+        +canBorrow() boolean
+        +hasOpenFine() boolean
+        +lendBook(bk: Book) void
+    }
+    class Loan {
+        -loanDate: LocalDate
+        -dueDate: LocalDate
+        +Loan(l: Borrower, bk: Book, today: LocalDate)
+        +fine() double
+    }
+    class Book {
+        -isbn: String
+        -title: String
+        -finePerDay: double
+    }
+    LoanScreen --> Library
+    Library "1" --> "*" Borrower
+    Library "1" --> "*" Book
+    Borrower "1" --> "*" Loan
+    Loan "*" --> "1" Book
+```
+
+Not problems: the missing return arrows (the assignments show the results), and methods on Library although it has no attributes in the domain model.
+
+</Reveal>

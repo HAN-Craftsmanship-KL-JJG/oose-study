@@ -1,0 +1,3 @@
+{
+  "powershell": "PowerShell can implement .NET interfaces, but it cannot declare a new one. A base class whose methods throw is the usual replacement."
+}

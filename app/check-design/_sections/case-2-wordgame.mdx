@@ -1,0 +1,170 @@
+## Case 2: WordGame
+
+### The requirements
+
+Use case Play a game, in short:
+
+1. The player says that they want to play a game.
+2. The system lets the player choose: search an opponent by name, or search someone of equal strength.
+3. When an opponent is found, the system chooses a start player.
+4. The players take turns to play a word of at most seven letters, all from their own stock.
+5. If the word is not in the word list, the player must play a new word.
+6. During the game, the stock of a player is filled up from the general letter stock.
+7. Every letter is worth 1 point. The game stops when the general stock is empty. The player with the most points wins.
+8. For each game won, the profile strength of the player goes up by 1.
+
+The SDs leave out on purpose that both players must be logged in.
+
+### The design to check (reconstruction)
+
+Start game:
+
+```plantuml
+    actor "Player" as S
+    participant "game : WordGame" as G
+    S -> G : startGame(name, opponentName)
+```
+
+Play word:
+
+```plantuml
+    actor "Player" as S
+    participant "game : WordGame" as G
+    participant "currentPlayer : Player" as HS
+    participant "stock : Stock" as V
+    participant ":WordList" as W
+    S -> G : playWord(char[] letters)
+    activate G
+    G -> W : correct = isWordCorrect(letters)
+    G -> HS : playWord(letters)
+    activate HS
+    HS -> V : updateStock()
+    deactivate HS
+    G -> V : remove(letters)
+    G -> V : add()
+    deactivate G
+```
+
+Determine winner:
+
+```plantuml
+    participant ":WordGame" as G
+    actor "Player" as S
+    G -> S : playerPoints = getPoints()
+    G -> S : opponentPoints = getPoints()
+    alt playerPoints > opponentPoints
+        G -> S : increaseProfileStrength()
+    else
+        G -> S : increaseProfileStrength()
+    end
+```
+
+Part of the DCD:
+
+```plantuml
+    left to right direction
+    class WordGame {
+        +startGame(name: String, opponentName: String) void
+        +playWord(letters: char[]) void
+        +determineWinner() void
+    }
+    class Player {
+        -name: String
+        -points: int
+    }
+    WordGame "1" --> "2" Player : players
+    Player "*" --> "1" WordGame : has signed-in players
+```
+
+### Your turn
+
+<Questions ids={["check-design-wordgame"]} />
+
+<Reveal title="Show a possible answer for case 2">
+
+P1. Search for an opponent (start game).
+The text says the player can search by name or by equal strength.
+The design has only `startGame(name, opponentName)`, so searching by strength is not possible.
+Fix: two system operations, `findOpponentByName(name)` and `findOpponentByStrength()`.
+Without a parameter, it searches for equal strength.
+Alternative: one operation with a search type as parameter.
+Two operations are clearer and each has one task.
+
+P2. Two associations between WordGame and Player (DCD).
+The association "has signed-in players" is not needed, and its arrow from Player to WordGame means a Player must know its game.
+Nothing in the requirements needs that, and it adds coupling.
+Fix: remove that association.
+
+P3. Wrong activation bars and a wrong type (play word).
+`remove()` and `add()` should happen inside `updateStock()`, but they start on the bar of WordGame.
+Also, `playWord` gets an array of letters, while a word is a `String`.
+Fix: draw the calls on the bar of the right method, give them clear names, and use `playWord(word: String)`.
+
+```plantuml
+    actor "Player" as S
+    participant "game : WordGame" as G
+    participant "currentPlayer : Player" as HS
+    participant "stock : Stock" as V
+    participant ":WordList" as W
+    S -> G : playWord(word)
+    activate G
+    G -> W : correct = isWordCorrect(word)
+    alt correct
+        G -> HS : playWord(word)
+        activate HS
+        HS -> V : present = allLettersPresent(word)
+        alt present
+            HS -> V : removeLettersFromStock(word)
+            HS -> V : refillStock()
+            HS -> HS : increasePoints(length(word))
+        end
+        deactivate HS
+    end
+    deactivate G
+```
+
+P4. Messages to the actor (determine winner).
+`getPoints()` and `increaseProfileStrength()` go to the actor.
+An actor is a person outside the system; software cannot call a method on a person.
+Fix: send them to the objects `player : Player` and `opponent : Player`.
+
+```plantuml
+    participant ":WordGame" as G
+    participant "player : Player" as SP
+    participant "opponent : Player" as T
+    G -> SP : playerPoints = getPoints()
+    G -> T : opponentPoints = getPoints()
+    alt playerPoints > opponentPoints
+        G -> SP : increaseProfileStrength()
+    else
+        G -> T : increaseProfileStrength()
+    end
+```
+
+P5. WordGame is both the controller and one concrete game.
+That gives WordGame two tasks: low cohesion.
+Fix: split it into `WordGameManager` (the controller, which manages players and games) and `WordGame` (one game).
+A `Participant` links a Player to one game, with its own Stock.
+
+```plantuml
+    class WordGameManager
+    class WordGame
+    class Participant
+    class Player {
+        name
+    }
+    class Profile {
+        strength
+    }
+    class Stock
+    WordGameManager "1" -- "*" WordGame : manages
+    WordGameManager "1" -- "*" Player : manages
+    WordGame "1" -- "2" Participant : takes part in
+    Participant "*" -- "1" Player : is
+    Participant "1" -- "1" Stock : has letters in
+    Player "*" -- "1" Profile : has profile strength
+```
+
+Not problems: the missing login (left out on purpose) and missing return arrows.
+
+</Reveal>

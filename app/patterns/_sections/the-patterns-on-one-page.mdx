@@ -1,0 +1,347 @@
+## The patterns on one page
+
+| Pattern         | The question it answers                                                  |
+| --------------- | ------------------------------------------------------------------------ |
+| Strategy        | How can I swap a calculation or rule, also at run time?                  |
+| Template Method | How do I keep the order of steps fixed, but let subclasses change steps? |
+| Factory Method  | How does a subclass decide which object the superclass creates?          |
+| Factory class   | Who chooses and creates the concrete class, so the client does not?      |
+| Adapter         | How do I use a class whose interface does not fit my code?               |
+| Proxy           | How do I control access to an object without changing it?               |
+| Decorator       | How do I add behaviour to an object in layers?                           |
+| Facade          | How do I give a client one simple entry to many classes?                 |
+
+Composition means that an object holds another object in a field and delegates work to it.
+This is wider than the filled diamond in UML: the held object may come from outside.
+Inheritance means that a subclass extends a superclass.
+
+## Strategy
+
+Problem: a rule or calculation has several variants, and more will come.
+An `if` or `switch` per variant means you change the class for every new variant.
+
+Solution: put each variant in its own class behind one interface.
+The context (the class that needs the calculation) holds one strategy object and delegates to it.
+This is composition, so you can swap the strategy, even at run time.
+
+Example: the price of a bike ride must be easy to extend with new tariffs.
+
+<Compare>
+<Side kind="bad" title="A switch in Ride">
+
+```java
+double calculatePrice() {
+    switch (rateType) {
+        case "minute": return getMinutes() * 0.25;
+        case "day":    return 15.00;
+        // new tariff? change Ride again
+    }
+}
+```
+
+Every new tariff changes `Ride` (breaks Open/Closed).
+`Ride` must know all tariff rules (low cohesion).
+
+</Side>
+<Side kind="good" title="Strategy">
+
+```java
+double calculatePrice() {
+    return rate.calculate(this);
+}
+```
+
+A new tariff is a new class.
+Each tariff class is small and easy to test.
+
+</Side>
+</Compare>
+
+```plantuml
+class Ride {
+  -startTime : LocalDateTime
+  -endTime : LocalDateTime
+  +Ride(rate : RateStrategy)
+  +calculatePrice() : double
+  +getMinutes() : int
+}
+interface RateStrategy <<interface>> {
+  +calculate(ride : Ride) : double
+}
+class PerMinuteRate {
+  +calculate(ride : Ride) : double
+}
+class DailyRate {
+  +calculate(ride : Ride) : double
+}
+Ride --> "1" RateStrategy
+PerMinuteRate ..|> RateStrategy
+DailyRate ..|> RateStrategy
+```
+
+```plantuml
+participant "Client" as C
+participant ":Ride" as R
+participant ":PerMinuteRate" as T
+C -> R : calculatePrice()
+R -> T : calculate(this)
+T -> R : getMinutes()
+R --> T : 30
+T --> R : 7.50
+R --> C : 7.50
+```
+
+<Example name="patterns/strategy" title="Ride delegates the price to its RateStrategy" />
+
+Recognise it: an interface with one class per algorithm, and a context class with an association to that interface.
+Strategy follows the Open/Closed Principle most of all.
+
+### Check yourself
+
+<Questions ids={["patterns-online-20a", "patterns-online-20b"]} />
+
+## Template Method
+
+Problem: several classes do the same steps in the same order, but some steps differ per class.
+
+Solution: an abstract superclass has a public method, the template method, that calls the steps in a fixed order.
+The steps that differ are abstract, and each subclass fills them in.
+Shared steps have their body in the superclass.
+This is inheritance: the variant is fixed when you create the object.
+
+The abstract steps are in italics; the note gives the order of the calls.
+
+```plantuml
+abstract class Report <<abstract>> {
+  +generate() : void
+  #{abstract} fetchData() : void
+  #{abstract} format() : void
+  #writeFooter() : void
+}
+class PdfReport {
+  #fetchData() : void
+  #format() : void
+}
+class HtmlReport {
+  #fetchData() : void
+  #format() : void
+}
+Report <|-- PdfReport
+Report <|-- HtmlReport
+note bottom of Report : generate() calls fetchData(), format(), writeFooter()
+```
+
+At run time there is only one object, which calls its own steps.
+
+```plantuml
+participant "Client" as C
+participant ":PdfReport" as P
+C -> P : generate()
+note over P : generate() is inherited from Report
+P -> P : fetchData()
+note right of P : from PdfReport
+P -> P : format()
+note right of P : from PdfReport
+P -> P : writeFooter()
+note right of P : from Report
+```
+
+<Example name="patterns/template-method" title="generate() fixes the order; the subclasses fill in the steps" />
+
+Recognise it: an abstract class with one public method and several protected abstract methods, and subclasses that only override those steps.
+
+### Strategy or Template Method?
+
+<Compare>
+<Side kind="neutral" title="Strategy: composition">
+
+The varying part is a separate object behind an interface.
+
+You can swap it at run time: `ride.setRate(new DailyRate())`.
+
+One context, many strategies.
+
+</Side>
+<Side kind="neutral" title="Template Method: inheritance">
+
+The varying part is a method in a subclass.
+
+The variant is fixed when you create the object.
+
+Each combination needs its own subclass.
+
+</Side>
+</Compare>
+
+### Check yourself
+
+<Questions ids={["patterns-online-13"]} />
+
+## Factory Method
+
+Problem: a superclass needs an object, but only the subclass knows which concrete class to create.
+
+Solution: the superclass calls an abstract method that creates the object, and each subclass overrides it.
+Factory Method is a Template Method whose varying step creates an object.
+
+`createBoard()` returns an interface type.
+
+```plantuml
+abstract class Game <<abstract>> {
+  +start() : void
+  #{abstract} createBoard() : Board
+}
+class ChessGame {
+  #createBoard() : Board
+}
+class DraughtsGame {
+  #createBoard() : Board
+}
+interface Board <<interface>> {
+  +setUp() : void
+}
+class ChessBoard {
+  +setUp() : void
+}
+class DraughtsBoard {
+  +setUp() : void
+}
+Game <|-- ChessGame
+Game <|-- DraughtsGame
+Game --> Board
+ChessBoard ..|> Board
+DraughtsBoard ..|> Board
+```
+
+```plantuml
+participant "Client" as C
+participant ":ChessGame" as S
+participant ":ChessBoard" as B
+C -> S : start()
+S -> S : createBoard()
+S -> B ** : create()
+S -> B : setUp()
+```
+
+<Example name="patterns/factory-method" title="Game.start() calls createBoard(); each subclass decides which board" />
+
+Recognise it: an abstract method named "create…" that returns an interface type, overridden in subclasses.
+
+### Check yourself
+
+<Questions ids={["patterns-online-19"]} />
+
+## Factory as a separate class
+
+Not a classic pattern from the book, but the course uses it a lot.
+Problem: the client works with an interface, but somebody has to choose and create the concrete class.
+
+Solution: one class with a method such as `createLock(config)` that returns the interface type.
+It is the only place that knows the concrete classes, often chosen from a configuration file.
+A new class then means a change in the factory only.
+
+```plantuml
+class Client
+class LockFactory {
+  +createLock(supplier : String) : BikeLock
+}
+interface BikeLock <<interface>> {
+  +unlock(bikeNumber : String) : void
+}
+class LockItAdapter
+class SmartLockAdapter
+Client --> LockFactory
+Client --> BikeLock
+LockFactory ..> LockItAdapter : creates
+LockFactory ..> SmartLockAdapter : creates
+LockItAdapter ..|> BikeLock
+SmartLockAdapter ..|> BikeLock
+```
+
+```plantuml
+participant "Client" as C
+participant ":LockFactory" as F
+participant ":SmartLockAdapter" as S
+C -> F : createLock("smartlock")
+F -> S ** : create(api, token)
+F --> C : lock (type BikeLock)
+C -> S : unlock("F12")
+```
+
+<Example name="patterns/factory" title="LockFactory chooses the adapter; the client only knows BikeLock" />
+
+Recognise it: a class named …Factory, with dependency arrows to all concrete classes and a method that returns the interface.
+
+## Adapter
+
+Problem: your code expects one interface, but the class that does the work has another, often from an external library you cannot change.
+
+Solution: an adapter class implements the interface your code expects, holds the external object and translates each call.
+Think of a travel plug adapter.
+
+Example: a bike rental with two lock suppliers: `LockItSdk.unlockBike(String id)` and `SmartLockApi.open(int nr, String token)`.
+A third supplier must be possible later without a change in the domain logic.
+
+Only the adapters cross the line between the domain and the libraries.
+
+```plantuml
+class Ride
+interface BikeLock <<interface>> {
+  +unlock(bikeNumber : String) : void
+}
+class LockItAdapter {
+  +unlock(bikeNumber : String) : void
+}
+class SmartLockAdapter {
+  -token : String
+  +unlock(bikeNumber : String) : void
+}
+class LockItSdk <<external>> {
+  +unlockBike(id : String) : void
+}
+class SmartLockApi <<external>> {
+  +open(nr : int, token : String) : void
+}
+Ride --> BikeLock
+LockItAdapter ..|> BikeLock
+SmartLockAdapter ..|> BikeLock
+LockItAdapter --> LockItSdk
+SmartLockAdapter --> SmartLockApi
+```
+
+```plantuml
+participant ":Ride" as R
+participant ":SmartLockAdapter" as A
+participant ":SmartLockApi" as L
+R -> A : unlock("F12")
+note over A : "F12" becomes 12, and the token is added
+A -> L : open(12, token)
+```
+
+<Example name="patterns/adapter" title="One adapter per supplier; the domain only knows BikeLock" />
+
+The domain depends on its own interface `BikeLock` (Dependency Inversion).
+It is protected against changes in the libraries (Protected Variations).
+A third supplier is a new adapter class (Open/Closed).
+
+A payment provider has the same shape.
+`CashRegister` uses the interface `PaymentProvider` with `pay(amount: double): boolean`.
+`MolliePaymentProvider` implements it and calls `MollieClient.createPayment(amountInCents: int)`.
+The method name and the parameter type differ, so it is an adapter.
+
+```plantuml
+participant ":CashRegister" as K
+participant ":MolliePaymentProvider" as M
+participant ":MollieClient" as MC
+K -> M : pay(12.50)
+note over M : euros become cents
+M -> MC : createPayment(1250)
+MC --> M : PaymentResponse
+M --> K : true
+```
+
+Recognise it: a class that implements your interface and has an association to a class with a different interface, often marked as external.
+
+### Check yourself
+
+<Questions ids={["patterns-online-14", "patterns-online-20c", "patterns-online-20d"]} />

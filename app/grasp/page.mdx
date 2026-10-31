@@ -1,0 +1,219 @@
+export const metadata = { title: "GRASP" };
+
+# GRASP
+
+GRASP (General Responsibility Assignment Software Patterns) helps you decide which class gets which task.
+A task in a design is called a responsibility.
+This page covers three of them: Controller, Creator and Information Expert.
+
+## Which principle do I need?
+
+```plantuml
+start
+if (Who receives a system\noperation from the UI?) then (yes)
+  :Controller: the class for the whole system,
+  such as Library or Game;
+  stop
+endif
+if (Who makes new\nobjects of class A?) then (yes)
+  if (Does B contain or\nrecord A objects?) then (yes)
+    :Creator: B creates A;
+  else (no)
+    :Creator: B closely uses A,
+    or B has the data to make A;
+  endif
+  stop
+endif
+:Information Expert:
+the class that has the data
+(who does this calculation or task?);
+stop
+```
+
+## The library domain
+
+```plantuml
+hide circle
+hide empty methods
+hide empty fields
+left to right direction
+class Library
+class Borrower {
+  cardNumber
+  name
+}
+class Loan {
+  loanDate
+  dueDate
+}
+class Book {
+  isbn
+  title
+  finePerDay
+}
+Library "1" -- "*" Borrower : has >
+Library "1" -- "*" Book : owns >
+Borrower "1" -- "*" Loan : has >
+Loan "*" -- "1" Book : is for >
+```
+
+## Controller
+
+A system operation is something the user asks the system to do, such as "lend this book".
+The Controller is the first object behind the user interface (UI) that receives a system operation.
+It does not do all the work itself: it finds the right objects and delegates the steps to them.
+
+Choose a class that represents the whole system, such as `Library` or `Game` (a facade controller).
+Another option is a class for one use case, such as `LendHandler`.
+The UI stays thin, so you can reuse and test the logic without it.
+
+<Compare>
+<Side kind="bad" title="The UI coordinates">
+
+```plantuml
+participant ":LoanScreen" as UI
+participant ":Library" as B
+participant ":Borrower" as L
+participant ":Book" as BK
+participant "u : Loan" as U
+UI -> B : borrower = findBorrower(cardNumber)
+UI -> B : book = findBook(isbn)
+UI -> U ** : create(borrower, book)
+UI -> L : add(u)
+UI -> BK : setLent(true)
+```
+
+The UI knows four classes and does every step.
+
+</Side>
+<Side kind="good" title="The Controller coordinates">
+
+```plantuml
+participant ":LoanScreen" as UI
+participant ":Library" as B
+participant ":Borrower" as L
+UI -> B : lend(cardNumber, isbn)
+activate B
+B -> B : borrower = findBorrower(cardNumber)
+B -> B : book = findBook(isbn)
+B -> L : borrow(book)
+deactivate B
+```
+
+The UI makes one call.
+
+</Side>
+</Compare>
+
+<Example name="grasp/controller-bad" title="Wrong: the UI looks up objects, creates a Loan and changes the book" />
+
+<Example name="grasp/controller-good" title="Right: the UI calls the Controller, and the Controller coordinates" />
+
+<Questions ids={["grasp-controller-webshop"]} />
+
+## Creator
+
+Class B creates objects of class A when:
+
+- B contains or aggregates A objects. This is the strongest reason.
+- B records A objects.
+- B closely uses A objects.
+- B has the data that A needs when it is created.
+
+The filled diamond is the hint: `Order` contains its `OrderLine` objects, so it creates them.
+`Product` is used by a line, but does not contain lines.
+
+```plantuml
+left to right direction
+class Order {
+  +add(product : Product, quantity : int) : void
+}
+class OrderLine
+class Product
+hide empty members
+Order "1" *-- "1..*" OrderLine : lines
+OrderLine "*" --> "1" Product : refers to
+```
+
+```plantuml
+actor Customer as K
+participant ":Order" as B
+participant ":OrderLine" as R
+K -> B : add(bike, 1)
+activate B
+B -> R ** : create(bike, 1)
+B -> B : lines.add(line)
+deactivate B
+```
+
+<Example name="grasp/creator" title="Order contains its lines, so Order creates them" />
+
+In the library, `Borrower` records its loans, so `Borrower` creates an `Loan` (`borrower.borrow(book)`).
+
+<Questions ids={["grasp-creator-uitlening"]} />
+
+## Information Expert
+
+Give a task to the class that has the information to do it.
+That gives high cohesion and low coupling.
+
+The total open fines of one borrower:
+
+- `Loan` knows its return date and its book, so it calculates the fine of one loan.
+- `Borrower` knows all its loans, so it calculates the total.
+- `Book` only knows the rate per day, not the loans of a borrower.
+- `Library` could find the loans, but it would need data from other classes.
+
+```plantuml
+participant ":Library" as B
+participant ":Borrower" as L
+participant ":Loan" as U
+participant ":Book" as BK
+B -> L : openFines()
+activate L
+loop for each Loan
+  L -> U : fine()
+  activate U
+  U -> BK : getFinePerDay()
+  BK --> U : finePerDay
+  U --> L : fine of one loan
+  deactivate U
+end
+L --> B : total
+deactivate L
+```
+
+<Example name="grasp/expert" title="Each class calculates what it has the data for" />
+
+<Compare>
+<Side kind="bad" title="Book checks the fine">
+
+`Book.hasFine(borrower)` cannot know: the fines are in the loans of the borrower.
+
+</Side>
+<Side kind="good" title="Borrower checks the fine">
+
+`Borrower.hasOpenFine()` asks each of its own loans.
+
+</Side>
+</Compare>
+
+<Questions ids={["grasp-expert-subtotaal"]} />
+
+## A game domain
+
+```plantuml
+hide circle
+hide empty members
+left to right direction
+Game "1" -- "1" GameBoard : has >
+GameBoard "1" *-- "*" Square : consists of >
+Character "*" -- "1" Square : stands on >
+```
+
+- `Game` represents the whole game, so it is the Controller.
+- `GameBoard` contains the Squares, so it is the Creator of Square.
+
+## Practice questions
+
+<Questions topic="grasp" />

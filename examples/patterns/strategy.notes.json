@@ -1,0 +1,3 @@
+{
+  "powershell": "PowerShell cannot declare an interface. RateStrategy is a base class whose method throws, so every rate must override Calculate."
+}

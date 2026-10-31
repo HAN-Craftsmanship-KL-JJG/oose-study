@@ -1,0 +1,44 @@
+' The shared look of every diagram. scripts/render-uml.mjs puts it before each diagram.
+' A change here renders every diagram again.
+skinparam shadowing false
+skinparam backgroundColor transparent
+skinparam defaultFontName "Source Serif 4"
+skinparam defaultFontSize 14
+skinparam defaultFontColor #292524
+skinparam roundCorner 4
+skinparam ArrowColor #57534E
+skinparam ArrowFontColor #44403C
+skinparam ArrowFontSize 13
+skinparam BorderColor #78716C
+skinparam NoteBackgroundColor #FBF8F1
+skinparam NoteBorderColor #A8A29E
+skinparam classAttributeIconSize 0
+skinparam ClassBackgroundColor #FFFDF8
+skinparam ClassBorderColor #57534E
+skinparam ClassHeaderBackgroundColor #F3F5F9
+skinparam StereotypeFontColor #44403C
+skinparam ObjectBackgroundColor #FFFDF8
+skinparam ObjectBorderColor #57534E
+skinparam PackageBorderColor #A8A29E
+skinparam PackageBackgroundColor transparent
+skinparam ParticipantBackgroundColor #F3F5F9
+skinparam ParticipantBorderColor #57534E
+skinparam ActorBackgroundColor #F3F5F9
+skinparam ActorBorderColor #57534E
+skinparam SequenceLifeLineBorderColor #A8A29E
+skinparam SequenceGroupBorderColor #A8A29E
+skinparam SequenceGroupBackgroundColor #F5F5F4
+skinparam SequenceBoxBackgroundColor transparent
+skinparam ActivityBackgroundColor #FFFDF8
+skinparam ActivityBorderColor #57534E
+skinparam ActivityDiamondBackgroundColor #F3F5F9
+skinparam ActivityDiamondBorderColor #57534E
+skinparam StateBackgroundColor #FFFDF8
+skinparam StateBorderColor #57534E
+skinparam UsecaseBackgroundColor #F3F5F9
+skinparam UsecaseBorderColor #57534E
+skinparam RectangleBorderColor #A8A29E
+skinparam ComponentBackgroundColor #FFFDF8
+skinparam ComponentBorderColor #57534E
+hide circle
+hide empty methods

@@ -1,0 +1,213 @@
+export const metadata = { title: "Coupling and cohesion" };
+
+# Coupling and cohesion
+
+## The two measures
+
+| Measure  | Question                                             | You want |
+| -------- | ---------------------------------------------------- | -------- |
+| Coupling | How much does this class depend on other classes?    | Low      |
+| Cohesion | How well do the tasks of this class belong together? | High     |
+
+| Example          | Coupling | Cohesion | Verdict |
+| ---------------- | -------- | -------- | ------- |
+| Strategy design  | Low      | High     | Goal    |
+| Multiplier       | High     | High     | Focused but tangled |
+| Report           | High     | Low      | Worst   |
+
+## Coupling
+
+A class is coupled to another class when it:
+
+- has a field of that class (an association),
+- gets it as a parameter or returns it,
+- creates it with `new`,
+- calls its methods, also static methods,
+- inherits from it or implements it.
+
+Coupling to a concrete class is stronger than coupling to an interface.
+
+<Compare>
+<Side kind="bad" title="High coupling">
+```plantuml
+class Keeper
+class Lion
+Keeper ..> Lion : new Lion()
+```
+
+`Keeper` creates `Lion` itself.
+A new kind of animal means a change in `Keeper`.
+</Side>
+<Side kind="good" title="Lower coupling">
+```plantuml
+class Keeper
+interface Animal
+Keeper --> Animal
+Animal <|.. Lion
+Animal <|.. Penguin
+```
+
+`Keeper` only knows the interface.
+It gets the animal from outside.
+</Side>
+</Compare>
+
+## Cohesion
+
+A class has high cohesion when all its methods work toward one goal and use the same data.
+A class that calculates, sends email and writes to a database has three reasons to change: low cohesion, and it breaks SRP (see [SOLID](/solid)).
+
+<Compare>
+<Side kind="bad" title="Low cohesion">
+```plantuml
+class Report {
+  +calculateAverage()
+  +sendEmail()
+  +saveInDatabase()
+}
+```
+</Side>
+<Side kind="good" title="High cohesion">
+```plantuml
+class GradeCalculator {
+  +calculateAverage()
+}
+class ReportMailer {
+  +sendEmail()
+}
+class ReportStorage {
+  +saveInDatabase()
+}
+```
+</Side>
+</Compare>
+
+## How to judge a class
+
+```plantuml
+start
+:Look at one class;
+if (Uses many classes, or concrete\nclasses it creates itself?) then (yes)
+  :Coupling is high;
+else (few, through interfaces)
+  :Coupling is low;
+endif
+if (All methods serve one goal\nand use the same data?) then (yes)
+  :Cohesion is high;
+else (no, several jobs)
+  :Cohesion is low;
+endif
+stop
+```
+
+## Example: Multiplier and Calculator
+
+<Example name="coupling-cohesion/multiplier" title="Multiplier creates its own Calculator" />
+
+```plantuml
+participant Client
+participant ":Multiplier" as M
+participant ":Calculator" as C
+Client -> M : calculate()
+activate M
+M -> C ** : new Calculator()
+M -> C : mul(i, j)
+C --> M : i * j
+M --> Client : result
+deactivate M
+```
+
+Coupling is high: `Multiplier` creates the concrete class `Calculator` itself.
+Cohesion is high: `Multiplier` does one small thing with its own data.
+Answer: B, both are high.
+
+To lower the coupling, pass the calculator in from outside, as an interface: [dependency injection](/singleton-di).
+
+## Example: moving a method
+
+Class `A` has a method `f()` that only uses data of `B`.
+A developer moves `f()` from `A` to `B`.
+
+<Compare>
+<Side kind="bad" title="Before">
+```plantuml
+class A {
+  -i : int
+  -b : B
+  +c() : void
+  +f() : void
+}
+class B {
+  -j : int
+  +getJ() : int
+}
+A --> B
+```
+
+`f()` sits in `A` but only reads `j` from `B`.
+</Side>
+<Side kind="good" title="After">
+```plantuml
+class A {
+  -i : int
+  -b : B
+  +c() : void
+}
+class B {
+  -j : int
+  +f() : void
+}
+A --> B
+```
+
+`f()` sits in `B`, next to `j`.
+</Side>
+</Compare>
+
+<Example name="coupling-cohesion/move-before" title="Before: f() is in A but only uses B's data" />
+
+<Example name="coupling-cohesion/move-after" title="After: f() lives in B, next to the data it uses" />
+
+Coupling stays the same: `A` still has a field of type `B` and calls one method on it.
+Cohesion goes up.
+Answer: D.
+This is GRASP Information Expert (see [GRASP](/grasp)).
+
+## Example: a class with three tasks
+
+<Example name="coupling-cohesion/report-before" title="Before: Report calculates, sends email and saves" />
+
+Three reasons to change, so cohesion is low and the class breaks SRP.
+`Report` is coupled to an email API and a database API, even with no attributes.
+Making the methods `static` does not lower the coupling.
+The fix: split it into three classes.
+
+```plantuml
+class GradeCalculator {
+  +calculateAverage(grades) : double
+}
+class ReportMailer {
+  +send(report, address) : void
+}
+class ReportStorage {
+  +save(report) : void
+}
+ReportMailer ..> EmailApi
+ReportStorage ..> Database
+```
+
+<Example name="coupling-cohesion/report-after" title="After: three classes, each with high cohesion" />
+
+## Common mistakes
+
+| Statement                                         | True? | Why                                                                     |
+| ------------------------------------------------- | ----- | ----------------------------------------------------------------------- |
+| "All methods are about a report, so cohesion is high." | No    | Cohesion is about one goal and one reason to change, not one topic word. |
+| "Static methods lower the coupling."              | No    | The class still calls the same other classes.                           |
+| "No attributes means low coupling."               | No    | Parameters, `new` and method calls are also coupling.                   |
+| "An interface between two classes lowers coupling." | Yes   | The caller no longer knows the concrete class.                         |
+| "Moving a method to its data raises cohesion."    | Yes   | The method now sits with the data it uses.                              |
+
+## Practice questions
+
+<Questions topic="coupling-cohesion" />

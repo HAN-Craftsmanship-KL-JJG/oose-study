@@ -1,0 +1,177 @@
+export const metadata = { title: "Singleton and dependency injection" };
+
+# Singleton and dependency injection
+
+A Singleton makes sure that a class has only one object, and that every other class can reach it.
+It makes the classes that use it hard to test.
+The fix is dependency injection.
+
+## The Singleton pattern
+
+A Singleton has three parts:
+
+1. a private static field that holds the one object,
+2. a private constructor, so no other class can call `new`,
+3. a public static method `getInstance()` that creates the object the first time and then always returns it.
+
+"Static" means: it belongs to the class, not to one object.
+You call it on the class name: `Database.getInstance()`.
+In a class diagram, a static member is underlined.
+
+```plantuml
+class Database {
+  -{static} instance : Database
+  -Database()
+  +{static} getInstance() : Database
+  +getRate(bikeType : String) : double
+}
+```
+
+The `create` step happens only the first time.
+
+```plantuml
+participant ":PriceCalculator" as A
+participant ":Report" as B
+participant "Database" as D <<class>>
+A -> D : getInstance()
+note over D : instance == null,\nso create the object
+D --> A : the one Database object
+B -> D : getInstance()
+note over D : instance exists,\nreturn the same one
+D --> B : the same Database object
+```
+
+<Example name="singleton-di/singleton" title="A correct Singleton" />
+
+A common mistake is a `getInstance()` that is not static.
+A non-static method needs an object, but the constructor is private, so nobody can make the first object.
+
+## Why a Singleton makes testing hard
+
+A unit test tests one class on its own.
+It must be fast, and it must not need a real database or network.
+
+<Example name="singleton-di/client-before" title="PriceCalculator calls the Singleton directly" />
+
+```plantuml
+component "Unit test" as T
+component "PriceCalculator" as P
+database "Real database" as D
+T --> P : new PriceCalculator()
+P --> D : Database.getInstance()\n(hidden, fixed)
+T ..> D : cannot replace
+```
+
+- The dependency is hidden. The constructor does not show that `PriceCalculator` needs a database.
+- You cannot replace it. A test cannot give a fake database.
+- The state is shared. One test can change the result of another test.
+
+So a class that uses a Singleton is harder to unit-test.
+
+<Questions ids={["singleton-di-1f-testability"]} />
+
+## The fix: dependency injection
+
+Dependency injection (DI) means that a class gets its dependencies from outside, usually through the constructor.
+The class asks for an interface, not for a concrete class.
+The application passes the real implementation.
+A test passes a stub: a small fake class that returns a fixed value.
+
+<Compare>
+<Side kind="bad" title="Before: tied to the Singleton">
+
+```plantuml
+class PriceCalculator {
+  +price(ride : Ride) : double
+}
+class Database {
+  +{static} getInstance() : Database
+  +getRate(bikeType : String) : double
+}
+PriceCalculator ..> Database : getInstance()
+```
+
+</Side>
+<Side kind="good" title="After: depends on an interface">
+
+```plantuml
+class PriceCalculator {
+  -rateSource : RateSource
+  +PriceCalculator(rateSource : RateSource)
+  +price(ride : Ride) : double
+}
+interface RateSource <<interface>> {
+  +getRate(bikeType : String) : double
+}
+class DatabaseRateSource
+class FixedRateSource
+PriceCalculator --> RateSource
+DatabaseRateSource ..|> RateSource
+FixedRateSource ..|> RateSource
+```
+
+`FixedRateSource` is the stub for the test.
+
+</Side>
+</Compare>
+
+<Example name="singleton-di/client-after" title="PriceCalculator gets a RateSource through its constructor" />
+
+Notice who creates the `RateSource` and passes it in.
+
+<Compare>
+<Side kind="neutral" title="In the application">
+
+```plantuml
+participant "Start-up code" as App
+participant ":PriceCalculator" as P
+participant ":DatabaseRateSource" as DB
+App -> DB ** : new
+App -> P ** : new(DatabaseRateSource)
+App -> P : price(ride)
+P -> DB : getRate("e-bike")
+DB --> P : 0.25 (from database)
+```
+
+</Side>
+<Side kind="good" title="In the unit test">
+
+```plantuml
+participant "Test" as T
+participant ":PriceCalculator" as P
+participant ":FixedRateSource\n(stub)" as S
+T -> S ** : new(0.25)
+T -> P ** : new(stub)
+T -> P : price(ride of 30 minutes)
+P -> S : getRate("e-bike")
+S --> P : 0.25 (fixed)
+P --> T : 7.5
+```
+
+</Side>
+</Compare>
+
+<Example name="singleton-di/test" title="A unit test with a stub: no database needed" />
+
+A stub only returns fixed values.
+A mock also checks how it was called, for example that `getRate` was called once (in Java often with Mockito).
+This fix also follows [DIP](/solid): depend on the abstraction `RateSource`, not on `Database`.
+
+### Which change makes a class testable?
+
+```plantuml
+start
+if (Does the option let a test pass its own fake object?) then (yes)
+  :Good: dependency injection of an interface;
+else (no)
+  :Not helpful: a static method,
+  another Singleton or a try/catch;
+endif
+stop
+```
+
+<Questions ids={["singleton-di-q17-tariefbron"]} />
+
+## Practice questions
+
+<Questions topic="singleton-di" />

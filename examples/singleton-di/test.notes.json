@@ -1,0 +1,3 @@
+{
+  "powershell": "Pester is the standard test framework for PowerShell. 'using module' must be the first statement, so the classes RateSource and PriceCalculator are known when PowerShell reads the stub class."
+}

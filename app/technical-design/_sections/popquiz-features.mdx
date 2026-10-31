@@ -1,0 +1,373 @@
+## Practice: the PopQuiz features
+
+PopQuiz: a game leader makes a quiz by choosing questions from a question bank or adding new ones.
+The game leader chooses a scoring system and saves the quiz.
+Players sign in with their name and choose a quiz.
+When at least 2 players are there, the quiz starts and all players answer question by question.
+At the end, the total scores are shown and the winner is announced.
+The domain model has classes such as `Quiz`, `Question`, `MultipleChoice`, `OpenQuestion`, `Player` and `Answer`.
+
+### F1: more question types
+
+<Callout type="note" title="Feature F1">
+The number of question types must be extendable in the future.
+Besides the current MultipleChoice and OpenQuestion, there may come, for example:
+a SliderQuestion, where you give the answer with a slider;
+and a BonusQuestion, of which there is only 1 per quiz, and which decides the winner when the scores are equal.
+</Callout>
+
+<Reveal title="Hint 1">
+What varies? The kind of question.
+Each kind checks its answer in its own way.
+</Reveal>
+
+<Reveal title="Hint 2">
+Use an abstract class or an interface `Question`, with one subclass per question type.
+`Quiz` only talks to `Question` (polymorphism).
+</Reveal>
+
+<Reveal title="Hint 3">
+Do not forget the second requirement: only 1 BonusQuestion per quiz.
+How can multiplicity in the class diagram show that?
+</Reveal>
+
+<Reveal title="A possible answer">
+```plantuml
+    class Quiz {
+        +playQuestion(v: Question) void
+    }
+    abstract class Question {
+        -questionText: String
+        {abstract} +isCorrect(answer: Answer) boolean
+        {abstract} +getPoints() int
+    }
+    class MultipleChoice {
+        -options: List<String>
+        +isCorrect(answer: Answer) boolean
+        +getPoints() int
+    }
+    class OpenQuestion {
+        +isCorrect(answer: Answer) boolean
+        +getPoints() int
+    }
+    class SliderQuestion {
+        -min: int
+        -max: int
+        +isCorrect(answer: Answer) boolean
+        +getPoints() int
+    }
+    class BonusQuestion {
+        +isCorrect(answer: Answer) boolean
+        +getPoints() int
+    }
+    Quiz --> "*" Question : questions
+    Quiz --> "0..1" BonusQuestion : bonusQuestion
+    Question <|-- MultipleChoice
+    Question <|-- OpenQuestion
+    Question <|-- SliderQuestion
+    Question <|-- BonusQuestion
+    MultipleChoice -[hidden]down- SliderQuestion
+    OpenQuestion -[hidden]down- BonusQuestion
+```
+
+Motivation: the question type varies, so it sits behind the abstract class `Question` (Protected Variations).
+`Quiz` calls `isCorrect()` and `getPoints()` on every `Question` without knowing the type (polymorphism, low coupling).
+A new question type, such as `SliderQuestion`, is a new subclass and `Quiz` does not change (OCP).
+The association `bonusQuestion` with multiplicity `0..1` covers "only 1 BonusQuestion per quiz".
+I use an abstract class and not an interface, because all questions share the attribute `questionText`.
+
+Alternative: one class `Question` with an attribute `type` and a `switch` in `isCorrect()`.
+It is worse: every new type changes `Question` (breaks OCP), and `Question` must know all rules (low cohesion).
+</Reveal>
+
+<Checklist
+  id="technical-design-f1"
+  title="Check your F1 design"
+  items={[
+    "Fitting diagram type, correct syntax, and a sentence about why I chose it",
+    "Both requirements covered: new types are easy to add, and 1 BonusQuestion per quiz",
+    "Clear names and structure",
+    "At least 1 alternative and why it is worse",
+    "Parts of the design linked to the requirements",
+    "Techniques and principles named, such as polymorphism and OCP",
+  ]}
+/>
+
+### F2: external music sources
+
+<Callout type="note" title="Feature F2">
+YouTube and Spotify have an API.
+Both happen to return JSON, but the APIs differ in their calls and answers.
+It is not sure that the data format stays JSON.
+The sources must be used in one uniform way, so that other sources, such as SoundCloud, can be added.
+The SoundCloud API returns XML.
+Make sure that calling the API is separate from parsing the data format, so that different parsers can be combined with different sources.
+</Callout>
+
+<Reveal title="Hint 1">
+There are two things that vary, not one: the API and the data format.
+Each gets its own interface.
+</Reveal>
+
+<Reveal title="Hint 2">
+Different APIs, one uniform way: that is Adapter.
+For the format: an interface `Parser` with `JsonParser` and `XmlParser`.
+</Reveal>
+
+<Reveal title="Hint 3">
+"Combined" means: a source and a parser are put together at run time (composition), not in one class.
+</Reveal>
+
+<Reveal title="A possible answer">
+```plantuml
+    class MediaSource {
+        -api: SourceApi
+        -parser: Parser
+        +search(term: String) List<Fragment>
+    }
+    interface SourceApi {
+        +fetch(term: String) String
+    }
+    interface Parser {
+        +parse(data: String) List<Fragment>
+    }
+    class YouTubeAdapter {
+        +fetch(term: String) String
+    }
+    class SpotifyAdapter {
+        +fetch(term: String) String
+    }
+    class SoundCloudAdapter {
+        +fetch(term: String) String
+    }
+    class JsonParser {
+        +parse(data: String) List<Fragment>
+    }
+    class XmlParser {
+        +parse(data: String) List<Fragment>
+    }
+    MediaSource --> "1" SourceApi
+    MediaSource --> "1" Parser
+    SourceApi <|.. YouTubeAdapter
+    SourceApi <|.. SpotifyAdapter
+    SourceApi <|.. SoundCloudAdapter
+    Parser <|.. JsonParser
+    Parser <|.. XmlParser
+    YouTubeAdapter -[hidden]down- SpotifyAdapter
+    SpotifyAdapter -[hidden]down- SoundCloudAdapter
+    JsonParser -[hidden]down- XmlParser
+```
+
+Motivation: each API has its own calls, so each gets an Adapter behind the interface `SourceApi`.
+The quiz uses all sources in the same way (uniform), and SoundCloud is one new adapter (OCP).
+Parsing is a separate task behind the interface `Parser` (SRP, high cohesion).
+`MediaSource` combines one `SourceApi` with one `Parser` (composition), so every source works with every parser.
+If YouTube switches to XML, you only give it another parser.
+
+Alternative: one adapter per source that also parses, such as `YouTubeJsonAdapter`.
+It is worse: calling and parsing are in one class (low cohesion), and every combination of source and format needs a new class.
+</Reveal>
+
+<Checklist
+  id="technical-design-f2"
+  title="Check your F2 design"
+  items={[
+    "Fitting diagram type, correct syntax, and a sentence about why I chose it",
+    "All requirements covered: uniform access, new sources, calling separate from parsing, any parser with any source",
+    "Clear names and structure",
+    "At least 1 alternative and why it is worse",
+    "Parts of the design linked to the requirements",
+    "Patterns and principles named, such as Adapter, SRP and composition",
+  ]}
+/>
+
+### F3: points and the winner
+
+<Callout type="note" title="Feature F3">
+A right answer to a MultipleChoice question gives 1 point.
+A right answer to an OpenQuestion gives 2 points.
+Every question that uses an external source gives 3 extra points on top of the value of that question.
+When the scores are equal, the winner is the player who gave the fastest right answer to the bonus question.
+</Callout>
+
+<Reveal title="Hint 1">
+Who knows how many points a question is worth?
+Use Information Expert: the question itself.
+</Reveal>
+
+<Reveal title="Hint 2">
+The bonus for an external source comes on top of any question type.
+Extra work on top of an existing object: think of Decorator, or of an optional association to a source.
+</Reveal>
+
+<Reveal title="Hint 3">
+The winner is about collaboration between objects.
+That is a good reason to add a sequence diagram for `determineWinner()`.
+An `Answer` needs the time it was given.
+</Reveal>
+
+<Reveal title="A possible answer">
+```plantuml
+    class Quiz {
+        +determineWinner() Player
+    }
+    abstract class Question {
+        {abstract} +getPoints() int
+    }
+    class MultipleChoice {
+        +getPoints() int
+    }
+    class OpenQuestion {
+        +getPoints() int
+    }
+    class ExternalSourceQuestion {
+        -question: Question
+        +getPoints() int
+    }
+    class Player {
+        +getScore() int
+    }
+    class Answer {
+        -time: LocalDateTime
+        -correct: boolean
+    }
+    Quiz --> "*" Question
+    Quiz --> "*" Player
+    Player --> "*" Answer
+    Answer --> "1" Question
+    MultipleChoice --|> Question
+    OpenQuestion --|> Question
+    ExternalSourceQuestion --|> Question
+    ExternalSourceQuestion --> "1" Question : question
+```
+
+`MultipleChoice.getPoints()` returns 1 and `OpenQuestion.getPoints()` returns 2.
+`ExternalSourceQuestion` is a Decorator: `getPoints()` returns `question.getPoints() + 3`.
+
+```plantuml
+    participant "quiz : Quiz" as Q
+    participant "s : Player" as S
+    participant "a : Answer" as A
+    Q -> Q : winners = players with the highest getScore()
+    alt more than one winner
+        loop for each s in winners
+            Q -> S : a = getAnswer(bonusQuestion)
+            Q -> A : isCorrect(), getTime()
+        end
+        Q -> Q : winner = fastest right answer
+    end
+```
+
+Motivation: each question type knows its own points (Information Expert, polymorphism).
+The external-source bonus is a Decorator, so it works for every question type, now and later (OCP).
+`Answer` stores `time`, which covers "the fastest right answer".
+The sequence diagram shows how `Quiz` finds the winner, because that is about collaboration.
+
+Alternative: a class `ScoringSystem` with an `if` per question type and per source.
+It is worse: it must know all types (high coupling), and every new type changes it (breaks OCP).
+</Reveal>
+
+<Checklist
+  id="technical-design-f3"
+  title="Check your F3 design"
+  items={[
+    "Fitting diagram types (class diagram plus sequence diagram), correct syntax, and why I chose them",
+    "All requirements covered: 1 point, 2 points, +3 for an external source, tie-break with the bonus question",
+    "Clear names and structure",
+    "At least 1 alternative and why it is worse",
+    "Parts of the design linked to the requirements",
+    "Techniques and principles named, such as Information Expert, polymorphism, Decorator",
+  ]}
+/>
+
+### F4: another scoring system
+
+<Callout type="note" title="Feature F4">
+In the future it must be easy to add another scoring system.
+You may only change one method of the existing code; you may add new code.
+The new scoring system must exist next to the current one, so that the game leader can really choose.
+</Callout>
+
+<Reveal title="Hint 1">
+What varies? The scoring system: a calculation that the game leader chooses per quiz.
+</Reveal>
+
+<Reveal title="Hint 2">
+A calculation that you choose per object: Strategy.
+</Reveal>
+
+<Reveal title="Hint 3">
+"Only one method may change": somewhere, someone must create the right strategy.
+Put that in one factory method.
+That is the one method that changes when you add a scoring system.
+</Reveal>
+
+<Reveal title="A possible answer">
+```plantuml
+    class Quiz {
+        -scoringSystem: ScoringSystem
+        +setScoringSystem(p: ScoringSystem) void
+        +calculateScore(s: Player) int
+    }
+    interface ScoringSystem {
+        +calculate(answers: List<Answer>) int
+    }
+    class StandardScoring {
+        +calculate(answers: List<Answer>) int
+    }
+    class SpeedScoring {
+        +calculate(answers: List<Answer>) int
+    }
+    class ScoringSystemFactory {
+        +create(choice: String) ScoringSystem
+    }
+    Quiz o--> "1" ScoringSystem
+    ScoringSystem <|.. StandardScoring
+    ScoringSystem <|.. SpeedScoring
+    ScoringSystemFactory ..> ScoringSystem : creates
+```
+
+Motivation: the scoring system varies, so it is a Strategy behind the interface `ScoringSystem`.
+`Quiz` delegates the calculation and only knows the interface (low coupling, DIP).
+Both systems exist next to each other, and the game leader's choice is set on the quiz (requirement "can really choose").
+A new system is a new class plus one extra line in `ScoringSystemFactory.create()`.
+That is the only existing method that changes, as F4 demands (OCP, with one place of change).
+
+Alternative: Template Method, with a subclass of `Quiz` per scoring system.
+It is worse: the scoring is then fixed to the type of the quiz, and every quiz type times every scoring system needs a subclass.
+An `if` in `Quiz.calculateScore()` is worse too: it changes `Quiz` every time.
+</Reveal>
+
+<Checklist
+  id="technical-design-f4"
+  title="Check your F4 design"
+  items={[
+    "Fitting diagram type, correct syntax, and a sentence about why I chose it",
+    "All requirements covered: new system easy to add, only one existing method changes, both systems next to each other, the game leader chooses",
+    "Clear names and structure",
+    "At least 1 alternative and why it is worse",
+    "Parts of the design linked to the requirements",
+    "Patterns and principles named, such as Strategy, factory, OCP",
+  ]}
+/>
+
+### F5 again: on your own
+
+<Checklist
+  id="technical-design-f5"
+  title="Check your F5 design"
+  items={[
+    "Fitting diagram types, correct syntax, and a sentence about why I chose them",
+    "Text files now, and an easy switch to a database",
+    "Optional encryption of the answers",
+    "Encryption set in a configuration file",
+    "Clear names and structure",
+    "At least 1 alternative and why it is worse",
+    "Parts of the design linked to the requirements",
+    "Patterns and principles named, such as Adapter, Decorator, factory, DIP",
+  ]}
+/>
+
+## Practice questions
+
+<Questions topic="technical-design" />

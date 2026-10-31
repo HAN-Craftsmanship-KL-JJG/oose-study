@@ -1,0 +1,3 @@
+{
+  "powershell": "PowerShell has no private constructor. [Database]::new() still works from any code, so the class cannot force that there is only one object. The hidden static field and GetInstance() are the usual pattern anyway."
+}

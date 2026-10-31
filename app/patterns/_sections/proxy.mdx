@@ -1,0 +1,222 @@
+## Proxy
+
+Problem: you want to control the access to an object, without changing that object or its clients.
+Examples: an access check, encryption, caching, or loading a big object only when needed.
+
+Solution: a proxy implements the same interface as the real object and holds a reference to it.
+It does its extra work and then passes the call on.
+
+Example: a quiz app stores questions in a file or a database, and encryption is optional.
+`EncryptingQuestionStorage` implements the interface and also holds an object of that same interface.
+
+```plantuml
+class QuestionManager
+interface QuestionStorage <<interface>> {
+  +save(id : String, text : String) : void
+  +load(id : String) : String
+}
+class FlatFileQuestionStorage {
+  +save(id : String, text : String) : void
+  +load(id : String) : String
+}
+class EncryptingQuestionStorage {
+  +save(id : String, text : String) : void
+  +load(id : String) : String
+}
+QuestionManager --> QuestionStorage
+FlatFileQuestionStorage ..|> QuestionStorage
+EncryptingQuestionStorage ..|> QuestionStorage
+EncryptingQuestionStorage --> QuestionStorage : real
+```
+
+```plantuml
+participant ":QuestionManager" as V
+participant ":EncryptingQuestionStorage" as P
+participant ":FlatFileQuestionStorage" as F
+V -> P : save("q1", "What is OCP?")
+P -> P : encrypt(text)
+P -> F : save("q1", "V2hhdCBpcy...")
+```
+
+<Example name="patterns/proxy" title="The proxy encrypts and then passes the call to the real storage" />
+
+Recognise it: a class that implements an interface and also has an association to that same interface, with the same method names on both sides.
+
+## Decorator
+
+Problem: you want to add behaviour to an object and combine additions freely.
+With subclasses you would need a class for every combination, such as `OpenQuestionWithSourceBonusAndTimeBonus`.
+
+Solution: a decorator implements the same interface as the object and wraps it.
+It passes the call on and adds to the result.
+A decorator can wrap another decorator, like the layers of an onion.
+
+Example: each question type has its own points, and a question from an external source gets a bonus.
+
+```plantuml
+interface Question <<interface>> {
+  +points() : int
+}
+class OpenQuestion {
+  +points() : int
+}
+class MultipleChoiceQuestion {
+  +points() : int
+}
+class SourceBonus {
+  -question : Question
+  +points() : int
+}
+class TimeBonus {
+  -question : Question
+  +points() : int
+}
+OpenQuestion ..|> Question
+MultipleChoiceQuestion ..|> Question
+SourceBonus ..|> Question
+TimeBonus ..|> Question
+SourceBonus --> Question : wraps
+TimeBonus --> Question : wraps
+```
+
+Each layer adds something to the answer on the way back.
+
+```plantuml
+participant "Client" as C
+participant ":TimeBonus" as T
+participant ":SourceBonus" as B
+participant ":MultipleChoiceQuestion" as M
+C -> T : points()
+T -> B : points()
+B -> M : points()
+M --> B : 1
+B --> T : 1 + 2 = 3
+T --> C : 3 x 2 = 6
+```
+
+<Example name="patterns/decorator" title="Bonus decorators wrap a question and add to its points" />
+
+### Proxy or Decorator?
+
+In a class diagram they look the same.
+The difference is the goal.
+
+<Compare>
+<Side kind="neutral" title="Proxy: control access">
+
+It stands in for the real object.
+
+The result stays the same; the proxy checks, encrypts, caches or logs.
+
+Usually one proxy in front of one object.
+
+</Side>
+<Side kind="neutral" title="Decorator: add behaviour">
+
+It wraps an object and changes or adds to the result.
+
+You can stack many decorators in any order.
+
+</Side>
+</Compare>
+
+For optional encryption, both Proxy and Decorator fit.
+Whichever you choose, explain the choice in one sentence.
+
+## Facade
+
+Problem: a subsystem has many classes, and the client would need to call all of them in the right order.
+
+Solution: one facade class offers a few simple methods and coordinates inside.
+The client only knows the facade, so coupling is low.
+Think of a hotel reception desk.
+
+The class for the whole system, such as `Game`, is a good facade or [controller](/grasp) for the UI.
+
+```plantuml
+class UI
+class ZooDesk {
+  +bookVisit(visitorId, date, price) : boolean
+}
+class TicketService
+class PaymentService
+class TourService
+UI --> ZooDesk
+ZooDesk --> TicketService
+ZooDesk --> PaymentService
+ZooDesk --> TourService
+```
+
+```plantuml
+participant "UI" as U
+participant ":ZooDesk" as Z
+participant ":TicketService" as T
+participant ":PaymentService" as P
+participant ":TourService" as G
+U -> Z : bookVisit(visitor, date, price)
+Z -> T : isAvailable(date)
+Z -> P : pay(visitor, price)
+Z -> T : reserve(date)
+Z -> G : book(date, visitor)
+Z --> U : true
+```
+
+<Example name="patterns/facade" title="ZooDesk is one simple entry to three services" />
+
+Recognise it: one class between a client and several classes, with a few high-level methods.
+A facade does not implement an interface of the classes behind it.
+
+## Which pattern fits?
+
+```plantuml
+start
+if (Does an existing class have\nthe wrong interface?) then (yes)
+  :Adapter;
+  stop
+endif
+if (Same interface, extra work\nbefore or after the calls?) then (yes)
+  if (Why?) then (control access)
+    :Proxy;
+  else (add behaviour in layers)
+    :Decorator;
+  endif
+  stop
+endif
+if (Does a client need one simple\nentry to many classes?) then (yes)
+  :Facade;
+  stop
+endif
+if (Does an algorithm or rule\nhave variants?) then (yes)
+  if (How?) then (swap it as an object)
+    :Strategy;
+  else (fixed steps, subclasses\nfill in some)
+    :Template Method;
+  endif
+  stop
+endif
+if (Must the client get an object\nwithout knowing its class?) then (yes)
+  if (Who decides?) then (a subclass)
+    :Factory Method;
+  else (one class, often\nfrom a config file)
+    :Factory class;
+  endif
+endif
+stop
+```
+
+## Tell them apart
+
+| Pattern         | What it does                                       | Interface of the class behind it        | Mechanism      |
+| --------------- | -------------------------------------------------- | --------------------------------------- | -------------- |
+| Strategy        | Makes an algorithm swappable                       | Not applicable                          | Composition    |
+| Template Method | Fixes the order of steps; subclasses fill in steps | Not applicable                          | Inheritance    |
+| Factory Method  | Lets a subclass choose which object to create      | Not applicable                          | Inheritance    |
+| Factory class   | Chooses and creates the concrete class             | Returns the interface type              | Separate class |
+| Adapter         | Translates one interface to another                | Different from the interface you expect | Composition    |
+| Proxy           | Stands in front of an object and controls access   | The same as the real object             | Composition    |
+| Decorator       | Wraps an object and adds behaviour, in layers      | The same as the wrapped object          | Composition    |
+| Facade          | Gives one simple entry to a subsystem              | Simpler than the subsystem              | Composition    |
+
+## Practice questions
+
+<Questions topic="patterns" />

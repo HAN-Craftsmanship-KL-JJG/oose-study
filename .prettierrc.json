@@ -1,0 +1,6 @@
+{
+  "printWidth": 100,
+  "proseWrap": "preserve",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./app/globals.css"
+}

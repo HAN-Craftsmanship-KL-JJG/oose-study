@@ -1,0 +1,3 @@
+{
+  "powershell": "PowerShell has only public and hidden. 'hidden' hides a member from Get-Member and tab completion, but other code can still use it."
+}

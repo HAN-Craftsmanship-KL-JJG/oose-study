@@ -1,0 +1,363 @@
+## Common mistakes, before and after
+
+### 1. A requirement without a system operation
+
+<Compare>
+<Side kind="bad" title="Text: search by name or by strength">
+
+```plantuml
+    actor "Player" as S
+    participant ":WordGameManager" as M
+    S -> M : startGame(name, opponentName)
+```
+
+</Side>
+<Side kind="good" title="Each option is a system operation">
+
+```plantuml
+    actor "Player" as S
+    participant ":WordGameManager" as M
+    S -> M : findOpponentByName(name)
+    S -> M : findOpponentByStrength()
+```
+
+</Side>
+</Compare>
+
+### 2. A business rule without a place
+
+<Compare>
+<Side kind="bad" title="Text: at most five books">
+
+```plantuml
+    class Borrower {
+        +lendBook(bk: Book) void
+    }
+```
+
+No method or check counts the loans.
+
+</Side>
+<Side kind="good" title="The rule has a method">
+
+```plantuml
+    class Borrower {
+        +canBorrow() boolean
+        +lendBook(bk: Book) void
+    }
+    note right of Borrower : canBorrow: fewer than 5 loans
+```
+
+</Side>
+</Compare>
+
+### 3. A message that the DCD cannot support
+
+<Compare>
+<Side kind="bad" title="SD calls l.add(u), DCD has no arrow">
+
+```plantuml
+    left to right direction
+    class Borrower
+    class Loan
+    Loan "*" --> "1" Book
+```
+
+</Side>
+<Side kind="good" title="Method and association added">
+
+```plantuml
+    left to right direction
+    class Borrower {
+        +add(u: Loan) void
+    }
+    class Loan
+    Borrower "1" --> "*" Loan
+    Loan "*" --> "1" Book
+```
+
+</Side>
+</Compare>
+
+### 4. A call on the wrong activation bar
+
+<Compare>
+<Side kind="bad" title="remove is called by WordGame">
+
+```plantuml
+    participant ":WordGame" as G
+    participant ":Player" as HS
+    participant ":Stock" as V
+    G -> HS : playWord(word)
+    activate HS
+    deactivate HS
+    G -> V : remove(word)
+```
+
+</Side>
+<Side kind="good" title="remove is part of playWord">
+
+```plantuml
+    participant ":WordGame" as G
+    participant ":Player" as HS
+    participant ":Stock" as V
+    G -> HS : playWord(word)
+    activate HS
+    HS -> V : remove(word)
+    deactivate HS
+```
+
+</Side>
+</Compare>
+
+### 5. A message to an actor
+
+<Compare>
+<Side kind="bad" title="The game asks a person">
+
+```plantuml
+    participant ":WordGame" as G
+    actor "Player" as S
+    G -> S : p = getPoints()
+```
+
+</Side>
+<Side kind="good" title="The game asks an object">
+
+```plantuml
+    participant ":WordGame" as G
+    participant "player : Player" as S
+    G -> S : p = getPoints()
+```
+
+</Side>
+</Compare>
+
+### 6. The UI does the work
+
+<Compare>
+<Side kind="bad" title="UI coordinates and creates">
+
+```plantuml
+    participant ":LoanScreen" as UI
+    participant ":Library" as B
+    participant ":Borrower" as L
+    UI -> B : l = findBorrower(nr)
+    UI -> L : add(new Loan)
+```
+
+</Side>
+<Side kind="good" title="UI passes it to a controller">
+
+```plantuml
+    participant ":LoanScreen" as UI
+    participant ":Library" as B
+    UI -> B : lendBook(nr, isbn)
+    activate B
+    note right of B : the domain does the work
+    deactivate B
+```
+
+</Side>
+</Compare>
+
+### 7. A task at the wrong class
+
+<Compare>
+<Side kind="bad" title="Book checks the fines of a borrower">
+
+```plantuml
+    left to right direction
+    class Book {
+        +hasFine(l: Borrower) boolean
+    }
+```
+
+Book does not know the loans of a borrower.
+
+</Side>
+<Side kind="good" title="The expert does it">
+
+```plantuml
+    left to right direction
+    class Borrower {
+        +hasOpenFine() boolean
+    }
+    class Loan {
+        +fine() double
+    }
+    Borrower "1" --> "*" Loan
+```
+
+</Side>
+</Compare>
+
+### 8. A double association or a useless arrow
+
+<Compare>
+<Side kind="bad" title="Two lines, one arrow nobody needs">
+
+```plantuml
+    left to right direction
+    WordGame "1" --> "2" Player : players
+    Player "*" --> "1" WordGame : signedIn
+```
+
+</Side>
+<Side kind="good" title="One association, one direction">
+
+```plantuml
+    left to right direction
+    WordGame "1" --> "2" Player : players
+```
+
+</Side>
+</Compare>
+
+### 9. A missing attribute or a wrong type
+
+<Compare>
+<Side kind="bad" title="No return date, a word as letters">
+
+```plantuml
+    class Loan {
+        -loanDate: LocalDate
+    }
+    class WordGame {
+        +playWord(letters: char[]) void
+    }
+```
+
+</Side>
+<Side kind="good" title="Attribute from the domain model, a String">
+
+```plantuml
+    class Loan {
+        -loanDate: LocalDate
+        -dueDate: LocalDate
+    }
+    class WordGame {
+        +playWord(word: String) void
+    }
+```
+
+</Side>
+</Compare>
+
+### 10. One class with two jobs
+
+<Compare>
+<Side kind="bad" title="WordGame is controller and game">
+
+```plantuml
+    class WordGame {
+        +findOpponent(name: String) void
+        +playWord(word: String) void
+        +determineWinner() void
+    }
+```
+
+</Side>
+<Side kind="good" title="Split into manager and game">
+
+```plantuml
+    left to right direction
+    class WordGameManager {
+        +findOpponent(name: String) void
+    }
+    class WordGame {
+        +playWord(word: String) void
+        +determineWinner() void
+    }
+    WordGameManager "1" --> "*" WordGame
+```
+
+</Side>
+</Compare>
+
+## How to write down a problem
+
+1. Circle the problem in the diagram and write an id next to it: P1, P2, P3.
+2. Write the id and the place: which diagram, which message or class.
+3. Write the problem and the reason: which requirement or rule does the design break?
+4. Write or draw the fix.
+   Draw only the part that changes, with clear method names.
+5. Name an alternative, and say in one sentence why your fix is better.
+
+```plantuml
+    participant ":LoanScreen" as UI
+    participant "b : Library" as B
+    participant "bk : Book" as BK
+    UI -> B : l = findBorrower(cardNumber)
+    UI -> B : bk = findBook(isbn)
+    group P3
+        UI -> BK : fine = hasFine(l)
+    end
+```
+
+One full answer:
+
+> P3 – SD lendBook, the message `hasFine(l)` to Book.
+> Problem: the text says the system checks that the borrower has no open fine.
+> The design gives this check to Book, but Book does not know the loans of a borrower.
+> This breaks GRASP Information Expert.
+> Fix: `b` asks `l.hasOpenFine()`.
+> Borrower asks `fine()` of each of its loans and adds them up.
+> (Draw this part of the SD.)
+> Alternative: Library searches all loans of the borrower.
+> Worse, because Library then needs the data of Borrower and Loan, so its coupling goes up.
+
+## Practice case A: Buy tickets (zoo)
+
+1. A visitor chooses ticket types (adult, child, senior) by code and a quantity.
+2. The system makes a ticket order with ticket lines.
+3. A ticket order has at most 10 lines.
+4. The system calculates the total of the ticket order.
+5. Then the visitor pays with iDEAL.
+
+The domain model has the classes Zoo, Visitor, TicketOrder, TicketLine and TicketType.
+A TicketOrder consists of TicketLines, and each TicketLine is about one TicketType.
+
+```plantuml
+    actor "Visitor" as K
+    participant ":TicketScreen" as UI
+    participant ":Zoo" as W
+    participant "b : TicketOrder" as B
+    participant "p : TicketType" as P
+    K -> UI : add(code, quantity)
+    activate UI
+    UI -> W : p = findTicketType(code)
+    create participant "r : TicketLine" as R
+    UI -> R : create(p, quantity)
+    UI -> B : addLine(r)
+    deactivate UI
+    K -> UI : checkout()
+    activate UI
+    UI -> P : total = calculateTotal(b)
+    UI -> K : pay(total)
+    deactivate UI
+```
+
+```plantuml
+    left to right direction
+    class TicketScreen
+    class Zoo {
+        +findTicketType(code: String) TicketType
+    }
+    class TicketOrder {
+        +addLine(r: TicketLine) void
+    }
+    class TicketLine {
+        -quantity: int
+    }
+    class TicketType {
+        -code: String
+        -price: double
+        +calculateTotal(b: TicketOrder) double
+    }
+    TicketScreen --> Zoo
+    TicketScreen --> TicketOrder
+    TicketLine "*" --> "1" TicketType
+```
+
+<Questions ids={["check-design-webshop"]} />

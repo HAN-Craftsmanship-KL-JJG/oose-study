@@ -1,0 +1,3 @@
+{
+  "powershell": "A PowerShell class can have only one base class, and PowerShell cannot declare interfaces. So a class like Duck, which is an Animal, a Flyer and a Swimmer, is not possible here. In Java it is: a class can implement many interfaces."
+}

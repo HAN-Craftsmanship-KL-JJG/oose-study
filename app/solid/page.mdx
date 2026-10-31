@@ -1,0 +1,324 @@
+export const metadata = { title: "SOLID" };
+
+# SOLID
+
+## The five principles at a glance
+
+| Letter | Principle                       | In one sentence                                                                    | Sign that it is broken                         |
+| ------ | ------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------- |
+| S      | Single Responsibility Principle | A class has only one reason to change.                                             | One class does several unrelated tasks.        |
+| O      | Open/Closed Principle           | Open for extension, closed for modification: you add a class, you change no code.  | Every new variant adds a `case` to a `switch`. |
+| L      | Liskov Substitution Principle   | Code that uses a base class works with every subclass, without checking its type.  | A subclass throws an error for a method.       |
+| I      | Interface Segregation Principle | No client depends on methods it does not use; keep interfaces small.               | A class must implement methods it cannot do.   |
+| D      | Dependency Inversion Principle  | High-level and low-level classes both depend on an abstraction of the high level.  | Domain code calls a library class directly.    |
+
+```plantuml
+start
+:Look at the change in the design;
+if (A new variant is a new class,\nwith no change to existing code?) then (yes)
+  :OCP;
+  stop
+endif
+if (A class now depends on an interface\nin the domain, not a library class?) then (yes)
+  :DIP;
+  stop
+endif
+if (A class with several tasks is split\ninto classes with one task?) then (yes)
+  :SRP;
+  stop
+endif
+if (A subclass fails where\nits base class works?) then (yes)
+  :LSP;
+  stop
+endif
+if (A big interface is split\ninto small ones?) then (yes)
+  :ISP;
+endif
+stop
+```
+
+## S: Single Responsibility Principle
+
+A "reason to change" is a person, a rule or a technology that can ask for a change: the price rules, the PDF layout, the email server.
+One responsibility means high cohesion.
+
+<Compare>
+<Side kind="bad" title="Before: one class, three reasons to change">
+
+```plantuml
+class Ticket {
+  +calculatePrice() : double
+  +makePdf() : byte[]
+  +sendByEmail(address : String)
+}
+```
+
+A change in the PDF layout or in the email server changes `Ticket`.
+
+</Side>
+<Side kind="good" title="After: one reason to change per class">
+
+```plantuml
+class Ticket {
+  +calculatePrice() : double
+}
+class TicketPdfMaker {
+  +makePdf(t : Ticket) : byte[]
+}
+class TicketMailer {
+  +send(t : Ticket, address : String)
+}
+TicketPdfMaker ..> Ticket
+TicketMailer ..> Ticket
+```
+
+Each class has one task.
+
+</Side>
+</Compare>
+
+<Example name="solid/srp-before" title="Before: three reasons to change in one class" />
+
+<Example name="solid/srp-after" title="After: one reason to change per class" />
+
+Another example with `Report` is on [Coupling and cohesion](/coupling-cohesion).
+
+## O: Open/Closed Principle
+
+You add new behaviour by writing a new class, not by changing tested code.
+The usual way: an interface with one class per variant, and polymorphism.
+Example: a webshop till.
+
+<Compare>
+<Side kind="bad" title="Before: a switch inside CashRegister">
+
+```plantuml
+start
+:CashRegister.amountDue();
+switch (promotion?)
+case (TEN_PERCENT)
+  :10% off;
+case (FIVE_EURO)
+  :5 euro off;
+case (new promotion)
+  :add a new case here;
+endswitch
+stop
+```
+
+For every new promotion you open `CashRegister` and add a `case`.
+
+</Side>
+<Side kind="good" title="After: one class per promotion">
+
+```plantuml
+class CashRegister {
+  -rules : List<DiscountRule>
+  +amountDue(o : Order) : double
+}
+interface DiscountRule {
+  +discount(o : Order) : double
+}
+class TenPercent
+class FiveEuro
+class ThreeForTwo
+CashRegister --> "*" DiscountRule
+TenPercent ..|> DiscountRule
+FiveEuro ..|> DiscountRule
+ThreeForTwo ..|> DiscountRule
+```
+
+The new promotion is a new class.
+`CashRegister` does not change.
+
+</Side>
+</Compare>
+
+<Example name="solid/ocp-before" title="Before: a switch in CashRegister, so every promotion changes CashRegister" />
+
+<Example name="solid/ocp-after" title="After: a new promotion is a new class that implements DiscountRule" />
+
+This is the [Strategy pattern](/patterns): each `DiscountRule` is a strategy, `CashRegister` is the context.
+So Strategy follows OCP.
+
+<Questions ids={["solid-1e-strategy", "solid-q15-kortingsregel"]} />
+
+## L: Liskov Substitution Principle
+
+Code that works with a base class must work with every subclass, without checking its type.
+A subclass breaks LSP when it throws an error for, or does less than, a method the base class promises.
+
+<Compare>
+<Side kind="bad" title="Before: Penguin cannot keep the promise">
+
+```plantuml
+class Bird {
+  +fly()
+}
+class Parrot {
+  +fly()
+}
+class Penguin {
+  +fly() throws error
+}
+Bird <|-- Parrot
+Bird <|-- Penguin
+```
+
+A loop over all `Bird` objects crashes on the `Penguin`.
+
+</Side>
+<Side kind="good" title="After: only flying birds promise to fly">
+
+```plantuml
+class Bird {
+  +eat()
+}
+class FlyingBird {
+  +fly()
+}
+class Parrot
+class Penguin {
+  +swim()
+}
+Bird <|-- FlyingBird
+FlyingBird <|-- Parrot
+Bird <|-- Penguin
+```
+
+Every `FlyingBird` can really fly.
+
+</Side>
+</Compare>
+
+<Example name="solid/lsp-before" title="Before: Penguin is a Bird but cannot keep the promise fly()" />
+
+<Example name="solid/lsp-after" title="After: only classes that can fly have fly()" />
+
+## I: Interface Segregation Principle
+
+No client (a class that uses an interface) should depend on methods it does not use.
+Split a big interface into small ones.
+
+<Compare>
+<Side kind="bad" title="Before: one big interface">
+
+```plantuml
+interface Animal {
+  +eat()
+  +fly()
+  +swim()
+}
+class Lion {
+  +eat()
+  +fly() throws error
+  +swim() throws error
+}
+Animal <|.. Lion
+```
+
+`Lion` must offer `fly` and `swim`, but it cannot do them.
+
+</Side>
+<Side kind="good" title="After: small interfaces">
+
+```plantuml
+interface Animal {
+  +eat()
+}
+interface Flyer {
+  +fly()
+}
+interface Swimmer {
+  +swim()
+}
+class Lion
+class Duck
+Animal <|.. Lion
+Animal <|.. Duck
+Flyer <|.. Duck
+Swimmer <|.. Duck
+```
+
+Each class implements only what it can do.
+
+</Side>
+</Compare>
+
+<Example name="solid/isp-before" title="Before: Lion must offer fly and swim" />
+
+<Example name="solid/isp-after" title="After: small interfaces" />
+
+## D: Dependency Inversion Principle
+
+High-level classes (domain logic, such as `CashRegister`) and low-level classes (details, such as a payment library) both depend on an interface.
+The interface belongs to the high level: it sits in the domain layer, not next to the library.
+The direction of the dependency turns around.
+
+<Compare>
+<Side kind="bad" title="Before: the domain depends on the library">
+
+```plantuml
+package "domain layer" {
+  class CashRegister
+}
+package "external library" {
+  class MollieClient
+}
+CashRegister --> MollieClient : uses
+```
+
+A new payment provider means a change in `CashRegister`.
+
+</Side>
+<Side kind="good" title="After: both depend on the interface">
+
+```plantuml
+package "domain layer" {
+  class CashRegister
+  interface PaymentProvider
+}
+package "payment layer" {
+  class MolliePaymentProvider
+  class MollieClient
+}
+CashRegister --> PaymentProvider : uses
+PaymentProvider <|.. MolliePaymentProvider
+MolliePaymentProvider --> MollieClient : uses
+```
+
+The arrow now points up to the domain.
+
+</Side>
+</Compare>
+
+```plantuml
+class CashRegister {
+  +checkout(amount : double) : boolean
+}
+interface PaymentProvider {
+  +pay(amount : double) : boolean
+}
+class MolliePaymentProvider {
+  +pay(amount : double) : boolean
+}
+class MollieClient {
+  +createPayment(amountInCents : int) : PaymentResponse
+}
+CashRegister --> PaymentProvider
+PaymentProvider <|.. MolliePaymentProvider
+MolliePaymentProvider --> MollieClient
+```
+
+<Example name="solid/dip-before" title="Before: CashRegister depends on the detail MollieClient" />
+
+<Example name="solid/dip-after" title="After: both sides depend on PaymentProvider" />
+
+`MolliePaymentProvider` is also an Adapter: it translates `pay(double)` to `createPayment(int)`.
+OCP follows from it, but turning the dependency around is DIP.
+
+<Questions ids={["solid-q16-betaalprovider"]} />
+
+## Practice questions
+
+<Questions topic="solid" />

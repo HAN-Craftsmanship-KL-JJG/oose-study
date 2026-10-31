@@ -1,0 +1,51 @@
+## Practice case B: End ride (TrapNu)
+
+1. The user puts the bike back on its lock.
+2. The system stores the end time of the ride.
+3. The system calculates the price with the tariff of the ride.
+4. The price is taken from the credit of the user.
+
+Domain model: a User makes Rides, a Ride is made with one Bike, and a Ride has a startTime and an endTime.
+
+```plantuml
+    actor "User" as G
+    participant ":BikeLock" as S
+    participant "r : Ride" as R
+    participant "f : Bike" as F
+    participant "g : User" as GB
+    G -> S : close()
+    activate S
+    S -> R : end()
+    activate R
+    R -> F : price = calculatePrice(r)
+    R -> GB : deduct(price)
+    deactivate R
+    deactivate S
+```
+
+```plantuml
+    left to right direction
+    class Ride {
+        -startTime: LocalDateTime
+        +end() void
+    }
+    class Bike {
+        -bikeNumber: int
+        +calculatePrice(r: Ride) double
+    }
+    class User {
+        -name: String
+        -credit: double
+    }
+    interface RateStrategy {
+        +calculate(r: Ride) double
+    }
+    Ride "*" --> "1" Bike
+    Ride --> RateStrategy
+```
+
+<Questions ids={["check-design-trapnu"]} />
+
+## Practice questions
+
+<Questions topic="check-design" />

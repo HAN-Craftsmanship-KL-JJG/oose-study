@@ -1,0 +1,3 @@
+{
+  "powershell": "The parameter type is [object] because Animal is declared after FeedingObserver. PowerShell has no interfaces of its own, so FeedingObserver is a base class whose method throws."
+}

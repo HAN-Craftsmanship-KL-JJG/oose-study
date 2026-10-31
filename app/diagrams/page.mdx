@@ -1,0 +1,342 @@
+export const metadata = { title: "Choosing a diagram" };
+
+# Choosing and reading UML diagrams
+
+UML (Unified Modeling Language) is a standard way to draw software designs.
+Every UML diagram answers a different question.
+
+Key phrases:
+"Collaboration between objects" means a sequence diagram.
+"The system as a black box" means a system sequence diagram.
+"Classes with methods and types" means a design class diagram.
+"Concepts of the real world" means a domain model.
+
+## Which diagram do I need?
+
+```plantuml
+start
+if (Do you show the real world,\nnot the software?) then (yes)
+  :Domain model;
+  stop
+endif
+if (Do you show the order\nof messages in time?) then (yes)
+  if (Is the system one black box?) then (yes)
+    :System sequence diagram (SSD);
+  else (no, objects inside)
+    :Sequence diagram (SD);
+  endif
+  stop
+endif
+if (Do you show single classes\nwith methods and types?) then (yes)
+  :Design class diagram (DCD);
+  stop
+endif
+:Component diagram\n(large parts);
+stop
+```
+
+| Diagram                       | Question it answers                                                         | Phase    |
+| ----------------------------- | --------------------------------------------------------------------------- | -------- |
+| Domain model                  | Which concepts exist in the real world, and how do they relate?             | Analysis |
+| System sequence diagram (SSD) | Which system operations does an actor call in one use case?                 | Analysis |
+| Sequence diagram (SD)         | How do objects inside the system work together?                             | Design   |
+| Design class diagram (DCD)    | Which classes, attributes, methods and types does the code have?            | Design   |
+| Component diagram             | Which parts make up the system, and through which interfaces do they talk?  | Design   |
+
+Analysis diagrams describe the problem.
+Design diagrams describe the software solution.
+
+<Questions ids={["diagrams-1k-samenwerking"]} />
+
+## Domain model
+
+A domain model shows the concepts (conceptual classes) of the real world, such as Keeper, Animal or Enclosure, and the associations between them.
+It is a picture of the business, not of the code.
+
+```plantuml
+hide circle
+hide empty methods
+left to right direction
+class Keeper {
+  staffNumber
+  name
+}
+class Animal {
+  name
+  dateOfBirth
+}
+class Enclosure {
+  number
+  climate
+}
+class Penguin {
+  ringNumber
+}
+Keeper "1" -- "*" Animal : cares for >
+Animal "*" -- "1" Enclosure : lives in >
+Animal <|-- Penguin
+```
+
+Read an association in the direction of the small filled triangle (▶): "a Keeper cares for Animals".
+Read a multiplicity at the far end: one Keeper cares for many (`*`) Animals, and one Animal lives in exactly one (`1`) Enclosure.
+
+| Symbol                         | Meaning                                                                 |
+| ------------------------------ | ----------------------------------------------------------------------- |
+| Box with a name                | A concept (conceptual class) from the real world                         |
+| `name` in the box              | An attribute: a simple fact. No data type in a domain model              |
+| <UmlSymbol kind="line" /> | An association: the two concepts are related                             |
+| `cares for ▶` on the line      | The name of the association, with its reading direction                  |
+| `1`                            | Exactly one                                                              |
+| `0..1`                         | Zero or one (optional)                                                   |
+| `*` or `0..*`                  | Zero or more                                                             |
+| `1..*`                         | One or more                                                              |
+| <UmlSymbol kind="generalization" /> | Generalization: Penguin is a kind of Animal                              |
+
+A domain model has:
+
+- no methods (operations),
+- no data types such as `String` or `int`,
+- no navigability arrows (an open arrow at the end of a line),
+- no visibility symbols such as `+` or `-`,
+- no software classes such as `Database`, `UI`, `Controller` or `AnimalList`.
+
+<Compare>
+<Side kind="bad" title="Not a domain model">
+
+```plantuml
+class Animal {
+  -chipNumber : int
+  +feed(food : Food) : void
+}
+class Database
+Animal --> Database
+```
+
+Types, a method, visibility, navigability and a software class.
+
+</Side>
+<Side kind="good" title="A domain model">
+
+```plantuml
+hide circle
+hide empty methods
+class Animal {
+  chipNumber
+  name
+}
+class Enclosure {
+  number
+}
+Animal "*" -- "1" Enclosure : lives in >
+```
+
+</Side>
+</Compare>
+
+<Questions ids={["diagrams-domain-errors"]} />
+
+## System sequence diagram (SSD)
+
+An SSD shows one scenario (one path, for example the one where everything goes well) of one use case.
+The system is one black box: you see no classes inside it.
+The messages are the system operations: what the actor asks the system to do.
+
+```plantuml
+actor Cashier
+participant ":System" as S
+Cashier -> S : startSale()
+loop for each ticket
+  Cashier -> S : addTicket(ticketType, quantity)
+  S --> Cashier : subtotal
+end
+Cashier -> S : pay(amount)
+S --> Cashier : change
+note over Cashier, S : Each solid arrow is one system operation
+```
+
+| Symbol                              | Meaning                                                              |
+| ----------------------------------- | -------------------------------------------------------------------- |
+| <UmlSymbol kind="actor" /> | The actor: a person or other system outside the system               |
+| <UmlSymbol kind="participant" label=":System" /> | The whole system as one black box, with its lifeline                 |
+| <UmlSymbol kind="message" /> | A system operation, such as `addTicket(ticketType, quantity)`, with its parameters |
+| <UmlSymbol kind="return" /> | A return value: what the system gives back                           |
+| <UmlSymbol kind="frame" label="loop" /> | The messages inside repeat                                           |
+
+Each system operation in an SSD later gets a Controller that receives it, and a sequence diagram that shows how it works inside.
+
+## Sequence diagram (SD)
+
+A sequence diagram shows how objects inside the system work together to carry out one system operation.
+Time goes from top to bottom.
+
+```plantuml
+actor Keeper
+participant ":FeedingScreen" as UI
+participant "z : Zoo" as Z
+participant "a : Animal" as A
+participant "f : Feeding" as F
+Keeper -> UI : click Feed
+activate UI
+UI -> Z : feed(animalId, food)
+activate Z
+Z -> Z : a = findAnimal(animalId)
+Z -> A : ok = isHungry()
+activate A
+A --> Z : ok
+deactivate A
+alt ok
+  Z -> F ** : create(a, food, now)
+  Z -> A : add(f)
+else else
+  Z --> UI : error message
+end
+deactivate Z
+deactivate UI
+```
+
+| Symbol                                  | Meaning                                                                                 |
+| --------------------------------------- | --------------------------------------------------------------------------------------- |
+| `a : Animal`                            | A lifeline: the object `a` of class `Animal`. `:Animal` means an object without a name   |
+| <UmlSymbol kind="lifeline" /> | The life of the object in time                                                          |
+| <UmlSymbol kind="activation" /> | Activation bar: the object is busy with this method. Calls start from the bar of the caller |
+| <UmlSymbol kind="message" /> | A synchronous message: a method call. The caller waits for the answer                   |
+| `ok = isHungry()`                       | A message with its return value. You can then leave out the return arrow                 |
+| <UmlSymbol kind="return" /> | A return. It is optional when the assignment already shows the value                    |
+| <UmlSymbol kind="self" /> | A self-call: the object calls its own method                                            |
+| `create(...)` to a lifeline             | A create message: the object is made at this moment, so its box starts at the arrow      |
+| <UmlSymbol kind="frame" label="alt" /> | Alternatives: only one part runs, chosen by the guard (the condition in brackets)        |
+| <UmlSymbol kind="frame" label="opt" /> | An optional part: it runs only when the guard is true                                   |
+| <UmlSymbol kind="frame" label="loop" /> | The part repeats, for example `[for each ticket]`                                       |
+
+### From SD to DCD
+
+Every message in a sequence diagram must be a method in the design class diagram, on the class of the receiver.
+The sender must be able to reach the receiver: through an association, a parameter, a local variable, or because it just created it.
+
+| Message in the SD                     | What the DCD must have                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| `Z -> A : ok = isHungry()`            | `Animal` has `+isHungry() : boolean`, and Zoo can reach an Animal        |
+| `Z -> A : add(f)`                     | `Animal` has `+add(f : Feeding)`, and `Animal` has an association to `Feeding` to store it |
+| `Z -> F : create(a, food, now)`       | `Feeding` has a constructor with these parameters                        |
+
+A common error: an SD calls a method that the DCD does not have, or two classes talk without an association in the DCD.
+
+<Questions ids={["diagrams-sd-errors", "diagrams-sd-symbols"]} />
+
+## Design class diagram (DCD)
+
+A design class diagram shows the classes of the software.
+You can write the Java classes from it.
+
+```plantuml
+interface PaymentMethod <<interface>> {
+  +pay(amount : double) : boolean
+}
+class CardPayment {
+  +pay(amount : double) : boolean
+}
+abstract class Animal <<abstract>> {
+  #name : String
+  +getName() : String
+  +{abstract} makeSound() : String
+}
+class Penguin {
+  -canSwim : boolean
+  +makeSound() : String
+}
+class TicketDesk {
+  -ticketsSold : int
+  +sell(visit : Visit) : void
+  ~log(text : String) : void
+}
+class Visit {
+  +getTotal() : double
+}
+class Ticket {
+  -price : double
+}
+TicketDesk --> "1" PaymentMethod : method
+CardPayment ..|> PaymentMethod
+Penguin --|> Animal
+Visit "1" *-- "1..*" Ticket : tickets
+TicketDesk ..> Visit : uses
+```
+
+| Symbol                                  | Meaning                                                                             |
+| --------------------------------------- | ----------------------------------------------------------------------------------- |
+| `+`                                     | public                                                                              |
+| `-`                                     | private                                                                             |
+| `#`                                     | protected                                                                           |
+| `~`                                     | package (no modifier in Java)                                                       |
+| `ticketsSold : int`                     | An attribute with its type                                                          |
+| `pay(amount: double) : boolean`      | A method with a parameter and its type, and the return type at the end               |
+| `«interface»` above the name            | An interface                                                                        |
+| `«abstract»` or a name in italics       | An abstract class. An abstract method such as `makeSound()` is also in italics      |
+| <UmlSymbol kind="association" /> | A navigable association: TicketDesk knows a PaymentMethod (a field). The arrow shows who can call whom |
+| `method` at the end of a line           | The role name: the name of the field                                                |
+| `1`, `*`, `1..*` at the end of a line   | The multiplicity: how many objects the field holds. `*` means a list                |
+| <UmlSymbol kind="realization" /> | Realization: `CardPayment implements PaymentMethod`                                 |
+| <UmlSymbol kind="generalization" /> | Generalization: `Penguin extends Animal`                                            |
+| <UmlSymbol kind="dependency" /> | Dependency: TicketDesk uses Visit only for a moment, as a parameter or local variable |
+| <UmlSymbol kind="aggregation" /> | Aggregation: the whole has parts, but the parts can live without it                |
+| <UmlSymbol kind="composition" /> | Composition: the whole owns its parts, and creates them                             |
+
+<Compare>
+<Side kind="neutral" title="Domain model">
+
+- Concepts of the real world
+- Attributes without types
+- No methods
+- Plain lines with names
+- No visibility
+
+</Side>
+<Side kind="neutral" title="Design class diagram">
+
+- Software classes, also interfaces and controllers
+- Attributes with types
+- Methods with parameters and return types
+- Navigability arrows and role names
+- Visibility `+ - # ~`
+
+</Side>
+</Compare>
+
+<Questions ids={["diagrams-dcd-symbols", "diagrams-dcd-errors"]} />
+
+## Component diagram
+
+A component diagram shows the architecture: the large, replaceable parts of a system (UI, domain logic, storage) and the interfaces between them.
+
+```plantuml
+component Domain
+component Storage
+interface AnimalRepository
+Domain -( AnimalRepository
+AnimalRepository - Storage
+```
+
+| Symbol                              | Meaning                                                                          |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| <UmlSymbol kind="component" /> | A component: a replaceable part of the system                                    |
+| <UmlSymbol kind="provided" /> | A provided interface: the component offers this interface                        |
+| <UmlSymbol kind="required" /> | A required interface: the component needs this interface from another component  |
+| <UmlSymbol kind="assembly" /> | The two components are connected through that interface                          |
+
+The whole zoo app, with the database behind the storage component:
+
+```plantuml
+component UI
+component Domain
+component Storage
+interface AnimalRepository
+database Database
+UI --> Domain : uses
+Domain ..> AnimalRepository : requires
+Storage - AnimalRepository
+Storage --> Database
+```
+
+## Practice questions
+
+<Questions topic="diagrams" />

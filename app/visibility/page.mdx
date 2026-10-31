@@ -1,0 +1,169 @@
+export const metadata = { title: "Visibility and class diagrams" };
+
+# Visibility and class diagrams
+
+## Access modifiers in Java
+
+Visibility says which other code may use a class, an attribute or a method.
+"No modifier" is a level of its own: package-private.
+A package is a folder of classes with the same `package` line, such as `com.spotify.model`.
+
+| Modifier                      | UML | Same class | Same package | Subclass in other package | Everywhere |
+| ----------------------------- | --- | ---------- | ------------ | ------------------------- | ---------- |
+| `public`                      | `+` | yes        | yes          | yes                       | yes        |
+| `protected`                   | `#` | yes        | yes          | yes                       | no         |
+| no modifier (package-private) | `~` | yes        | yes          | no                        | no         |
+| `private`                     | `-` | yes        | no           | no                        | no         |
+
+```plantuml
+package "public: everywhere" <<Rectangle>> {
+  package "protected: + subclasses in other packages" <<Rectangle>> {
+    package "no modifier: same package" <<Rectangle>> {
+      package "private: only the class itself" <<Rectangle>> {
+        class Keeper
+      }
+    }
+  }
+}
+```
+
+```plantuml
+package "nl.han.library.domain" {
+  class Borrower <<no modifier>>
+  class Library
+}
+package "nl.han.library.ui" {
+  class LoanScreen
+}
+Library --> Borrower : can use
+LoanScreen ..> Borrower : cannot see\n(compile error)
+```
+
+A top-level class can only be `public` or have no modifier.
+`private` and `protected` do not compile there.
+For a class that is visible only inside its package, write no modifier at all.
+
+## Package-private in Java and PowerShell
+
+PowerShell has no packages.
+Its closest match is a module that exports only some of its functions.
+
+<Example name="visibility/package-private" title="Something that only its own package or module can use" />
+
+## Member visibility
+
+```plantuml
+class Keeper {
+  +name : String
+  #badgeNumber : int
+  ~age : int
+  -pinCode : int
+  +feed() : void
+  -checkBadge() : void
+}
+```
+
+<Example name="visibility/members" title="Visibility levels on attributes and methods" />
+
+## From class diagram to code
+
+| Line in UML                            | Meaning                                    | Java code                                                                 |
+| -------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
+| <UmlSymbol kind="association" from="A" to="B" /> | Association: A knows B                     | A field of type B in A, often set through the constructor                 |
+| <UmlSymbol kind="aggregation" from="A" to="B" /> | Aggregation: A has B, B can live without A | A field of type B; B comes from outside                                   |
+| <UmlSymbol kind="composition" from="A" to="B" /> | Composition: A owns B                      | A field of type B that A creates itself                                   |
+| <UmlSymbol kind="realization" from="B" to="I" /> | Realization                                | `class B implements I`                                                    |
+| <UmlSymbol kind="generalization" from="B" to="A" /> | Generalization (inheritance)               | `class B extends A`                                                       |
+| <UmlSymbol kind="dependency" from="A" to="B" /> | Dependency: A uses B for a moment          | B is a parameter, a local variable, or created with `new` inside a method |
+
+```plantuml
+left to right direction
+A1 --> B1 : association
+A2 o-- B2 : aggregation
+A3 *-- B3 : composition
+interface I4
+I4 <|.. B4 : implements
+A5 <|-- B5 : extends
+A6 ..> B6 : dependency
+```
+
+The diamond and the triangle sit at the left class: `A2` is the whole, `A5` the superclass.
+
+```plantuml
+start
+if (A triangle?) then (yes)
+  if (solid?) then (yes)
+    :class B extends A;
+  else (dashed)
+    :class B implements I;
+  endif
+  stop
+endif
+if (A diamond?) then (yes)
+  if (filled?) then (yes)
+    :field, A creates B itself;
+  else (open)
+    :field, B comes from outside;
+  endif
+  stop
+endif
+:An arrow;
+if (solid?) then (yes)
+  :private field of type B,\nset in the constructor;
+else (dashed)
+  :B only as parameter, local\nvariable or new in a method;
+endif
+stop
+```
+
+Which code fits this association from `CashRegister` to `PaymentMethod`?
+
+```plantuml
+interface PaymentMethod {
+  +pay(amount : double) : void
+}
+class CashRegister
+class IDeal {
+  +pay(amount : double) : void
+}
+class CreditCard {
+  +pay(amount : double) : void
+}
+CashRegister --> PaymentMethod
+PaymentMethod <|.. IDeal
+PaymentMethod <|.. CreditCard
+```
+
+<Example
+  name="visibility/cash-register-association"
+  title="The association CashRegister → PaymentMethod in code: a field of the interface type, set through the constructor"
+/>
+
+Common mistakes:
+`class CashRegister implements PaymentMethod` is a dashed line with a triangle.
+`class CashRegister extends PaymentMethod` is a solid line with a triangle, and a class cannot extend an interface.
+`new IDeal()` inside a method is a dependency on a concrete class, not an association.
+
+<Compare>
+<Side kind="good" title="Association with the interface">
+```plantuml
+interface PaymentMethod
+CashRegister --> PaymentMethod
+```
+
+A field; works with every payment method.
+</Side>
+<Side kind="bad" title="Dependency on a concrete class">
+```plantuml
+CashRegister ..> IDeal : new IDeal()
+```
+
+No field; only iDEAL works.
+</Side>
+</Compare>
+
+<Example name="visibility/cash-register-dependency" title="Wrong: a dependency on the concrete class IDeal" />
+
+## Practice questions
+
+<Questions topic="visibility" />

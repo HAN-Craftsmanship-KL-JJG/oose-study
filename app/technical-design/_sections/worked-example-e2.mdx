@@ -1,0 +1,193 @@
+## Worked example E2: lock vendors (Adapter and factory)
+
+<Callout type="note" title="Requirement E2">
+The bike locks come from two vendors, each with its own library.
+LockItSdk has `unlockBike(String id)`.
+SmartLockApi has `open(int nr, String token)`.
+It must be possible to add a third vendor later without changing the domain logic.
+</Callout>
+
+What varies: the external library, with an interface you cannot change: Adapter.
+"Add a third vendor later" needs one place that chooses the vendor: a factory.
+
+### The class diagram, in two layers
+
+The arrows between the layers point to the domain: the domain does not know the infrastructure.
+
+```plantuml
+    package domain {
+        class Bike {
+            -bikeNumber: int
+            +unlock() void
+        }
+        interface BikeLock {
+            +unlock() void
+            +lock() void
+        }
+    }
+    package infrastructure {
+        class LockItBikeLock {
+            -lockId: String
+            +unlock() void
+            +lock() void
+        }
+        class SmartLockBikeLock {
+            -number: int
+            -token: String
+            +unlock() void
+            +lock() void
+        }
+        class LockFactory {
+            +createLock(config: LockConfig) BikeLock
+        }
+        class LockItSdk <<external>> {
+            +unlockBike(id: String) void
+        }
+        class SmartLockApi <<external>> {
+            +open(nr: int, token: String) void
+        }
+    }
+    Bike --> "1" BikeLock : lock
+    LockItBikeLock ..|> BikeLock
+    SmartLockBikeLock ..|> BikeLock
+    LockItBikeLock --> LockItSdk
+    SmartLockBikeLock --> SmartLockApi
+    LockFactory ..> BikeLock : creates
+```
+
+### The sequence diagram
+
+```plantuml
+    participant "bike : Bike" as F
+    participant "lock : SmartLockBikeLock" as S
+    participant "api : SmartLockApi" as API
+    F -> S : unlock()
+    activate S
+    S -> API : open(number, token)
+    deactivate S
+```
+
+<Example name="technical-design/e2-factory" title="Adapters per vendor, and a factory that chooses one" />
+
+### The motivation
+
+The domain defines its own interface `BikeLock` and depends only on that interface (Dependency Inversion Principle).
+For each vendor, an Adapter (`LockItBikeLock`, `SmartLockBikeLock`) translates the domain interface to the library.
+Only the adapters know the external library (low coupling, Protected Variations).
+If a vendor changes its API, only one adapter changes.
+A new vendor is a new adapter class (Open/Closed Principle), which covers "add a third vendor later".
+A factory chooses the adapter from the configuration, so the domain logic does not need to know which vendors exist.
+
+<Compare>
+<Side kind="bad" title="Alternative: Proxy">
+A Proxy has the same interface as the real object.
+Here the interfaces are different: `unlock()` against `unlockBike(id)` and `open(nr, token)`.
+So Proxy does not fit; Adapter translates between different interfaces.
+</Side>
+<Side kind="bad" title="Alternative: if/else in Bike">
+`Bike` calls `LockItSdk` or `SmartLockApi` with an `if`.
+Then the domain knows both libraries (high coupling, breaks DIP).
+A third vendor changes `Bike` (breaks OCP).
+</Side>
+</Compare>
+
+## Worked example F5: storage
+
+PopQuiz: a game leader makes a quiz from a question bank, and players play it.
+
+<Callout type="note" title="Feature F5">
+The questions and answers are stored in plain text files.
+Make it possible to switch easily to storage in a database in the future.
+The answers must optionally be stored encrypted.
+Whether the answers are encrypted must be set in a configuration file.
+</Callout>
+
+### The class diagram
+
+```plantuml
+    class QuestionManager {
+        +saveQuestions(questions: ArrayList<Question>) void
+    }
+    class Question {
+        -questionText: String
+    }
+    interface QuestionStorage {
+        +save(v: Question) void
+    }
+    class FlatFileQuestionStorage {
+        +save(v: Question) void
+    }
+    class SQLQuestionStorage {
+        +save(v: Question) void
+    }
+    class FlatFileStore {
+        +saveText(text: String) void
+    }
+    class RelDBStore {
+        +executeInsert(statement: String) void
+    }
+    QuestionManager --> "*" Question : questions
+    QuestionManager --> "1" QuestionStorage
+    QuestionStorage <|.. FlatFileQuestionStorage
+    QuestionStorage <|.. SQLQuestionStorage
+    FlatFileQuestionStorage --> "1" FlatFileStore
+    SQLQuestionStorage --> "1" RelDBStore
+```
+
+### The sequence diagram: saving to a database
+
+```plantuml
+    participant ":Client" as C
+    participant "manager : QuestionManager" as B
+    participant "handler : QuestionStorage" as H
+    participant "store : RelDBStore" as S
+    C -> B : saveQuestions(questions)
+    activate B
+    loop for each v in questions
+        B -> H : save(v)
+        activate H
+        H -> H : sql = createInsertStatement(v)
+        H -> S : executeInsert(sql)
+        deactivate H
+    end
+    deactivate B
+```
+
+### The motivation
+
+The Adapter pattern is used.
+`QuestionManager` does not depend on one type of storage, so you can switch easily to another type.
+This follows the Dependency Inversion Principle: a high-level class (`QuestionManager`) does not depend on a low-level class (`RelDBStore`).
+
+This motivation leaves out the encryption.
+A complete design covers it too.
+
+<Reveal title="A possible answer for the encryption and the configuration file">
+Add a Decorator `EncryptingStorage` that also implements `QuestionStorage`.
+It holds another `QuestionStorage`, encrypts the answer and then calls `save` on the storage it wraps.
+A `StorageFactory` reads the configuration file.
+It makes the right adapter, and wraps it in `EncryptingStorage` when encryption is on.
+
+```plantuml
+    interface QuestionStorage {
+        +save(v: Question) void
+    }
+    class EncryptingStorage {
+        -inner: QuestionStorage
+        +save(v: Question) void
+    }
+    class StorageFactory {
+        +createStorage(config: Configuration) QuestionStorage
+    }
+    EncryptingStorage ..|> QuestionStorage
+    EncryptingStorage --> "1" QuestionStorage : inner
+    StorageFactory ..> QuestionStorage : creates
+    StorageFactory ..> EncryptingStorage : creates
+```
+
+Motivation: encryption is extra work around an existing storage, so it is a Decorator.
+It works with every storage, now and in the future (OCP), and `QuestionManager` does not change.
+The factory is the only class that reads the configuration file (SRP), which covers "set in a configuration file".
+An alternative is an `if (encrypt)` in every adapter.
+That is worse: the encryption code is repeated in each adapter, and every new adapter must remember it.
+</Reveal>
