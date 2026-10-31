@@ -28,6 +28,9 @@ export function useSections(): SectionsState {
 /** A heading counts as "being read" once its top passes this line, below the sticky header. */
 const READ_LINE = 120;
 
+/** A jump to a heading counts as finished after this long without scrolling. */
+const SETTLE_MS = 200;
+
 function readSections(): Section[] {
   const headings = document.querySelectorAll<HTMLHeadingElement>("article h2[id]");
   return Array.from(headings, (h) => ({ id: h.id, title: h.textContent.trim() }));
@@ -72,25 +75,51 @@ export default function SectionsProvider({ children }: { children: ReactNode }) 
   }, [pathname]);
 
   // Follow the scroll position, at most once per frame.
+  // A subchapter picked from a link stays active after the jump, even when the page cannot
+  // scroll far enough to bring it to the top. The next scroll by the reader releases it.
   useEffect(() => {
     let frame = 0;
+    let pinned: string | null = null;
+    let settling = 0;
     const measure = () => {
       frame = 0;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const atBottom = max > 0 && window.scrollY >= max - 2;
       setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
-      setActive(activeSection(sections, atBottom));
+      setActive(pinned ?? activeSection(sections, atBottom));
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(measure);
     };
+    const settle = () => {
+      clearTimeout(settling);
+      settling = window.setTimeout(() => {
+        settling = 0;
+      }, SETTLE_MS);
+    };
+    const onScroll = () => {
+      if (settling) settle();
+      else pinned = null;
+      schedule();
+    };
+    const onClick = (e: MouseEvent) => {
+      const link = e.target instanceof Element ? e.target.closest("a[href^='#']") : null;
+      if (!link) return;
+      const id = decodeURIComponent(link.getAttribute("href")?.slice(1) ?? "");
+      pinned = sections.some((s) => s.id === id) ? id : null;
+      settle();
+      schedule();
+    };
     schedule();
-    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", schedule);
+    document.addEventListener("click", onClick);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
+      clearTimeout(settling);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", schedule);
+      document.removeEventListener("click", onClick);
     };
   }, [sections]);
 
