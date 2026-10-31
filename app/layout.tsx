@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import { PageQuestionsProvider } from "@/components/nav/QuizTicks";
+import ResumeTracker from "@/components/nav/ResumeTracker";
 import SectionsProvider from "@/components/nav/SectionsProvider";
 import Pager from "@/components/Pager";
 import Sidebar from "@/components/Sidebar";
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="relative min-h-dvh bg-[#fbf8f1] font-sans text-stone-900 antialiased dark:bg-[#1a1814] dark:text-stone-100">
         <PageQuestionsProvider value={pageQuestions}>
           <SectionsProvider>
+            <ResumeTracker />
             <Header />
             <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-[17rem_minmax(0,1fr)]">
               <Sidebar />
