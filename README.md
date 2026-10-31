@@ -27,22 +27,7 @@ For a fast version without the development tools, run `npm run build` and then `
 ## Publish it
 
 The site is public at https://han-craftsmanship-kl-jjg.github.io/oose-study/.
-Its code lives in the public repository `HAN-Craftsmanship-KL-JJG/oose-study`.
-That repository holds only this folder; the rest of the private `oose` repository stays private.
-
-Work on the site in `src/` of the `oose` repository and commit there.
-Then, from the root of `oose`, push only this folder to the public repository:
-
-```sh
-git remote add site git@github.com:HAN-Craftsmanship-KL-JJG/oose-study.git   # once
-git fetch site
-git push site "$(git commit-tree HEAD:src -p site/main -m 'Update the site')":refs/heads/main
-```
-
-`git commit-tree` makes one new commit with only the files of `src/`, on top of the public history.
-Do not use `git subtree push`: it can carry the private history of `oose` into the public repository.
-
-Every push to `main` of `oose-study` runs `.github/workflows/pages.yml`.
+Every push to `main` runs `.github/workflows/pages.yml`.
 It builds a static site to `out/` and publishes it on GitHub Pages.
 The workflow sets `BASE_PATH` to `/oose-study`, so every page link must use `next/link` (MDX links do so).
 
