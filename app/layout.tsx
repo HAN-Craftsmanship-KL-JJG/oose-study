@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import SectionsProvider from "@/components/nav/SectionsProvider";
 import Pager from "@/components/Pager";
 import Sidebar from "@/components/Sidebar";
+import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,7 +28,10 @@ const prose = [
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="relative min-h-dvh bg-[#fbf8f1] font-sans text-stone-900 antialiased dark:bg-[#1a1814] dark:text-stone-100">
         <SectionsProvider>
           <Header />
