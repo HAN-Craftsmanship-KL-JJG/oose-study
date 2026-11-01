@@ -38,6 +38,10 @@ html[data-theme="dark"] {
 [data-theme="dark"] .shiki,
 [data-theme="dark"] .shiki span {
   color: var(--shiki-dark) !important;
+}
+
+/* Only the block gets the background, so a highlighted line's band shows through its tokens. */
+[data-theme="dark"] .shiki {
   background-color: var(--shiki-dark-bg) !important;
 }
 
@@ -86,8 +90,7 @@ html[data-theme="dark"] {
 }
 
 /* A line marked with [!code highlight] gets a band across the whole block. */
-.shiki .line.highlighted,
-[data-theme="dark"] .shiki span.line.highlighted {
+.shiki .line.highlighted {
   background-color: var(--code-highlight) !important;
 }
 
