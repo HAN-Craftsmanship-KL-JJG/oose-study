@@ -6,8 +6,6 @@ This guide explains how the site is built and how to change it.
 
 - Theory only: no information about the exam itself, such as dates, points, criteria, question numbers or exam advice.
 - English only, with no Dutch translations.
-- Made-up examples use a zoo or animals.
-  Cases taken from course material keep their own domain.
 - Little text: no page intros, no text about the site, no summary boxes.
 
 ## Run it

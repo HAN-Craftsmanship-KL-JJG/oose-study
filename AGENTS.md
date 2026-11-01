@@ -37,5 +37,5 @@ There is no test suite.
 ## Writing style
 
 Site text, code comments, docs and commit messages all use short, plain English sentences.
-Follow the content rules in CONTRIBUTING.md (theory only, no exam details, animal or zoo examples, no intros or summaries).
+Follow the content rules in CONTRIBUTING.md (theory only, no exam details, no intros or summaries).
 Commit subjects use a conventional prefix and describe the change from the reader's side, for example `feat: turn the page with the left and right arrow keys`.
