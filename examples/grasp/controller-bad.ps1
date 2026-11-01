@@ -11,8 +11,8 @@ class LoanScreen {
     [void] OnLendClicked() {
         $borrower = $this.library.FindBorrower($this.CardNumberField)
         $book = $this.library.FindBook($this.IsbnField)
-        $loan = [Loan]::new($borrower, $book, (Get-Date))
-        $borrower.Add($loan)
-        $book.SetLent($true)
+        $loan = [Loan]::new($borrower, $book, (Get-Date)) # [!code highlight]
+        $borrower.Add($loan) # [!code highlight]
+        $book.SetLent($true) # [!code highlight]
     }
 }

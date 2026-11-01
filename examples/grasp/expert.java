@@ -18,7 +18,7 @@ class Loan {
     // Expert for the fine of one loan: it knows its book and its due date.
     double fine(LocalDate today) {
         long daysLate = ChronoUnit.DAYS.between(dueDate, today);
-        return daysLate > 0 ? daysLate * book.getFinePerDay() : 0;
+        return daysLate > 0 ? daysLate * book.getFinePerDay() : 0; // [!code highlight]
     }
 }
 
@@ -28,7 +28,7 @@ class Borrower {
     // Expert for the total: Borrower knows all its loans.
     double openFines(LocalDate today) {
         double total = 0;
-        for (Loan loan : loans) total += loan.fine(today);
+        for (Loan loan : loans) total += loan.fine(today); // [!code highlight]
         return total;
     }
 }

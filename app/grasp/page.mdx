@@ -107,7 +107,7 @@ The UI makes one call.
 
 <Example name="grasp/controller-bad" title="Wrong: the UI looks up objects, creates a Loan and changes the book" />
 
-<Example name="grasp/controller-good" title="Right: the UI calls the Controller, and the Controller coordinates" />
+<Example name="grasp/controller-good" label="Controller" tone="blue" title="Right: the UI calls the Controller, and the Controller coordinates" />
 
 <Questions ids={["grasp-controller-webshop"]} />
 
@@ -146,7 +146,7 @@ B -> B : lines.add(line)
 deactivate B
 ```
 
-<Example name="grasp/creator" title="Order contains its lines, so Order creates them" />
+<Example name="grasp/creator" label="Creator" tone="green" title="Order contains its lines, so Order creates them" />
 
 In the library, `Borrower` records its loans, so `Borrower` creates an `Loan` (`borrower.borrow(book)`).
 
@@ -183,7 +183,7 @@ L --> B : total
 deactivate L
 ```
 
-<Example name="grasp/expert" title="Each class calculates what it has the data for" />
+<Example name="grasp/expert" label="Information Expert" tone="rose" title="Each class calculates what it has the data for" />
 
 <Compare>
 <Side kind="bad" title="Book checks the fine">
@@ -213,6 +213,15 @@ Character "*" -- "1" Square : stands on >
 
 - `Game` represents the whole game, so it is the Controller.
 - `GameBoard` contains the Squares, so it is the Creator of Square.
+- `GameBoard` is also the only class with the list of Squares, so it is the Information Expert for finding a free Square.
+
+Each principle leaves a clue in the code.
+
+<Example name="grasp/game-controller" label="Controller" tone="blue" title="Clue: it receives the request, then passes it on" />
+
+<Example name="grasp/game-creator" label="Creator" tone="green" title="Clue: the word new, for objects it contains" />
+
+<Example name="grasp/game-expert" label="Information Expert" tone="rose" title="Clue: it works with its own private data" />
 
 ## Practice questions
 

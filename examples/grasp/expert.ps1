@@ -17,7 +17,7 @@ class Loan {
     [double] Fine([datetime]$today) {
         $daysLate = ($today.Date - $this.dueDate.Date).Days
         if ($daysLate -le 0) { return 0 }
-        return $daysLate * $this.book.FinePerDay
+        return $daysLate * $this.book.FinePerDay # [!code highlight]
     }
 }
 
@@ -28,7 +28,7 @@ class Borrower {
     # Expert for the total: Borrower knows all its loans.
     [double] OpenFines([datetime]$today) {
         $total = 0.0
-        foreach ($loan in $this.loans) { $total += $loan.Fine($today) }
+        foreach ($loan in $this.loans) { $total += $loan.Fine($today) } # [!code highlight]
         return $total
     }
 }

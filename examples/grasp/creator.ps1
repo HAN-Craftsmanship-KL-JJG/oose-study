@@ -26,7 +26,7 @@ class Order {
 
     # Creator: Order contains its lines, so Order creates them.
     [void] Add([Product]$product, [int]$quantity) {
-        $this.lines.Add([OrderLine]::new($product, $quantity))
+        $this.lines.Add([OrderLine]::new($product, $quantity)) # [!code highlight]
     }
 }
 

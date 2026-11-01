@@ -27,7 +27,7 @@ class Order {
 
     // Creator: Order contains its lines, so Order creates them.
     void add(Product product, int quantity) {
-        lines.add(new OrderLine(product, quantity));
+        lines.add(new OrderLine(product, quantity)); // [!code highlight]
     }
 }
 

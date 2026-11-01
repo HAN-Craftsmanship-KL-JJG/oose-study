@@ -9,7 +9,7 @@ class LoanScreen {
     }
 
     void onLendClicked() {
-        library.lend(cardNumberField.getText(), isbnField.getText());
+        library.lend(cardNumberField.getText(), isbnField.getText()); // [!code highlight]
     }
 }
 

@@ -9,7 +9,7 @@ class LoanScreen {
     }
 
     [void] OnLendClicked() {
-        $this.library.Lend($this.CardNumberField, $this.IsbnField)
+        $this.library.Lend($this.CardNumberField, $this.IsbnField) # [!code highlight]
     }
 }
 
