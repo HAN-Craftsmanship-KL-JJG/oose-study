@@ -1,0 +1,19 @@
+# Dependabot opens a pull request each week when a dependency or a GitHub Action has a new version.
+# Minor and patch updates come together in one pull request; a major update gets its own.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

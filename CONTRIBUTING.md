@@ -26,6 +26,11 @@ Every push to `main` runs `.github/workflows/pages.yml`.
 It builds a static site to `out/` and publishes it on GitHub Pages.
 The workflow sets `BASE_PATH` to `/oose-study`, so every page link must use `next/link` (MDX links do so).
 
+Every pull request and every push to `main` also runs `.github/workflows/check.yml`, which runs `npm run check`.
+Both workflows cache the npm downloads and the Next.js build cache.
+Dependabot (`.github/dependabot.yml`) opens a pull request each week for new npm packages and GitHub Actions.
+It cannot see the PlantUML image in `scripts/render-uml.mjs`: update that by hand and run `npm run uml`.
+
 ## Check your changes
 
 ```sh
