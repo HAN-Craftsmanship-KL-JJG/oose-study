@@ -113,7 +113,7 @@ export default function QuestionCard({
         <RichText text={q.prompt} />
         {q.codeHtml && (
           <div
-            className="my-3 overflow-x-auto rounded-sm border border-stone-200 text-[13px] dark:border-stone-800 [&_pre]:p-4"
+            className="my-3 overflow-x-auto rounded-sm border border-stone-200 text-[13px] dark:border-stone-800 [&_.shiki]:[--code-pad:1rem]"
             dangerouslySetInnerHTML={{ __html: q.codeHtml }}
           />
         )}

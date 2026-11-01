@@ -35,7 +35,7 @@ async function Pre(props: ComponentPropsWithoutRef<"pre">) {
   if (html === null) return <pre {...props} />;
   return (
     <div
-      className="not-prose my-6 overflow-x-auto rounded-sm border border-stone-200 text-[13.5px] leading-relaxed dark:border-stone-800 [&_pre]:min-w-fit [&_pre]:p-5"
+      className="code-block not-prose my-6 overflow-x-auto rounded-sm border border-stone-200 text-[13.5px] leading-relaxed dark:border-stone-800"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

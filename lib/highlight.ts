@@ -1,6 +1,14 @@
 import { transformerNotationHighlight } from "@shikijs/transformers";
-import { codeToHtml } from "shiki";
+import { codeToHtml, type ShikiTransformer } from "shiki";
 import type { Question, RenderedQuestion } from "./questions";
+
+/** Drops the newlines between lines: each line is a block with a number (see globals.css). */
+const blockLines: ShikiTransformer = {
+  name: "block-lines",
+  code(node) {
+    node.children = node.children.filter((c) => !(c.type === "text" && c.value === "\n"));
+  },
+};
 
 /**
  * Colours code. A line that ends with the comment "[!code highlight]" gets a coloured band,
@@ -11,7 +19,7 @@ export function highlight(code: string, lang: string): Promise<string> {
   return codeToHtml(code.trimEnd(), {
     lang,
     themes: { light: "github-light", dark: "github-dark" },
-    transformers: [transformerNotationHighlight({ matchAlgorithm: "v3" })],
+    transformers: [transformerNotationHighlight({ matchAlgorithm: "v3" }), blockLines],
   });
 }
 

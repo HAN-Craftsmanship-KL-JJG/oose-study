@@ -58,7 +58,7 @@ export default function CodeTabs({
       )}
       <div
         role="tabpanel"
-        className="overflow-x-auto text-[13.5px] leading-relaxed [&_pre]:min-w-fit [&_pre]:p-5"
+        className="overflow-x-auto text-[13.5px] leading-relaxed"
         dangerouslySetInnerHTML={{ __html: active.html }}
       />
       {active.note && (
