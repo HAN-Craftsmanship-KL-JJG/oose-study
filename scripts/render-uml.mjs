@@ -17,7 +17,7 @@ import { umlHash } from "../lib/uml-hash.mjs";
 const ROOT = new URL("..", import.meta.url).pathname;
 const SVG_DIR = join(ROOT, "uml", "svg");
 const FONT_DIR = join(ROOT, ".cache", "uml-fonts");
-const IMAGE = "docker.io/plantuml/plantuml:1.2026.8";
+const IMAGE = "docker.io/plantuml/plantuml:1.2026.9";
 const FONT_ZIP =
   "https://github.com/adobe-fonts/source-serif/releases/download/4.005R/" +
   "source-serif-4.005_Desktop.zip";

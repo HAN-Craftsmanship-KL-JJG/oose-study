@@ -100,7 +100,7 @@ Animal <|-- Lion
 To point at one part of a diagram, give it the highlight colour `#F9E7A8`, the same colour as a highlighted code line.
 Use `<back:#F9E7A8>...</back>` for a message or a member, `class Name #F9E7A8` for a box and `-[#B45309,bold]->` for a line.
 `npm run uml` draws each new or changed diagram to `uml/svg/<hash>.svg` and deletes the unused ones.
-It runs PlantUML 1.2026.8 in a container: Apple `container`, Docker or Podman, whichever is installed (or set `UML_RUNTIME`).
+It runs PlantUML 1.2026.9 in a container: Apple `container`, Docker or Podman, whichever is installed (or set `UML_RUNTIME`).
 It downloads the font Source Serif 4 to `.cache/` the first time.
 Commit the SVG files: the build reads them, so `npm run dev` and `npm run build` need no container.
 
