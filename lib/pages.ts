@@ -12,6 +12,11 @@ export const SECTIONS = ["Theory", "Apply", "Practise", "Extra"];
 export const PAGES: Page[] = [
   {
     section: "Theory",
+    href: "/java-basics",
+    title: "Java basics",
+  },
+  {
+    section: "Theory",
     href: "/uml-symbols",
     title: "UML symbols",
   },

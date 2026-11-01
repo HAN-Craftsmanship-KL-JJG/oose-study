@@ -1,4 +1,5 @@
 import type { Question } from "@/lib/questions";
+import { questions as javaBasics } from "./java-basics";
 import { questions as umlSymbols } from "./uml-symbols";
 import { questions as ooTerms } from "./oo-terms";
 import { questions as couplingCohesion } from "./coupling-cohesion";
@@ -14,6 +15,7 @@ import { questions as otherTopics } from "./other-topics";
 
 // Every question, in page order. Add a topic file here when you add a page.
 export const QUESTIONS: Question[] = [
+  ...javaBasics,
   ...umlSymbols,
   ...ooTerms,
   ...couplingCohesion,
