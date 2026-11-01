@@ -69,6 +69,8 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
 ## Components you can use in a page
 
 - `<Example name="topic/name" title="..." />` shows a code example with a tab per language.
+  Add `label="Creator" tone="green"` to put a coloured pill before the title.
+  The tones are `blue`, `green`, `rose`, `amber`, `violet` and `stone`.
 - End a code line with the comment `// [!code highlight]` (`# [!code highlight]` in PowerShell) to give it a coloured band.
   This works in example files, fenced code blocks and question code. Use it for the one line that the reader should look at.
   When the line is too long, put the marker on its own line just above it.

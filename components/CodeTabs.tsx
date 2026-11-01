@@ -1,6 +1,7 @@
 "use client";
 
 import type { LanguageId } from "@/lib/languages";
+import Label, { type LabelTone } from "./Label";
 import { useLanguage } from "./LanguageProvider";
 
 export interface CodeTab {
@@ -11,7 +12,17 @@ export interface CodeTab {
 }
 
 /** A code example in a window frame, with a tab per language. Tabs follow the header choice. */
-export default function CodeTabs({ title, tabs }: { title?: string | undefined; tabs: CodeTab[] }) {
+export default function CodeTabs({
+  title,
+  label,
+  tone,
+  tabs,
+}: {
+  title?: string | undefined;
+  label?: string | undefined;
+  tone?: LabelTone | undefined;
+  tabs: CodeTab[];
+}) {
   const { lang, setLang } = useLanguage();
   const active = tabs.find((t) => t.id === lang) ?? tabs[0];
   if (!active) return null;
@@ -39,8 +50,9 @@ export default function CodeTabs({ title, tabs }: { title?: string | undefined; 
           ))}
         </div>
       </div>
-      {title && (
-        <figcaption className="border-b border-stone-100 px-4 py-2 text-sm font-medium text-stone-600 dark:border-stone-800 dark:text-stone-400">
+      {(title ?? label) && (
+        <figcaption className="flex flex-wrap items-center gap-x-2.5 gap-y-1 border-b border-stone-100 px-4 py-2 text-sm font-medium text-stone-600 dark:border-stone-800 dark:text-stone-400">
+          {label && <Label tone={tone}>{label}</Label>}
           {title}
         </figcaption>
       )}

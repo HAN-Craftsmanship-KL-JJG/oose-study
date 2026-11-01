@@ -3,6 +3,7 @@ import path from "node:path";
 import { highlight } from "@/lib/highlight";
 import { LANGUAGES } from "@/lib/languages";
 import CodeTabs, { type CodeTab } from "./CodeTabs";
+import type { LabelTone } from "./Label";
 
 const EXAMPLES_DIR = path.join(process.cwd(), "examples");
 
@@ -19,13 +20,18 @@ async function readOptional(file: string): Promise<string | null> {
  * `name` is a path below examples/ without extension, such as "oo-terms/interface".
  * It reads examples/<name>.py, .ps1, .java and .cpp, and the optional examples/<name>.notes.json
  * with a short note per language.
+ * `label` adds a coloured pill before the title, such as label="Creator" tone="green".
  */
 export default async function Example({
   name,
   title,
+  label,
+  tone,
 }: {
   name: string;
   title?: string | undefined;
+  label?: string | undefined;
+  tone?: LabelTone | undefined;
 }) {
   const notesFile = await readOptional(path.join(EXAMPLES_DIR, `${name}.notes.json`));
   const notes = notesFile ? (JSON.parse(notesFile) as Record<string, string>) : {};
@@ -39,5 +45,5 @@ export default async function Example({
   }
 
   if (tabs.length === 0) throw new Error(`Example "${name}" has no code files in examples/`);
-  return <CodeTabs title={title} tabs={tabs} />;
+  return <CodeTabs title={title} label={label} tone={tone} tabs={tabs} />;
 }
