@@ -3,7 +3,7 @@ class Bird {
     [void] Eat() { Write-Host "I eat" }
 }
 
-class FlyingBird : Bird {
+class FlyingBird : Bird { # [!code highlight]
     [void] Fly() { Write-Host "I fly" }
 }
 
@@ -14,6 +14,6 @@ class Penguin : Bird {
 }
 
 # Every FlyingBird can really fly, so this loop never fails.
-foreach ($bird in [FlyingBird[]]$flyingBirds) {
+foreach ($bird in [FlyingBird[]]$flyingBirds) { # [!code highlight]
     $bird.Fly()
 }

@@ -4,7 +4,7 @@ class Bird {
 
 class Penguin : Bird {
     [void] Fly() {
-        throw "Penguins do not fly"
+        throw "Penguins do not fly" # [!code highlight]
     }
 }
 

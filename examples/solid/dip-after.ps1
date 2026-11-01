@@ -6,9 +6,9 @@ class PaymentProvider {
 }
 
 class CashRegister {
-    hidden [PaymentProvider]$provider
+    hidden [PaymentProvider]$provider # [!code highlight]
 
-    CashRegister([PaymentProvider]$provider) {
+    CashRegister([PaymentProvider]$provider) { # [!code highlight]
         $this.provider = $provider
     }
 

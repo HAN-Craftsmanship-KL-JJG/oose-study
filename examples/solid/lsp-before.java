@@ -5,7 +5,7 @@ class Bird {
 class Penguin extends Bird {
     @Override
     void fly() {
-        throw new UnsupportedOperationException("Penguins do not fly");
+        throw new UnsupportedOperationException("Penguins do not fly"); // [!code highlight]
     }
 }
 

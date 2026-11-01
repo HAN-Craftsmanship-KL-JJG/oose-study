@@ -14,7 +14,7 @@ class CashRegister {
     [double] AmountDue([Order]$order) {
         $total = $order.GetTotal()
         foreach ($rule in $this.rules) {
-            $total -= $rule.Discount($order)
+            $total -= $rule.Discount($order) # [!code highlight]
         }
         return $total
     }
@@ -22,7 +22,7 @@ class CashRegister {
 
 # The new promotion "3 for the price of 2" is a new class.
 # CashRegister and the other rules do not change.
-class ThreeForTwo : DiscountRule {
+class ThreeForTwo : DiscountRule { # [!code highlight]
     [double] Discount([Order]$order) {
         $discount = 0.0
         foreach ($line in $order.GetLines()) {

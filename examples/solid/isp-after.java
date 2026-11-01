@@ -11,11 +11,11 @@ interface Swimmer {
     void swim();
 }
 
-class Lion implements Animal {
+class Lion implements Animal { // [!code highlight]
     public void eat() { ... }
 }
 
-class Duck implements Animal, Flyer, Swimmer {
+class Duck implements Animal, Flyer, Swimmer { // [!code highlight]
     public void eat() { ... }
     public void fly() { ... }
     public void swim() { ... }

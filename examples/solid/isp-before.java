@@ -7,6 +7,6 @@ interface Animal {
 
 class Lion implements Animal {
     public void eat() { ... }
-    public void fly() { throw new UnsupportedOperationException(); }
-    public void swim() { throw new UnsupportedOperationException(); }
+    public void fly() { throw new UnsupportedOperationException(); } // [!code highlight]
+    public void swim() { throw new UnsupportedOperationException(); } // [!code highlight]
 }

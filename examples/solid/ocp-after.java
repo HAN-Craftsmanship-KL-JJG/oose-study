@@ -12,7 +12,7 @@ public class CashRegister {
     public double amountDue(Order order) {
         double total = order.getTotal();
         for (DiscountRule rule : rules) {
-            total -= rule.discount(order);
+            total -= rule.discount(order); // [!code highlight]
         }
         return total;
     }
@@ -20,7 +20,7 @@ public class CashRegister {
 
 // The new promotion "3 for the price of 2" is a new class.
 // CashRegister and the other rules do not change.
-public class ThreeForTwo implements DiscountRule {
+public class ThreeForTwo implements DiscountRule { // [!code highlight]
     @Override
     public double discount(Order order) {
         double discount = 0;

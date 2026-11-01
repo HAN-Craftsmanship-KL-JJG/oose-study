@@ -4,9 +4,9 @@ public interface PaymentProvider {
 }
 
 public class CashRegister {
-    private final PaymentProvider provider;
+    private final PaymentProvider provider; // [!code highlight]
 
-    public CashRegister(PaymentProvider provider) {
+    public CashRegister(PaymentProvider provider) { // [!code highlight]
         this.provider = provider;
     }
 

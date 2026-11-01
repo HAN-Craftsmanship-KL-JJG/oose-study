@@ -7,6 +7,6 @@ class Flyer {
     [void] Fly() { throw [System.NotImplementedException]::new() }
 }
 
-class Lion : Animal {
+class Lion : Animal { # [!code highlight]
     [void] Eat() { Write-Host "Eating meat" }
 }

@@ -77,9 +77,9 @@ Each class has one task.
 </Side>
 </Compare>
 
-<Example name="solid/srp-before" title="Before: three reasons to change in one class" />
+<Example name="solid/srp-before" label="Breaks SRP" tone="rose" title="Before: three reasons to change in one class" />
 
-<Example name="solid/srp-after" title="After: one reason to change per class" />
+<Example name="solid/srp-after" label="Follows SRP" tone="green" title="After: one reason to change per class" />
 
 Another example with `Report` is on [Coupling and cohesion](/coupling-cohesion).
 
@@ -134,9 +134,9 @@ The new promotion is a new class.
 </Side>
 </Compare>
 
-<Example name="solid/ocp-before" title="Before: a switch in CashRegister, so every promotion changes CashRegister" />
+<Example name="solid/ocp-before" label="Breaks OCP" tone="rose" title="Before: a switch in CashRegister, so every promotion changes CashRegister" />
 
-<Example name="solid/ocp-after" title="After: a new promotion is a new class that implements DiscountRule" />
+<Example name="solid/ocp-after" label="Follows OCP" tone="green" title="After: a new promotion is a new class that implements DiscountRule" />
 
 This is the [Strategy pattern](/patterns): each `DiscountRule` is a strategy, `CashRegister` is the context.
 So Strategy follows OCP.
@@ -191,9 +191,9 @@ Every `FlyingBird` can really fly.
 </Side>
 </Compare>
 
-<Example name="solid/lsp-before" title="Before: Penguin is a Bird but cannot keep the promise fly()" />
+<Example name="solid/lsp-before" label="Breaks LSP" tone="rose" title="Before: Penguin is a Bird but cannot keep the promise fly()" />
 
-<Example name="solid/lsp-after" title="After: only classes that can fly have fly()" />
+<Example name="solid/lsp-after" label="Follows LSP" tone="green" title="After: only classes that can fly have fly()" />
 
 ## I: Interface Segregation Principle
 
@@ -245,9 +245,9 @@ Each class implements only what it can do.
 </Side>
 </Compare>
 
-<Example name="solid/isp-before" title="Before: Lion must offer fly and swim" />
+<Example name="solid/isp-before" label="Breaks ISP" tone="rose" title="Before: Lion must offer fly and swim" />
 
-<Example name="solid/isp-after" title="After: small interfaces" />
+<Example name="solid/isp-after" label="Follows ISP" tone="green" title="After: small interfaces" />
 
 ## D: Dependency Inversion Principle
 
@@ -310,9 +310,9 @@ PaymentProvider <|.. MolliePaymentProvider
 MolliePaymentProvider --> MollieClient
 ```
 
-<Example name="solid/dip-before" title="Before: CashRegister depends on the detail MollieClient" />
+<Example name="solid/dip-before" label="Breaks DIP" tone="rose" title="Before: CashRegister depends on the detail MollieClient" />
 
-<Example name="solid/dip-after" title="After: both sides depend on PaymentProvider" />
+<Example name="solid/dip-after" label="Follows DIP" tone="green" title="After: both sides depend on PaymentProvider" />
 
 `MolliePaymentProvider` is also an Adapter: it translates `pay(double)` to `createPayment(int)`.
 OCP follows from it, but turning the dependency around is DIP.

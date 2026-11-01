@@ -3,7 +3,7 @@ class Bird {
     void eat() { System.out.println("I eat"); }
 }
 
-class FlyingBird extends Bird {
+class FlyingBird extends Bird { // [!code highlight]
     void fly() { System.out.println("I fly"); }
 }
 
@@ -14,6 +14,6 @@ class Penguin extends Bird {
 }
 
 // Every FlyingBird can really fly, so this loop never fails.
-for (FlyingBird bird : flyingBirds) {
+for (FlyingBird bird : flyingBirds) { // [!code highlight]
     bird.fly();
 }
