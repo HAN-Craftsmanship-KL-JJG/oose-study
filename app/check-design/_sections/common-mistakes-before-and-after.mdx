@@ -8,7 +8,7 @@
 ```plantuml
     actor "Player" as S
     participant ":WordGameManager" as M
-    S -> M : startGame(name, opponentName)
+    S -> M : <back:#F9E7A8>startGame(name, opponentName)</back>
 ```
 
 </Side>
@@ -17,8 +17,8 @@
 ```plantuml
     actor "Player" as S
     participant ":WordGameManager" as M
-    S -> M : findOpponentByName(name)
-    S -> M : findOpponentByStrength()
+    S -> M : <back:#F9E7A8>findOpponentByName(name)</back>
+    S -> M : <back:#F9E7A8>findOpponentByStrength()</back>
 ```
 
 </Side>
@@ -42,7 +42,7 @@ No method or check counts the loans.
 
 ```plantuml
     class Borrower {
-        +canBorrow() boolean
+        <back:#F9E7A8>+canBorrow() boolean</back>
         +lendBook(bk: Book) void
     }
     note right of Borrower : canBorrow: fewer than 5 loans
@@ -58,8 +58,8 @@ No method or check counts the loans.
 
 ```plantuml
     left to right direction
-    class Borrower
-    class Loan
+    class Borrower #F9E7A8
+    class Loan #F9E7A8
     Loan "*" --> "1" Book
 ```
 
@@ -69,10 +69,10 @@ No method or check counts the loans.
 ```plantuml
     left to right direction
     class Borrower {
-        +add(u: Loan) void
+        <back:#F9E7A8>+add(u: Loan) void</back>
     }
     class Loan
-    Borrower "1" --> "*" Loan
+    Borrower "1" -[#B45309,bold]-> "*" Loan
     Loan "*" --> "1" Book
 ```
 
@@ -91,7 +91,7 @@ No method or check counts the loans.
     G -> HS : playWord(word)
     activate HS
     deactivate HS
-    G -> V : remove(word)
+    G -> V : <back:#F9E7A8>remove(word)</back>
 ```
 
 </Side>
@@ -103,7 +103,7 @@ No method or check counts the loans.
     participant ":Stock" as V
     G -> HS : playWord(word)
     activate HS
-    HS -> V : remove(word)
+    HS -> V : <back:#F9E7A8>remove(word)</back>
     deactivate HS
 ```
 
@@ -117,7 +117,7 @@ No method or check counts the loans.
 
 ```plantuml
     participant ":WordGame" as G
-    actor "Player" as S
+    actor "Player" as S #F9E7A8
     G -> S : p = getPoints()
 ```
 
@@ -126,7 +126,7 @@ No method or check counts the loans.
 
 ```plantuml
     participant ":WordGame" as G
-    participant "player : Player" as S
+    participant "player : Player" as S #F9E7A8
     G -> S : p = getPoints()
 ```
 
@@ -142,8 +142,8 @@ No method or check counts the loans.
     participant ":LoanScreen" as UI
     participant ":Library" as B
     participant ":Borrower" as L
-    UI -> B : l = findBorrower(nr)
-    UI -> L : add(new Loan)
+    UI -> B : <back:#F9E7A8>l = findBorrower(nr)</back>
+    UI -> L : <back:#F9E7A8>add(new Loan)</back>
 ```
 
 </Side>
@@ -152,7 +152,7 @@ No method or check counts the loans.
 ```plantuml
     participant ":LoanScreen" as UI
     participant ":Library" as B
-    UI -> B : lendBook(nr, isbn)
+    UI -> B : <back:#F9E7A8>lendBook(nr, isbn)</back>
     activate B
     note right of B : the domain does the work
     deactivate B
@@ -169,7 +169,7 @@ No method or check counts the loans.
 ```plantuml
     left to right direction
     class Book {
-        +hasFine(l: Borrower) boolean
+        <back:#F9E7A8>+hasFine(l: Borrower) boolean</back>
     }
 ```
 
@@ -181,10 +181,10 @@ Book does not know the loans of a borrower.
 ```plantuml
     left to right direction
     class Borrower {
-        +hasOpenFine() boolean
+        <back:#F9E7A8>+hasOpenFine() boolean</back>
     }
     class Loan {
-        +fine() double
+        <back:#F9E7A8>+fine() double</back>
     }
     Borrower "1" --> "*" Loan
 ```
@@ -200,7 +200,7 @@ Book does not know the loans of a borrower.
 ```plantuml
     left to right direction
     WordGame "1" --> "2" Player : players
-    Player "*" --> "1" WordGame : signedIn
+    Player "*" -[#B45309,bold]-> "1" WordGame : <back:#F9E7A8>signedIn</back>
 ```
 
 </Side>
@@ -224,7 +224,7 @@ Book does not know the loans of a borrower.
         -loanDate: LocalDate
     }
     class WordGame {
-        +playWord(letters: char[]) void
+        <back:#F9E7A8>+playWord(letters: char[]) void</back>
     }
 ```
 
@@ -234,10 +234,10 @@ Book does not know the loans of a borrower.
 ```plantuml
     class Loan {
         -loanDate: LocalDate
-        -dueDate: LocalDate
+        <back:#F9E7A8>-dueDate: LocalDate</back>
     }
     class WordGame {
-        +playWord(word: String) void
+        <back:#F9E7A8>+playWord(word: String) void</back>
     }
 ```
 
@@ -251,7 +251,7 @@ Book does not know the loans of a borrower.
 
 ```plantuml
     class WordGame {
-        +findOpponent(name: String) void
+        <back:#F9E7A8>+findOpponent(name: String) void</back>
         +playWord(word: String) void
         +determineWinner() void
     }
@@ -262,7 +262,7 @@ Book does not know the loans of a borrower.
 
 ```plantuml
     left to right direction
-    class WordGameManager {
+    class WordGameManager #F9E7A8 {
         +findOpponent(name: String) void
     }
     class WordGame {
