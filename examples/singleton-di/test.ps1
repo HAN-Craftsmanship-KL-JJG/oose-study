@@ -16,7 +16,7 @@ class FixedRateSource : RateSource {
 
 Describe "PriceCalculator" {
     It "multiplies the rate by the minutes" {
-        $calculator = [PriceCalculator]::new([FixedRateSource]::new(0.25))
+        $calculator = [PriceCalculator]::new([FixedRateSource]::new(0.25)) # [!code highlight]
         $ride = [Ride]::new("e-bike", 30)
 
         $calculator.Price($ride) | Should -Be 7.5

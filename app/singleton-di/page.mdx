@@ -41,7 +41,7 @@ note over D : instance exists,\nreturn the same one
 D --> B : the same Database object
 ```
 
-<Example name="singleton-di/singleton" title="A correct Singleton" />
+<Example name="singleton-di/singleton" label="Singleton" tone="violet" title="A correct Singleton" />
 
 A common mistake is a `getInstance()` that is not static.
 A non-static method needs an object, but the constructor is private, so nobody can make the first object.
@@ -51,7 +51,7 @@ A non-static method needs an object, but the constructor is private, so nobody c
 A unit test tests one class on its own.
 It must be fast, and it must not need a real database or network.
 
-<Example name="singleton-di/client-before" title="PriceCalculator calls the Singleton directly" />
+<Example name="singleton-di/client-before" label="Hidden dependency" tone="rose" title="PriceCalculator calls the Singleton directly" />
 
 ```plantuml
 component "Unit test" as T
@@ -115,7 +115,7 @@ FixedRateSource ..|> RateSource
 </Side>
 </Compare>
 
-<Example name="singleton-di/client-after" title="PriceCalculator gets a RateSource through its constructor" />
+<Example name="singleton-di/client-after" label="Dependency injection" tone="green" title="PriceCalculator gets a RateSource through its constructor" />
 
 Notice who creates the `RateSource` and passes it in.
 
@@ -151,7 +151,7 @@ P --> T : 7.5
 </Side>
 </Compare>
 
-<Example name="singleton-di/test" title="A unit test with a stub: no database needed" />
+<Example name="singleton-di/test" label="Test with a stub" tone="blue" title="A unit test with a stub: no database needed" />
 
 A stub only returns fixed values.
 A mock also checks how it was called, for example that `getRate` was called once (in Java often with Mockito).

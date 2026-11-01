@@ -1,7 +1,7 @@
 class Database {
-    hidden static [Database]$instance        # the one object
+    hidden static [Database]$instance        # the one object [!code highlight]
 
-    static [Database] GetInstance() {        # static: call it on the class
+    static [Database] GetInstance() {        # static: call it on the class [!code highlight]
         if ($null -eq [Database]::instance) {
             [Database]::instance = [Database]::new()
         }

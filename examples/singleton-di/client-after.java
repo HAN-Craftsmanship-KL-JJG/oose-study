@@ -5,12 +5,12 @@ public interface RateSource {
 public class PriceCalculator {
     private final RateSource rateSource;
 
-    public PriceCalculator(RateSource rateSource) {   // constructor injection
+    public PriceCalculator(RateSource rateSource) {   // constructor injection [!code highlight]
         this.rateSource = rateSource;
     }
 
     public double price(Ride ride) {
-        double rate = rateSource.getRate(ride.getBikeType());
+        double rate = rateSource.getRate(ride.getBikeType()); // [!code highlight]
         return rate * ride.getMinutes();
     }
 }

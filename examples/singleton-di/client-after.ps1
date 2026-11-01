@@ -7,12 +7,12 @@ class RateSource {
 class PriceCalculator {
     hidden [RateSource]$rateSource
 
-    PriceCalculator([RateSource]$rateSource) {        # constructor injection
+    PriceCalculator([RateSource]$rateSource) {        # constructor injection [!code highlight]
         $this.rateSource = $rateSource
     }
 
     [double] Price([Ride]$ride) {
-        $rate = $this.rateSource.GetRate($ride.BikeType)
+        $rate = $this.rateSource.GetRate($ride.BikeType) # [!code highlight]
         return $rate * $ride.Minutes
     }
 }

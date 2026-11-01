@@ -20,6 +20,7 @@ class PriceCalculatorTest {
 
     @Test
     void priceIsRateTimesMinutes() {
+        // [!code highlight]
         PriceCalculator calculator = new PriceCalculator(new FixedRateSource(0.25));
         Ride ride = new Ride("e-bike", 30);
 
