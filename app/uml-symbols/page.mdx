@@ -7,6 +7,7 @@ Every symbol has one fixed meaning.
 
 ## A class
 
+<UmlCode>
 ```plantuml
 class Keeper {
   -name : String
@@ -17,6 +18,19 @@ class Keeper {
   -checkBadge() : boolean
 }
 ```
+
+```java
+public class Keeper {
+    private String name;
+    protected int badgeNumber;
+    public static int count;
+
+    public Keeper(String name) { this.name = name; }
+    public void feed(Animal animal) { ... }
+    private boolean checkBadge() { ... }
+}
+```
+</UmlCode>
 
 | Part                            | Meaning                                                                  |
 | ------------------------------- | ------------------------------------------------------------------------ |
@@ -46,6 +60,7 @@ See [Visibility and class diagrams](/visibility) for the details.
 
 ## Interfaces and abstract classes
 
+<UmlCode>
 ```plantuml
 interface Animal {
   +makeSound() : String
@@ -55,6 +70,18 @@ abstract class Bird {
   +{abstract} fly() : void
 }
 ```
+
+```java
+public interface Animal {
+    String makeSound();
+}
+
+public abstract class Bird {
+    private String name;
+    public abstract void fly();
+}
+```
+</UmlCode>
 
 | Symbol                         | Meaning                                                   |
 | ------------------------------ | --------------------------------------------------------- |
@@ -99,14 +126,110 @@ Where the symbol sits:
 
 A line without an arrow head is an association in both directions, or in a domain model, a relation without a direction.
 
+### Each line in Java
+
+The line style tells how strong the link is.
+A solid line is a lasting link: a field, or `extends` in the class header.
+A dashed line is a weak link: a parameter or local variable in one method, or the promise of `implements`.
+
+<UmlCode title="Association" read="an Enclosure knows a Keeper" look="Solid line, open arrowhead">
+```plantuml
+left to right direction
+Enclosure --> Keeper
+```
+
+```java
+class Enclosure {
+    private Keeper keeper;
+    Enclosure(Keeper keeper) { this.keeper = keeper; }
+}
+```
+</UmlCode>
+
+<UmlCode title="Aggregation" read="a Pen has Goats; a Goat can live without the Pen" look="Solid line, open diamond at the whole">
+```plantuml
+left to right direction
+Pen o-- Goat
+```
+
+```java
+class Pen {
+    private List<Goat> goats = new ArrayList<>();
+    void add(Goat goat) { goats.add(goat); } // made elsewhere
+}
+```
+</UmlCode>
+
+<UmlCode title="Composition" read="a Zoo owns its Areas; they die with the Zoo" look="Solid line, filled diamond at the owner">
+```plantuml
+left to right direction
+Zoo *-- Area
+```
+
+```java
+class Zoo {
+    private List<Area> areas = new ArrayList<>();
+    void open(String name) { areas.add(new Area(name)); } // made here
+}
+```
+</UmlCode>
+
+<UmlCode title="Generalization" read="a Penguin is a Bird" look="Solid line, hollow triangle at the superclass">
+```plantuml
+left to right direction
+Bird <|-- Penguin
+```
+
+```java
+class Penguin extends Bird { ... }
+```
+</UmlCode>
+
+<UmlCode title="Realization" read="a Lion implements Animal" look="Dashed line, hollow triangle at the interface">
+```plantuml
+left to right direction
+interface Animal
+Animal <|.. Lion
+```
+
+```java
+class Lion implements Animal { ... }
+```
+</UmlCode>
+
+<UmlCode title="Dependency" read="a Vet uses Medicine for a moment" look="Dashed line, open arrowhead">
+```plantuml
+left to right direction
+Vet ..> Medicine
+```
+
+```java
+class Vet {
+    void treat(Medicine medicine) { medicine.give(); } // no field
+}
+```
+</UmlCode>
+
+Aggregation and composition are both a field in Java.
+The difference is where `new` happens: an object that comes in from outside is aggregation; an object the class creates itself is composition.
+A class that appears only as a parameter or a local variable, never as a field, is a dependency, not an association.
+
 ## Numbers and names on a line
 
+<UmlCode>
 ```plantuml
 left to right direction
 class Enclosure
 class Animal
 Enclosure "1" --> "-animals\n0..*" Animal
 ```
+
+```java
+class Enclosure {
+    private List<Animal> animals = new ArrayList<>();
+}
+```
+</UmlCode>
 
 | Text at a line end | Meaning                                                    |
 | ------------------ | ---------------------------------------------------------- |
@@ -121,6 +244,7 @@ The diagram says: one Enclosure holds zero or more Animals, in the field `animal
 
 ## Objects
 
+<UmlCode>
 ```plantuml
 object "anna : Keeper" as a {
   name = "Anna"
@@ -128,6 +252,13 @@ object "anna : Keeper" as a {
 object ":Lion" as l
 a --> l
 ```
+
+```java
+Keeper anna = new Keeper("Anna");
+Lion lion = new Lion();  // no name in the diagram
+anna.lookAfter(lion);    // the link: anna now holds the lion
+```
+</UmlCode>
 
 | Symbol           | Meaning                                                 |
 | ---------------- | ------------------------------------------------------- |
@@ -142,6 +273,7 @@ In strict UML the object name is underlined.
 
 A sequence diagram shows which object calls which method, in time order from top to bottom.
 
+<UmlCode>
 ```plantuml
 actor Visitor
 participant ":TicketDesk" as D
@@ -158,6 +290,17 @@ D --> Visitor : ticket
 deactivate D
 ```
 
+```java
+class TicketDesk {
+    Ticket buy(int count) {                  // Visitor -> buy(2)
+        Ticket ticket = new Ticket(count);   // create :Ticket
+        double price = ticket.price();       // returns 30.00
+        return ticket;                       // the return arrow
+    }
+}
+```
+</UmlCode>
+
 | Symbol                         | Meaning                                                    |
 | ------------------------------ | ---------------------------------------------------------- |
 | <UmlSymbol kind="actor" /> | An actor: a person or system outside the software          |
@@ -169,6 +312,7 @@ deactivate D
 | <UmlSymbol kind="create" /> | The object is created at that moment                       |
 | <UmlSymbol kind="lost" /> | The message does not arrive                                |
 
+<UmlCode>
 ```plantuml
 participant ":Enclosure" as E
 participant ":Animal" as A
@@ -182,6 +326,18 @@ else
 end
 ```
 
+```java
+for (Animal animal : animals) {   // loop
+    animal.foodPerDay();
+}
+if (animal.isSick()) {            // alt
+    animal.giveMedicine();
+} else {
+    animal.feed();
+}
+```
+</UmlCode>
+
 | Frame  | Meaning                                      |
 | ------ | -------------------------------------------- |
 | <UmlSymbol kind="frame" label="loop" /> | The messages inside repeat                   |
@@ -192,6 +348,7 @@ end
 
 An activity diagram is a flowchart: it shows steps and choices.
 
+<UmlCode>
 ```plantuml
 start
 :Check the ticket;
@@ -202,6 +359,16 @@ else (no)
 endif
 stop
 ```
+
+```java
+checkTicket();
+if (valid) {
+    openGate();
+} else {
+    showError();
+}
+```
+</UmlCode>
 
 | Symbol              | Meaning                                       |
 | ------------------- | --------------------------------------------- |

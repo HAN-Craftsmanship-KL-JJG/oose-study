@@ -6,6 +6,7 @@ import Checklist from "@/components/Checklist";
 import { Compare, Side } from "@/components/Compare";
 import Example from "@/components/Example";
 import { H2, H3 } from "@/components/HeadingLink";
+import UmlCode from "@/components/UmlCode";
 import UmlSymbol from "@/components/UmlSymbol";
 import Questions from "@/components/quiz/Questions";
 import Reveal from "@/components/Reveal";
@@ -59,6 +60,7 @@ const components: MDXComponents = {
   Checklist,
   Compare,
   Example,
+  UmlCode,
   UmlSymbol,
   Questions,
   Reveal,
