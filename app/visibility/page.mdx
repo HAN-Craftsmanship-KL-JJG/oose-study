@@ -67,54 +67,7 @@ class Keeper {
 
 ## From class diagram to code
 
-| Line in UML                            | Meaning                                    | Java code                                                                 |
-| -------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
-| <UmlSymbol kind="association" from="A" to="B" /> | Association: A knows B                     | A field of type B in A, often set through the constructor                 |
-| <UmlSymbol kind="aggregation" from="A" to="B" /> | Aggregation: A has B, B can live without A | A field of type B; B comes from outside                                   |
-| <UmlSymbol kind="composition" from="A" to="B" /> | Composition: A owns B                      | A field of type B that A creates itself                                   |
-| <UmlSymbol kind="realization" from="B" to="I" /> | Realization                                | `class B implements I`                                                    |
-| <UmlSymbol kind="generalization" from="B" to="A" /> | Generalization (inheritance)               | `class B extends A`                                                       |
-| <UmlSymbol kind="dependency" from="A" to="B" /> | Dependency: A uses B for a moment          | B is a parameter, a local variable, or created with `new` inside a method |
-
-```plantuml
-left to right direction
-A1 --> B1 : association
-A2 o-- B2 : aggregation
-A3 *-- B3 : composition
-interface I4
-I4 <|.. B4 : implements
-A5 <|-- B5 : extends
-A6 ..> B6 : dependency
-```
-
-The diamond and the triangle sit at the left class: `A2` is the whole, `A5` the superclass.
-
-```plantuml
-start
-if (A triangle?) then (yes)
-  if (solid?) then (yes)
-    :class B extends A;
-  else (dashed)
-    :class B implements I;
-  endif
-  stop
-endif
-if (A diamond?) then (yes)
-  if (filled?) then (yes)
-    :field, A creates B itself;
-  else (open)
-    :field, B comes from outside;
-  endif
-  stop
-endif
-:An arrow;
-if (solid?) then (yes)
-  :private field of type B,\nset in the constructor;
-else (dashed)
-  :B only as parameter, local\nvariable or new in a method;
-endif
-stop
-```
+Each line and its Java code are on [UML symbols](/uml-symbols).
 
 Which code fits this association from `CashRegister` to `PaymentMethod`?
 
