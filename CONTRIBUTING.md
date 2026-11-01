@@ -69,6 +69,9 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
 ## Components you can use in a page
 
 - `<Example name="topic/name" title="..." />` shows a code example with a tab per language.
+- End a code line with the comment `// [!code highlight]` (`# [!code highlight]` in PowerShell) to give it a coloured band.
+  This works in example files, fenced code blocks and question code. Use it for the one line that the reader should look at.
+  When the line is too long, put the marker on its own line just above it.
 - A fenced code block with the language `plantuml` becomes a UML diagram. See "Diagrams" below.
 - `<Callout type="note">` shows a quiet box.
 - `<Compare>` with two `<Side kind="bad|good|neutral" title="...">` shows two things side by side.

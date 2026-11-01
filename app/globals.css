@@ -44,6 +44,25 @@ html[data-theme="dark"] {
 .shiki {
   margin: 0;
   font-family: var(--font-mono);
+  --code-highlight: rgb(234 179 8 / 0.2);
+}
+
+[data-theme="dark"] .shiki {
+  --code-highlight: rgb(234 179 8 / 0.16);
+}
+
+/* A line marked with [!code highlight] gets a band that runs to the edges of the block. */
+.shiki .line.highlighted {
+  display: inline-block;
+  width: 100%;
+  box-shadow:
+    -1.25rem 0 0 var(--code-highlight),
+    1.25rem 0 0 var(--code-highlight);
+}
+
+.shiki .line.highlighted,
+[data-theme="dark"] .shiki span.line.highlighted {
+  background-color: var(--code-highlight) !important;
 }
 
 /* Keep short code in table cells on one line. */

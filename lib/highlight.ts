@@ -1,10 +1,17 @@
+import { transformerNotationHighlight } from "@shikijs/transformers";
 import { codeToHtml } from "shiki";
 import type { Question, RenderedQuestion } from "./questions";
 
+/**
+ * Colours code. A line that ends with the comment "[!code highlight]" gets a coloured band,
+ * and the marker itself is removed.
+ * Java uses `// [!code highlight]`, PowerShell `# [!code highlight]`.
+ */
 export function highlight(code: string, lang: string): Promise<string> {
   return codeToHtml(code.trimEnd(), {
     lang,
     themes: { light: "github-light", dark: "github-dark" },
+    transformers: [transformerNotationHighlight({ matchAlgorithm: "v3" })],
   });
 }
 
