@@ -194,19 +194,7 @@ deactivate Z
 deactivate UI
 ```
 
-| Symbol                                  | Meaning                                                                                 |
-| --------------------------------------- | --------------------------------------------------------------------------------------- |
-| `a : Animal`                            | A lifeline: the object `a` of class `Animal`. `:Animal` means an object without a name   |
-| <UmlSymbol kind="lifeline" /> | The life of the object in time                                                          |
-| <UmlSymbol kind="activation" /> | Activation bar: the object is busy with this method. Calls start from the bar of the caller |
-| <UmlSymbol kind="message" /> | A synchronous message: a method call. The caller waits for the answer                   |
-| `ok = isHungry()`                       | A message with its return value. You can then leave out the return arrow                 |
-| <UmlSymbol kind="return" /> | A return. It is optional when the assignment already shows the value                    |
-| <UmlSymbol kind="self" /> | A self-call: the object calls its own method                                            |
-| `create(...)` to a lifeline             | A create message: the object is made at this moment, so its box starts at the arrow      |
-| <UmlSymbol kind="frame" label="alt" /> | Alternatives: only one part runs, chosen by the guard (the condition in brackets)        |
-| <UmlSymbol kind="frame" label="opt" /> | An optional part: it runs only when the guard is true                                   |
-| <UmlSymbol kind="frame" label="loop" /> | The part repeats, for example `[for each ticket]`                                       |
+The symbols are explained on [UML symbols](/uml-symbols).
 
 ### From SD to DCD
 
@@ -262,24 +250,7 @@ Visit "1" *-- "1..*" Ticket : tickets
 TicketDesk ..> Visit : uses
 ```
 
-| Symbol                                  | Meaning                                                                             |
-| --------------------------------------- | ----------------------------------------------------------------------------------- |
-| `+`                                     | public                                                                              |
-| `-`                                     | private                                                                             |
-| `#`                                     | protected                                                                           |
-| `~`                                     | package (no modifier in Java)                                                       |
-| `ticketsSold : int`                     | An attribute with its type                                                          |
-| `pay(amount: double) : boolean`      | A method with a parameter and its type, and the return type at the end               |
-| `«interface»` above the name            | An interface                                                                        |
-| `«abstract»` or a name in italics       | An abstract class. An abstract method such as `makeSound()` is also in italics      |
-| <UmlSymbol kind="association" /> | A navigable association: TicketDesk knows a PaymentMethod (a field). The arrow shows who can call whom |
-| `method` at the end of a line           | The role name: the name of the field                                                |
-| `1`, `*`, `1..*` at the end of a line   | The multiplicity: how many objects the field holds. `*` means a list                |
-| <UmlSymbol kind="realization" /> | Realization: `CardPayment implements PaymentMethod`                                 |
-| <UmlSymbol kind="generalization" /> | Generalization: `Penguin extends Animal`                                            |
-| <UmlSymbol kind="dependency" /> | Dependency: TicketDesk uses Visit only for a moment, as a parameter or local variable |
-| <UmlSymbol kind="aggregation" /> | Aggregation: the whole has parts, but the parts can live without it                |
-| <UmlSymbol kind="composition" /> | Composition: the whole owns its parts, and creates them                             |
+The symbols are explained on [UML symbols](/uml-symbols).
 
 <Compare>
 <Side kind="neutral" title="Domain model">

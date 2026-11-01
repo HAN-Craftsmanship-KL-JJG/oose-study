@@ -304,11 +304,12 @@ class TicketDesk {
 | Symbol                         | Meaning                                                    |
 | ------------------------------ | ---------------------------------------------------------- |
 | <UmlSymbol kind="actor" /> | An actor: a person or system outside the software          |
-| <UmlSymbol kind="participant" /> | An object that takes part                                  |
+| <UmlSymbol kind="participant" /> | An object that takes part: `a : Animal` is the object `a` of class `Animal`; `:Animal` is an object without a name |
 | <UmlSymbol kind="lifeline" /> | The lifeline: the object exists during this time           |
-| <UmlSymbol kind="activation" /> | The activation: a method of this object is running         |
+| <UmlSymbol kind="activation" /> | The activation: a method of this object is running. Calls start from the bar of the caller |
 | <UmlSymbol kind="message" /> | A message: a method call, such as `price()`                |
-| <UmlSymbol kind="return" /> | A return: the answer of the call, such as `30.00`          |
+| <UmlSymbol kind="return" /> | A return: the answer of the call, such as `30.00`. Optional when the message shows it, as in `p = price()` |
+| <UmlSymbol kind="self" /> | A self-call: the object calls its own method               |
 | <UmlSymbol kind="create" /> | The object is created at that moment                       |
 | <UmlSymbol kind="lost" /> | The message does not arrive                                |
 
@@ -343,6 +344,8 @@ if (animal.isSick()) {            // alt
 | <UmlSymbol kind="frame" label="loop" /> | The messages inside repeat                   |
 | <UmlSymbol kind="frame" label="alt" /> | Choose one part: the one whose condition is true, like `if` and `else` |
 | <UmlSymbol kind="frame" label="opt" /> | The part runs only if the condition is true  |
+
+The condition in square brackets, such as `[ok]`, is the guard.
 
 ## Activity diagrams
 
