@@ -3,13 +3,18 @@ import type { ReactNode } from "react";
 
 /**
  * Two panels side by side: a bad and a good version, or any two things to compare.
+ * Panels with code are stacked instead, so the code keeps its full width.
  * <Compare>
  * <Side kind="bad" title="Before">...Markdown, code or a diagram...</Side>
  * <Side kind="good" title="After">...</Side>
  * </Compare>
  */
 export function Compare({ children }: { children: ReactNode }) {
-  return <div className="not-prose my-8 grid gap-4 md:grid-cols-2">{children}</div>;
+  return (
+    <div className="not-prose my-8 grid gap-4 md:grid-cols-2 md:has-[.code-block]:grid-cols-1">
+      {children}
+    </div>
+  );
 }
 
 const KINDS = {
@@ -49,7 +54,7 @@ export function Side({
         {Icon && <Icon className="size-4" aria-hidden />}
         {title}
       </div>
-      <div className="prose prose-sm max-w-none px-4 py-3 prose-stone dark:prose-invert prose-code:before:content-none prose-code:after:content-none [&_figure]:my-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+      <div className="prose prose-sm max-w-none px-4 py-3 prose-stone dark:prose-invert prose-code:before:content-none prose-code:after:content-none [&_.code-block]:-mx-4 [&_.code-block]:rounded-none [&_.code-block]:border-x-0 [&_.shiki]:[--code-pad:1rem] [&_figure]:my-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>.code-block:first-child]:-mt-3 [&>.code-block:first-child]:border-t-0 [&>.code-block:last-child]:-mb-3 [&>.code-block:last-child]:border-b-0">
         {children}
       </div>
     </div>

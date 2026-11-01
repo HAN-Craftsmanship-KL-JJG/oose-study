@@ -74,7 +74,7 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
   When the line is too long, put the marker on its own line just above it.
 - A fenced code block with the language `plantuml` becomes a UML diagram. See "Diagrams" below.
 - `<Callout type="note">` shows a quiet box.
-- `<Compare>` with two `<Side kind="bad|good|neutral" title="...">` shows two things side by side.
+- `<Compare>` with two `<Side kind="bad|good|neutral" title="...">` shows two things side by side, or one above the other when they hold code.
 - `<Reveal title="...">` hides an answer until the student opens it.
 - `<Checklist id="..." items={[...]} />` shows checkboxes that the browser remembers.
 - `<UmlSymbol kind="..." />` draws one UML symbol, such as an arrow or a stick figure, for a table cell.
