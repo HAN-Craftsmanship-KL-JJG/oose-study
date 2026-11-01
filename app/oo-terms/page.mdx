@@ -154,29 +154,6 @@ You want low coupling; see [Coupling and cohesion](/coupling-cohesion).
 
 *"The degree to which classes depend on each other."*
 
-<Compare>
-<Side kind="bad" title="High coupling">
-```plantuml
-A --> B
-A --> C
-A --> D
-B --> C
-C --> D
-D --> B
-```
-One change spreads everywhere.
-</Side>
-<Side kind="good" title="Low coupling">
-```plantuml
-interface I
-A --> I
-I <|.. B
-I <|.. C
-```
-You can change B or C without touching A.
-</Side>
-</Compare>
-
 ## Association
 
 An association is a structural relation: an object of A knows an object of B, so A may call methods of B.
