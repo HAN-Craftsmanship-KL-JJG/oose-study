@@ -140,7 +140,7 @@ Enclosure --> Keeper
 
 ```java
 class Enclosure {
-    private Keeper keeper;
+    private Keeper keeper; // [!code highlight]
     Enclosure(Keeper keeper) { this.keeper = keeper; }
 }
 ```
@@ -155,7 +155,7 @@ Pen o-- Goat
 ```java
 class Pen {
     private List<Goat> goats = new ArrayList<>();
-    void add(Goat goat) { goats.add(goat); } // made elsewhere
+    void add(Goat goat) { goats.add(goat); } // made elsewhere [!code highlight]
 }
 ```
 </UmlCode>
@@ -169,7 +169,7 @@ Zoo *-- Area
 ```java
 class Zoo {
     private List<Area> areas = new ArrayList<>();
-    void open(String name) { areas.add(new Area(name)); } // made here
+    void open(String name) { areas.add(new Area(name)); } // made here [!code highlight]
 }
 ```
 </UmlCode>
@@ -205,7 +205,7 @@ Vet ..> Medicine
 
 ```java
 class Vet {
-    void treat(Medicine medicine) { medicine.give(); } // no field
+    void treat(Medicine medicine) { medicine.give(); } // no field [!code highlight]
 }
 ```
 </UmlCode>
@@ -226,7 +226,7 @@ Enclosure "1" --> "-animals\n0..*" Animal
 
 ```java
 class Enclosure {
-    private List<Animal> animals = new ArrayList<>();
+    private List<Animal> animals = new ArrayList<>(); // [!code highlight]
 }
 ```
 </UmlCode>
@@ -256,7 +256,7 @@ a --> l
 ```java
 Keeper anna = new Keeper("Anna");
 Lion lion = new Lion();  // no name in the diagram
-anna.lookAfter(lion);    // the link: anna now holds the lion
+anna.lookAfter(lion);    // the link: anna now holds the lion [!code highlight]
 ```
 </UmlCode>
 
