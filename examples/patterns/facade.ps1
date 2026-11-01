@@ -18,7 +18,7 @@ class ZooDesk {
     hidden [PaymentService]$payment = [PaymentService]::new()
     hidden [TourService]$tours = [TourService]::new()
 
-    [bool] BookVisit([string]$visitorId, [string]$date, [double]$price) {
+    [bool] BookVisit([string]$visitorId, [string]$date, [double]$price) { # [!code highlight]
         if (-not $this.tickets.IsAvailable($date)) { return $false }
         if (-not $this.payment.Pay($visitorId, $price)) { return $false }
         $this.tickets.Reserve($date)

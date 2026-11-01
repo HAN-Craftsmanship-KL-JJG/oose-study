@@ -14,11 +14,11 @@ public abstract class Game {
     private Board board;
 
     public void start() {
-        board = createBoard();      // the factory method
+        board = createBoard();      // the factory method [!code highlight]
         board.setUp();
     }
 
-    protected abstract Board createBoard();
+    protected abstract Board createBoard(); // [!code highlight]
 }
 
 public class ChessGame extends Game {

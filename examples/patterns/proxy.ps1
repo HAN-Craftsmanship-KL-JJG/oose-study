@@ -14,12 +14,13 @@ class FlatFileQuestionStorage : QuestionStorage {
 }
 
 # The proxy: the same interface, and it stands in front of the real object.
-class EncryptingQuestionStorage : QuestionStorage {
+class EncryptingQuestionStorage : QuestionStorage { # [!code highlight]
     hidden [QuestionStorage]$real
 
     EncryptingQuestionStorage([QuestionStorage]$real) { $this.real = $real }
 
     [void] Save([string]$id, [string]$text) {
+        # [!code highlight]
         $this.real.Save($id, $this.Encrypt($text))   # extra work, then pass the call on
     }
 

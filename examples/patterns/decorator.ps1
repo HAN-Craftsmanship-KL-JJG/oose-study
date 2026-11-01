@@ -12,13 +12,13 @@ class MultipleChoiceQuestion : Question {
 }
 
 # The decorator: the same interface, and it wraps another Question.
-class SourceBonus : Question {
+class SourceBonus : Question { # [!code highlight]
     hidden [Question]$question              # the wrapped question
 
     SourceBonus([Question]$question) { $this.question = $question }
 
     [int] Points() {
-        return $this.question.Points() + 2  # pass the call on, then add something
+        return $this.question.Points() + 2  # pass the call on, then add something [!code highlight]
     }
 }
 

@@ -19,7 +19,7 @@ class DailyRate : RateStrategy {
 class Ride {
     hidden [datetime]$startTime
     hidden [datetime]$endTime
-    hidden [RateStrategy]$rate              # composition: Ride has a strategy
+    hidden [RateStrategy]$rate              # composition: Ride has a strategy [!code highlight]
 
     Ride([datetime]$startTime, [datetime]$endTime, [RateStrategy]$rate) {
         $this.startTime = $startTime
@@ -32,7 +32,7 @@ class Ride {
     }
 
     [double] CalculatePrice() {
-        return $this.rate.Calculate($this)  # delegate to the strategy
+        return $this.rate.Calculate($this)  # delegate to the strategy [!code highlight]
     }
 }
 

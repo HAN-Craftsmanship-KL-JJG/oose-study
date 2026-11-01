@@ -12,7 +12,7 @@ public class MultipleChoiceQuestion implements Question {
 }
 
 // The decorator: the same interface, and it wraps another Question.
-public class SourceBonus implements Question {
+public class SourceBonus implements Question { // [!code highlight]
     private final Question question;            // the wrapped question
 
     public SourceBonus(Question question) {
@@ -21,6 +21,7 @@ public class SourceBonus implements Question {
 
     @Override
     public int points() {
+        // [!code highlight]
         return question.points() + 2;           // pass the call on, then add something
     }
 }

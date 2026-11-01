@@ -21,7 +21,7 @@ class LockItAdapter : BikeLock {
     LockItAdapter([LockItSdk]$sdk) { $this.sdk = $sdk }
 
     [void] Unlock([string]$bikeNumber) {
-        $this.sdk.unlockBike($bikeNumber)                   # other method name
+        $this.sdk.unlockBike($bikeNumber)                   # other method name [!code highlight]
     }
 }
 
@@ -35,6 +35,7 @@ class SmartLockAdapter : BikeLock {
     }
 
     [void] Unlock([string]$bikeNumber) {
+        # [!code highlight]
         $this.api.open([int]$bikeNumber, $this.token)      # other name, types and data
     }
 }

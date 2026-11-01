@@ -19,7 +19,7 @@ public class DailyRate implements RateStrategy {
 public class Ride {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
-    private final RateStrategy rate;        // composition: Ride has a strategy
+    private final RateStrategy rate;        // composition: Ride has a strategy [!code highlight]
 
     public Ride(LocalDateTime startTime, LocalDateTime endTime, RateStrategy rate) {
         this.startTime = startTime;
@@ -32,7 +32,7 @@ public class Ride {
     }
 
     public double calculatePrice() {
-        return rate.calculate(this);        // delegate to the strategy
+        return rate.calculate(this);        // delegate to the strategy [!code highlight]
     }
 }
 

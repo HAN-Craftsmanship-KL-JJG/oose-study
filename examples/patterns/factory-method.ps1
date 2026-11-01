@@ -14,10 +14,11 @@ class Game {
     hidden [Board]$board
 
     [void] Start() {
-        $this.board = $this.CreateBoard()   # the factory method
+        $this.board = $this.CreateBoard()   # the factory method [!code highlight]
         $this.board.SetUp()
     }
 
+    # [!code highlight]
     [Board] CreateBoard() { throw [System.NotImplementedException]::new("CreateBoard") }
 }
 

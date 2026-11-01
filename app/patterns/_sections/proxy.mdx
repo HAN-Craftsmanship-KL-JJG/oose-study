@@ -38,7 +38,7 @@ P -> P : encrypt(text)
 P -> F : save("q1", "V2hhdCBpcy...")
 ```
 
-<Example name="patterns/proxy" title="The proxy encrypts and then passes the call to the real storage" />
+<Example name="patterns/proxy" label="Proxy" tone="stone" title="Clue: the same interface as the real object; it stands in front and passes the call on" />
 
 Recognise it: a class that implements an interface and also has an association to that same interface, with the same method names on both sides.
 
@@ -94,7 +94,7 @@ B --> T : 1 + 2 = 3
 T --> C : 3 x 2 = 6
 ```
 
-<Example name="patterns/decorator" title="Bonus decorators wrap a question and add to its points" />
+<Example name="patterns/decorator" label="Decorator" tone="amber" title="Clue: the same interface as the wrapped object; it adds to the answer" />
 
 ### Proxy or Decorator?
 
@@ -161,7 +161,7 @@ Z -> G : book(date, visitor)
 Z --> U : true
 ```
 
-<Example name="patterns/facade" title="ZooDesk is one simple entry to three services" />
+<Example name="patterns/facade" label="Facade" tone="green" title="Clue: one simple method that calls several classes of a subsystem" />
 
 Recognise it: one class between a client and several classes, with a few high-level methods.
 A facade does not implement an interface of the classes behind it.

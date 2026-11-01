@@ -1,8 +1,9 @@
 class LockFactory {
     # The only place that knows the concrete adapter classes.
-    [BikeLock] CreateLock([string]$supplier) {
+    [BikeLock] CreateLock([string]$supplier) { # [!code highlight]
         switch ($supplier) {
-            "lockit" { return [LockItAdapter]::new([LockItSdk]::new()) }
+            "lockit" { return [LockItAdapter]::new([LockItSdk]::new()) } # [!code highlight]
+            # [!code highlight]
             "smartlock" { return [SmartLockAdapter]::new([SmartLockApi]::new(), "secret-token") }
         }
         throw "Unknown supplier: $supplier"

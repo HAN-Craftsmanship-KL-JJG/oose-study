@@ -1,14 +1,15 @@
 class Report {
     # The template method: it fixes the order of the steps.
-    [void] Generate() {
+    [void] Generate() { # [!code highlight]
         $this.FetchData()
         $this.Format()
         $this.WriteFooter()
     }
 
     # Subclasses must override these two.
+    # [!code highlight]
     [void] FetchData() { throw [System.NotImplementedException]::new("FetchData") }
-    [void] Format() { throw [System.NotImplementedException]::new("Format") }
+    [void] Format() { throw [System.NotImplementedException]::new("Format") } # [!code highlight]
 
     [void] WriteFooter() {                  # the same for every report
         Write-Host "-- end of report --"

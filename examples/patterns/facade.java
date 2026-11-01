@@ -18,7 +18,7 @@ public class ZooDesk {
     private final PaymentService payment = new PaymentService();
     private final TourService tours = new TourService();
 
-    public boolean bookVisit(String visitorId, String date, double price) {
+    public boolean bookVisit(String visitorId, String date, double price) { // [!code highlight]
         if (!tickets.isAvailable(date)) return false;
         if (!payment.pay(visitorId, price)) return false;
         tickets.reserve(date);

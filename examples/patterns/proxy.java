@@ -12,7 +12,7 @@ public class FlatFileQuestionStorage implements QuestionStorage {
 }
 
 // The proxy: the same interface, and it stands in front of the real object.
-public class EncryptingQuestionStorage implements QuestionStorage {
+public class EncryptingQuestionStorage implements QuestionStorage { // [!code highlight]
     private final QuestionStorage real;
 
     public EncryptingQuestionStorage(QuestionStorage real) {
@@ -21,6 +21,7 @@ public class EncryptingQuestionStorage implements QuestionStorage {
 
     @Override
     public void save(String id, String text) {
+        // [!code highlight]
         real.save(id, encrypt(text));           // extra work, then pass the call on
     }
 

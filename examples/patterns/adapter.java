@@ -22,7 +22,7 @@ public class LockItAdapter implements BikeLock {
 
     @Override
     public void unlock(String bikeNumber) {
-        sdk.unlockBike(bikeNumber);                         // other method name
+        sdk.unlockBike(bikeNumber);                         // other method name [!code highlight]
     }
 }
 
@@ -37,6 +37,7 @@ public class SmartLockAdapter implements BikeLock {
 
     @Override
     public void unlock(String bikeNumber) {
+        // [!code highlight]
         api.open(Integer.parseInt(bikeNumber), token);      // other name, types and data
     }
 }
