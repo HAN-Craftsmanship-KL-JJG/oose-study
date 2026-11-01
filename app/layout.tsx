@@ -37,7 +37,8 @@ const pageQuestions = Object.fromEntries(
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    // data-scroll-behavior makes the router jump to the top of a new page, not scroll there.
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
