@@ -350,6 +350,7 @@ The condition in square brackets, such as `[ok]`, is the guard.
 ## Activity diagrams
 
 An activity diagram is a flowchart: it shows steps and choices.
+Use it for a business process or for the steps of a complex use case.
 
 <UmlCode>
 ```plantuml
@@ -377,7 +378,9 @@ if (valid) {
 | ------------------- | --------------------------------------------- |
 | <UmlSymbol kind="start" /> | Start                                         |
 | <UmlSymbol kind="action" /> | One step                                      |
-| <UmlSymbol kind="decision" /> | A choice; each way out has a condition        |
+| <UmlSymbol kind="decision" /> | A choice or a merge; each way out has a condition |
+| `[guard]`           | The condition for one way out                 |
+| <UmlSymbol kind="fork" /> | Fork or join: steps that run in parallel      |
 | <UmlSymbol kind="end" /> | End                                           |
 
 ## Notes

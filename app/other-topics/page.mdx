@@ -91,32 +91,6 @@ A -- L
 </Side>
 </Compare>
 
-## Activity diagram
-
-An activity diagram shows the steps of a process and the choices in it, like a flowchart.
-Use it for a business process or for the steps of a complex use case.
-
-```plantuml
-start
-:Scan the ticket;
-if (Ticket valid and zoo not full?) then (yes)
-  :Open the gate;
-  :Count the visitor;
-else (no)
-  :Show why entry is not possible;
-endif
-stop
-```
-
-| Symbol           | Meaning                                  |
-| ---------------- | ---------------------------------------- |
-| <UmlSymbol kind="start" /> | Start                                    |
-| <UmlSymbol kind="action" /> | An action (one step)                     |
-| <UmlSymbol kind="decision" /> | A decision or a merge                    |
-| `[guard]`        | The condition for one way out            |
-| <UmlSymbol kind="fork" /> | Fork or join: steps that run in parallel |
-| <UmlSymbol kind="end" /> | End                                      |
-
 ## State machine diagram
 
 A state machine diagram shows the states of one object and the events that change its state.
@@ -136,6 +110,7 @@ Use it when an object reacts differently to the same event, depending on its sta
 
 The steps of a process.
 Who does what, in which order.
+Its symbols are on [UML symbols](/uml-symbols).
 
 </Side>
 <Side kind="neutral" title="State machine diagram">
