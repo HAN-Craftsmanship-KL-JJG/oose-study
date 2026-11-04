@@ -29,7 +29,13 @@ export default function CodeTabs({
 
   return (
     <figure className="not-prose my-8 overflow-hidden rounded-sm border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900">
-      <div className="flex flex-wrap items-center gap-3 border-b border-stone-200 bg-stone-50 px-4 py-2 dark:border-stone-800 dark:bg-stone-900">
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 border-b border-stone-200 bg-stone-50 px-4 py-2 text-sm font-medium text-stone-600 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
+        {label && title && <Label tone={tone}>{label}</Label>}
+        {(title ?? label) && (
+          <span className={title ? "" : "font-semibold text-stone-800 dark:text-stone-100"}>
+            {title ?? label}
+          </span>
+        )}
         <div
           role="tablist"
           className="ml-auto flex gap-1 rounded-sm bg-stone-200/60 p-0.5 dark:bg-stone-800"
@@ -50,12 +56,6 @@ export default function CodeTabs({
           ))}
         </div>
       </div>
-      {(title ?? label) && (
-        <figcaption className="flex flex-wrap items-center gap-x-2.5 gap-y-1 border-b border-stone-100 px-4 py-2 text-sm font-medium text-stone-600 dark:border-stone-800 dark:text-stone-400">
-          {label && <Label tone={tone}>{label}</Label>}
-          {title}
-        </figcaption>
-      )}
       <div
         role="tabpanel"
         className="overflow-x-auto text-[13.5px] leading-relaxed"
