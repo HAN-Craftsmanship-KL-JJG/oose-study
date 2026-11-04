@@ -1,3 +1,0 @@
-{
-  "powershell": "'hidden' only hides the property from Get-Member and tab completion. Other code can still change it, so it is a convention, not a real protection."
-}

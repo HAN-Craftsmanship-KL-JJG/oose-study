@@ -9,7 +9,7 @@ const ROOT = new URL("..", import.meta.url).pathname;
 // [maximum lines per file, maximum characters per line]
 const LIMITS = {
   ".java": [120, 100],
-  ".ps1": [120, 100],
+  ".cpp": [120, 100],
   // One sentence per line. A sentence over 160 characters is too long for our readers.
   ".mdx": [500, 160],
 };

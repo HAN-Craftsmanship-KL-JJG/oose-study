@@ -19,7 +19,7 @@ async function readOptional(file: string): Promise<string | null> {
 /**
  * A code example in every language that has a file for it.
  * `name` is a path below examples/ without extension, such as "oo-terms/interface".
- * It reads examples/<name>.py, .ps1, .java and .cpp, and the optional examples/<name>.notes.json
+ * It reads examples/<name>.java and .cpp, and the optional examples/<name>.notes.json
  * with a short note per language.
  * An optional examples/<name>.trace.json adds a step-by-step run per language (see lib/trace.ts).
  * `label` adds a coloured pill before the title, such as label="Creator" tone="green".

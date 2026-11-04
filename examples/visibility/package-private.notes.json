@@ -1,3 +1,3 @@
 {
-  "powershell": "A module controls which functions it exports with Export-ModuleMember. Classes have no visibility: 'using module' makes all classes of a module available."
+  "cpp": "C++ has no packages. A namespace only groups names; it does not hide them. To hide a class, put it in an anonymous namespace inside one .cpp file."
 }

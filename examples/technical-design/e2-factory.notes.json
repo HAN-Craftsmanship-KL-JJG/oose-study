@@ -1,3 +1,0 @@
-{
-  "powershell": "LockItSdk and SmartLockApi are .NET libraries in the real case. Here they are passed in as objects, so the script also runs without them."
-}

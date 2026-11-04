@@ -1,3 +1,3 @@
 {
-  "powershell": "PowerShell resolves class names when the script is parsed. In one file, put Library before LoanScreen, or load them from a module."
+  "cpp": "LoanScreen uses Library before Library is defined. In a real project each class has its own header file, and loan_screen.cpp includes library.h."
 }

@@ -1,0 +1,3 @@
+{
+  "cpp": "ClosedState creates an OpenState and the other way round. So both classes are declared first, and their methods are written below them."
+}

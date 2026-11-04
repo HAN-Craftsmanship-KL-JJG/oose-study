@@ -1,3 +1,3 @@
 {
-  "powershell": "PowerShell has no abstract, protected or final. The steps in the base class throw, so a subclass must override them, and nothing stops a subclass from overriding Generate."
+  "cpp": "A method that is not virtual cannot be overridden, so generate() already acts like final in Java. The steps are pure virtual (= 0): a subclass must fill them in."
 }
