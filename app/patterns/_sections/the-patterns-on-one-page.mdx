@@ -91,7 +91,7 @@ T --> R : 7.50
 R --> C : 7.50
 ```
 
-<Example name="patterns/strategy" label="Strategy" tone="blue" title="Clue: a field of an interface type, and one call through it" />
+<Example name="patterns/strategy" label="Strategy" tone="blue" />
 
 Recognise it: an interface with one class per algorithm, and a context class with an association to that interface.
 Strategy follows the Open/Closed Principle most of all.
@@ -146,7 +146,7 @@ P -> P : writeFooter()
 note right of P : from Report
 ```
 
-<Example name="patterns/template-method" label="Template Method" tone="violet" title="Clue: a final method that calls abstract steps in a fixed order" />
+<Example name="patterns/template-method" label="Template Method" tone="violet" />
 
 Recognise it: an abstract class with one public method and several protected abstract methods, and subclasses that only override those steps.
 
@@ -223,7 +223,7 @@ S -> B ** : create()
 S -> B : setUp()
 ```
 
-<Example name="patterns/factory-method" label="Factory Method" tone="amber" title="Clue: an abstract method returns the new object; a subclass picks which" />
+<Example name="patterns/factory-method" label="Factory Method" tone="amber" />
 
 Recognise it: an abstract method named "create…" that returns an interface type, overridden in subclasses.
 
@@ -268,7 +268,7 @@ F --> C : lock (type BikeLock)
 C -> S : unlock("F12")
 ```
 
-<Example name="patterns/factory" label="Factory" tone="green" title="Clue: only this class says new; the caller gets the interface" />
+<Example name="patterns/factory" label="Factory" tone="green" />
 
 Recognise it: a class named …Factory, with dependency arrows to all concrete classes and a method that returns the interface.
 
@@ -318,7 +318,7 @@ note over A : "F12" becomes 12, and the token is added
 A -> L : open(12, token)
 ```
 
-<Example name="patterns/adapter" label="Adapter" tone="rose" title="Clue: it implements the interface you need and calls a method with another name" />
+<Example name="patterns/adapter" label="Adapter" tone="rose" />
 
 The domain depends on its own interface `BikeLock` (Dependency Inversion).
 It is protected against changes in the libraries (Protected Variations).
