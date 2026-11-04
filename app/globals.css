@@ -94,6 +94,30 @@ html[data-theme="dark"] {
   background-color: var(--code-highlight) !important;
 }
 
+/* While a trace runs, only the line that runs now has a band, with an arrow in the margin. */
+[data-tracing] .shiki .line.highlighted {
+  background-color: transparent !important;
+}
+
+[data-tracing] .shiki .line {
+  /* Keep the line clear of the sticky header above and the player below. */
+  scroll-margin-top: 5rem;
+  scroll-margin-bottom: 20rem;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+
+[data-tracing] .shiki .line.trace-current {
+  opacity: 1;
+  background-color: var(--code-highlight) !important;
+  box-shadow: inset 3px 0 0 rgb(217 119 6);
+}
+
+[data-tracing] .shiki .line.trace-current::before {
+  content: "▶";
+  color: rgb(217 119 6);
+}
+
 /* Keep short code in table cells on one line. */
 .prose td code {
   white-space: nowrap;

@@ -1,0 +1,99 @@
+{
+  "java": [
+    {
+      "at": "Question q3 = new TimeBonus(",
+      "say": "Look at q3, and read the line from the inside out. First `new MultipleChoiceQuestion()` makes a plain question, worth 1 point.",
+      "objects": [
+        {
+          "name": "mc",
+          "class": "MultipleChoiceQuestion"
+        }
+      ]
+    },
+    {
+      "at": "Question q3 = new TimeBonus(",
+      "say": "Then a SourceBonus is wrapped around it. A SourceBonus is also a Question, and it keeps the plain question in its field `question`.",
+      "objects": [
+        {
+          "name": "sb",
+          "class": "SourceBonus",
+          "fields": {
+            "question": "→ mc"
+          }
+        },
+        {
+          "name": "mc",
+          "class": "MultipleChoiceQuestion"
+        }
+      ]
+    },
+    {
+      "at": "Question q3 = new TimeBonus(",
+      "say": "Then a TimeBonus is wrapped around that. There are now three layers, like an onion. From the outside, q3 is just a Question.",
+      "objects": [
+        {
+          "name": "q3",
+          "class": "TimeBonus",
+          "fields": {
+            "question": "→ sb"
+          }
+        },
+        {
+          "name": "sb",
+          "class": "SourceBonus",
+          "fields": {
+            "question": "→ mc"
+          }
+        },
+        {
+          "name": "mc",
+          "class": "MultipleChoiceQuestion"
+        }
+      ]
+    },
+    {
+      "at": "System.out.println(q3.points());",
+      "say": "The program asks q3 for its points. It only talks to the outer layer."
+    },
+    {
+      "at": "return question.points() * 2;",
+      "call": {
+        "on": "q3",
+        "method": "points()"
+      },
+      "say": "TimeBonus doubles the points, but first it needs the points of the question inside it. So it asks, and waits for the answer."
+    },
+    {
+      "at": "return question.points() + 2;",
+      "call": {
+        "on": "sb",
+        "method": "points()"
+      },
+      "say": "SourceBonus adds 2 points, but it also needs the points inside it first. So it asks and waits, too."
+    },
+    {
+      "at": "public int points() { return 1; }",
+      "call": {
+        "on": "mc",
+        "method": "points()"
+      },
+      "say": "The plain question in the middle answers: 1 point. It does not know that it is wrapped.",
+      "done": true
+    },
+    {
+      "at": "return question.points() + 2;",
+      "say": "The answer travels back out. SourceBonus adds its bonus: 1 + 2 = 3.",
+      "done": true
+    },
+    {
+      "at": "return question.points() * 2;",
+      "say": "TimeBonus doubles it: 3 × 2 = 6.",
+      "done": true
+    },
+    {
+      "at": "System.out.println(q3.points());",
+      "say": "The program prints 6. Each layer added something on the way back. Layers combine in any order and any number, without a class for every mix.",
+      "print": "6"
+    }
+  ]
+}

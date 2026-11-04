@@ -1,0 +1,81 @@
+{
+  "java": [
+    {
+      "at": "Report report = new PdfReport();",
+      "say": "`new PdfReport()` makes a PdfReport object. The variable `report` has the type Report, the general kind. That works because PdfReport extends Report: a PdfReport is a Report.",
+      "objects": [
+        {
+          "name": "report",
+          "class": "PdfReport"
+        }
+      ]
+    },
+    {
+      "at": "report.generate();",
+      "say": "The program asks the report to make itself. It does not say how."
+    },
+    {
+      "at": "public final void generate()",
+      "call": {
+        "on": "report",
+        "method": "generate()"
+      },
+      "say": "PdfReport has no generate() of its own, so it uses the one from its parent class Report. This method is the template: it lists the steps in a fixed order. `final` means that no subclass may change this list."
+    },
+    {
+      "at": "fetchData();",
+      "nth": 1,
+      "say": "Step 1: fetch the data. In Report this step is `abstract`: it has a name but no code. Each subclass must write its own version."
+    },
+    {
+      "at": "PDF: fetch the data",
+      "call": {
+        "on": "report",
+        "method": "fetchData()"
+      },
+      "say": "Java looks at the real object, a PdfReport, and runs the PdfReport version of the step.",
+      "print": "PDF: fetch the data",
+      "done": true
+    },
+    {
+      "at": "format();",
+      "nth": 1,
+      "say": "Step 2: lay out the report. Again, Report only gives the step a name."
+    },
+    {
+      "at": "PDF: lay out the pages",
+      "call": {
+        "on": "report",
+        "method": "format()"
+      },
+      "say": "The PdfReport version runs again.",
+      "print": "PDF: lay out the pages",
+      "done": true
+    },
+    {
+      "at": "writeFooter();",
+      "nth": 1,
+      "say": "Step 3: the footer."
+    },
+    {
+      "at": "-- end of report --",
+      "call": {
+        "on": "report",
+        "method": "writeFooter()"
+      },
+      "say": "This step does have code in Report, and PdfReport does not replace it. So the shared version runs: every report gets the same footer.",
+      "print": "-- end of report --",
+      "done": true
+    },
+    {
+      "at": "writeFooter();",
+      "nth": 1,
+      "say": "All three steps are done, so generate() ends. Report decided the order; PdfReport only filled in the blanks.",
+      "done": true
+    },
+    {
+      "at": "report.generate();",
+      "say": "Back in the program. With `new HtmlReport()` on the first line, the same three steps run in the same order, but steps 1 and 2 come from HtmlReport."
+    }
+  ]
+}

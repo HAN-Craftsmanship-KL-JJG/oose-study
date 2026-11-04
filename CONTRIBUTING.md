@@ -58,22 +58,27 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
 
 ## Where things are
 
-| Path                   | What it holds                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| `app/<topic>/page.mdx` | One page per topic, in MDX (Markdown with components)                          |
-| `lib/pages.ts`         | The list of pages: menu order, sections and titles                             |
-| `examples/<topic>/`    | Code examples: `<name>.java`, `<name>.ps1` and an optional `<name>.notes.json` |
-| `content/questions/`   | The question bank, one file per topic                                          |
-| `components/`          | The React components that pages use                                            |
-| `lib/`                 | Shared types and helpers                                                       |
-| `lib/search-index.ts`  | Builds the search index from the MDX pages, served as `/search-index.json`     |
-| `uml/`                 | The diagram style and the rendered diagrams                                    |
+| Path                   | What it holds                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `app/<topic>/page.mdx` | One page per topic, in MDX (Markdown with components)                                |
+| `lib/pages.ts`         | The list of pages: menu order, sections and titles                                   |
+| `examples/<topic>/`    | Code examples: `<name>.java`, `<name>.ps1`, optional `.notes.json` and `.trace.json` |
+| `content/questions/`   | The question bank, one file per topic                                                |
+| `components/`          | The React components that pages use                                                  |
+| `lib/`                 | Shared types and helpers                                                             |
+| `lib/search-index.ts`  | Builds the search index from the MDX pages, served as `/search-index.json`           |
+| `uml/`                 | The diagram style and the rendered diagrams                                          |
 
 ## Components you can use in a page
 
 - `<Example name="topic/name" title="..." />` shows a code example with a tab per language.
   Add `label="Creator" tone="green"` to put a coloured pill before the title.
   The tones are `blue`, `green`, `rose`, `amber`, `violet` and `stone`.
+- An optional `examples/<name>.trace.json` adds a "Run step by step" button to that example.
+  It walks through the code line by line, with a plain-words explanation, the methods that run and the objects that exist.
+  It holds a list of steps per language; a language without steps gets no button.
+  Each step names its line with `at`, a piece of that line's code (add `nth` when the piece is on several lines).
+  The other fields are `say`, `call`, `done`, `objects` and `print`; `lib/trace.ts` explains them, and the build fails on a step that does not match.
 - End a code line with the comment `// [!code highlight]` (`# [!code highlight]` in PowerShell) to give it a coloured band.
   This works in example files, fenced code blocks and question code. Use it for the one line that the reader should look at.
   When the line is too long, put the marker on its own line just above it.

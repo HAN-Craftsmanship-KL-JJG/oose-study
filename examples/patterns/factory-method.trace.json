@@ -1,0 +1,87 @@
+{
+  "java": [
+    {
+      "at": "Game game = new DraughtsGame();",
+      "say": "`new DraughtsGame()` makes a game of draughts. Its field `board` is still empty. The variable has the type Game, the general kind.",
+      "objects": [
+        {
+          "name": "game",
+          "class": "DraughtsGame",
+          "fields": {
+            "board": "→ nothing yet"
+          }
+        }
+      ]
+    },
+    {
+      "at": "game.start();",
+      "say": "The program starts the game."
+    },
+    {
+      "at": "board = createBoard();",
+      "call": {
+        "on": "game",
+        "method": "start()"
+      },
+      "say": "start() comes from Game, the parent class, and it needs a board. Game does not know which board fits this game. So it calls createBoard(), a method that each subclass fills in. This is the factory method."
+    },
+    {
+      "at": "protected Board createBoard() { return new DraughtsBoard(); }",
+      "call": {
+        "on": "game",
+        "method": "createBoard()"
+      },
+      "say": "The real object is a DraughtsGame, so its createBoard() runs. It makes a new DraughtsBoard and returns it: it hands the board back to start().",
+      "objects": [
+        {
+          "name": "game",
+          "class": "DraughtsGame",
+          "fields": {
+            "board": "→ nothing yet"
+          }
+        },
+        {
+          "name": "board",
+          "class": "DraughtsBoard"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "board = createBoard();",
+      "say": "Back in start(). The new board goes into the field `board`. Game knows it only as a Board, the interface.",
+      "objects": [
+        {
+          "name": "game",
+          "class": "DraughtsGame",
+          "fields": {
+            "board": "→ board"
+          }
+        },
+        {
+          "name": "board",
+          "class": "DraughtsBoard"
+        }
+      ]
+    },
+    {
+      "at": "board.setUp();",
+      "say": "Game asks the board to set itself up. It still does not know what kind of board it is."
+    },
+    {
+      "at": "10 x 10 squares, 40 discs\");",
+      "call": {
+        "on": "board",
+        "method": "setUp()"
+      },
+      "say": "The DraughtsBoard code runs and sets out its pieces.",
+      "print": "10 x 10 squares, 40 discs",
+      "done": true
+    },
+    {
+      "at": "board.setUp();",
+      "say": "start() is done. Game never wrote `new DraughtsBoard()`: that one choice lives in the subclass. A ChessGame makes a ChessBoard in the same place.",
+      "done": true
+    }
+  ]
+}
