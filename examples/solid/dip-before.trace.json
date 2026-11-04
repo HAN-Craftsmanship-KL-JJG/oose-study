@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "private final MollieClient mollie = new MollieClient();",
+      "say": "CashRegister makes a MollieClient itself: a class from an external payment library. CashRegister is high level; Mollie is a detail."
+    },
+    {
+      "at": "mollie.createPayment(",
+      "say": "checkout() calls the library directly, in the library's own terms: cents, as a whole number."
+    },
+    {
+      "at": "return response.isPaid();",
+      "say": "Another payment provider means changing CashRegister. The high level depends on the detail."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "MollieClient mollie;",
+      "say": "CashRegister holds a MollieClient: a class from an external payment library. CashRegister is high level; Mollie is a detail."
+    },
+    {
+      "at": "mollie.createPayment(",
+      "say": "checkout() calls the library directly, in the library's own terms: cents, as a whole number."
+    },
+    {
+      "at": "return response.isPaid();",
+      "say": "Another payment provider means changing CashRegister. The high level depends on the detail."
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "java": [
+    {
+      "at": "void priceIsRateTimesMinutes() {",
+      "say": "JUnit runs this test method."
+    },
+    {
+      "at": "new PriceCalculator(new FixedRateSource(0.25));",
+      "say": "The test makes a stub that always gives the rate 0.25, and injects it into a new calculator. No database is needed.",
+      "objects": [
+        {
+          "name": "calculator",
+          "class": "PriceCalculator",
+          "fields": {
+            "rateSource": "→ stub"
+          }
+        },
+        {
+          "name": "stub",
+          "class": "FixedRateSource",
+          "fields": {
+            "rate": "= 0.25"
+          }
+        }
+      ]
+    },
+    {
+      "at": "Ride ride = new Ride(\"e-bike\", 30);",
+      "say": "A ride of 30 minutes on an e-bike."
+    },
+    {
+      "at": "assertEquals(7.5,",
+      "say": "The test asks the calculator for the price. The calculator asks its source for the rate."
+    },
+    {
+      "at": "return rate;",
+      "say": "The stub ignores the bike type and returns its fixed rate, 0.25.",
+      "call": {
+        "on": "stub",
+        "method": "getRate(\"e-bike\")"
+      },
+      "done": true
+    },
+    {
+      "at": "assertEquals(7.5,",
+      "say": "0.25 × 30 = 7.5, so the test passes. The last number allows a tiny rounding difference."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "TEST(PriceCalculatorTest, PriceIsRateTimesMinutes)",
+      "say": "GoogleTest runs this test."
+    },
+    {
+      "at": "FixedRateSource stub(0.25);",
+      "say": "The test makes a stub that always gives the rate 0.25.",
+      "objects": [
+        {
+          "name": "stub",
+          "class": "FixedRateSource",
+          "fields": {
+            "rate": "= 0.25"
+          }
+        }
+      ]
+    },
+    {
+      "at": "PriceCalculator calculator(&stub);",
+      "say": "It injects the stub into a new calculator. No database is needed.",
+      "objects": [
+        {
+          "name": "calculator",
+          "class": "PriceCalculator",
+          "fields": {
+            "rateSource": "→ stub"
+          }
+        },
+        {
+          "name": "stub",
+          "class": "FixedRateSource",
+          "fields": {
+            "rate": "= 0.25"
+          }
+        }
+      ]
+    },
+    {
+      "at": "Ride ride(\"e-bike\", 30);",
+      "say": "A ride of 30 minutes on an e-bike."
+    },
+    {
+      "at": "EXPECT_NEAR(7.5,",
+      "say": "The test asks the calculator for the price. The calculator asks its source for the rate."
+    },
+    {
+      "at": "return rate;",
+      "say": "The stub ignores the bike type and returns its fixed rate, 0.25.",
+      "call": {
+        "on": "stub",
+        "method": "getRate(\"e-bike\")"
+      },
+      "done": true
+    },
+    {
+      "at": "EXPECT_NEAR(7.5,",
+      "say": "0.25 × 30 = 7.5, so the test passes. The last number allows a tiny rounding difference."
+    }
+  ]
+}

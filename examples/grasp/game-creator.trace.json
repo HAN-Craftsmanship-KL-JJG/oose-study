@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "GameBoard() {",
+      "say": "This is the constructor. It runs when a board is made."
+    },
+    {
+      "at": "for (int i = 0; i < 64; i++) {",
+      "say": "It repeats 64 times, once for each square."
+    },
+    {
+      "at": "squares.add(new Square());",
+      "say": "Each time, it makes a square and adds it to its own list. The board contains its squares, so the board creates them (Creator)."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "GameBoard() {",
+      "say": "This is the constructor. It runs when a board is made."
+    },
+    {
+      "at": "for (int i = 0; i < 64; i++) {",
+      "say": "It repeats 64 times, once for each square."
+    },
+    {
+      "at": "squares.push_back(Square());",
+      "say": "Each time, it makes a square and adds it to its own list. The board contains its squares, so the board creates them (Creator)."
+    }
+  ]
+}

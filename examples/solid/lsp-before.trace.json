@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "void fly() { System.out.println(\"I fly\"); }",
+      "say": "Bird promises that every bird can fly."
+    },
+    {
+      "at": "class Penguin extends Bird {",
+      "say": "Penguin is a Bird, so it inherits that promise."
+    },
+    {
+      "at": "throw new UnsupportedOperationException(",
+      "say": "But a penguin cannot fly. Its fly() throws an error: it breaks the promise of Bird."
+    },
+    {
+      "at": "for (Bird bird : birds) {",
+      "say": "This loop works for every Bird."
+    },
+    {
+      "at": "bird.fly();",
+      "say": "Until the list holds a Penguin: then it crashes. A subclass must work wherever its parent class is expected."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "virtual void fly()",
+      "say": "Bird promises that every bird can fly."
+    },
+    {
+      "at": "class Penguin : public Bird {",
+      "say": "Penguin is a Bird, so it inherits that promise."
+    },
+    {
+      "at": "throw std::logic_error(",
+      "say": "But a penguin cannot fly. Its fly() throws an error: it breaks the promise of Bird."
+    },
+    {
+      "at": "for (Bird* bird : birds) {",
+      "say": "This loop works for every Bird."
+    },
+    {
+      "at": "bird->fly();",
+      "say": "Until the list holds a Penguin: then it crashes. A subclass must work wherever its parent class is expected."
+    }
+  ]
+}

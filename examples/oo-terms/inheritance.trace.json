@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "private final String name;",
+      "say": "Bird has a private field name. Only Bird's own code can use it."
+    },
+    {
+      "at": "public class Penguin extends Bird {",
+      "say": "Penguin extends Bird: a Penguin is a Bird, and it gets Bird's public methods."
+    },
+    {
+      "at": "super(name);",
+      "say": "The Penguin constructor passes the name on to the Bird constructor. Penguin cannot set the private field itself."
+    },
+    {
+      "at": "dives++;",
+      "say": "dive() changes Penguin's own field dives."
+    },
+    {
+      "at": "return getName() + \" dives, dive \"",
+      "say": "To show the name, Penguin calls getName(), which it inherited from Bird."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "std::string name;",
+      "say": "Bird has a private field name. Only Bird's own code can use it."
+    },
+    {
+      "at": "class Penguin : public Bird {",
+      "say": "Penguin inherits from Bird (`: public Bird`): a Penguin is a Bird, and it gets Bird's public methods."
+    },
+    {
+      "at": "Penguin(std::string name) : Bird(name) {}",
+      "say": "The Penguin constructor passes the name on to the Bird constructor. Penguin cannot set the private field itself."
+    },
+    {
+      "at": "dives++;",
+      "say": "dive() changes Penguin's own field dives."
+    },
+    {
+      "at": "return getName() + \" dives, dive \"",
+      "say": "To show the name, Penguin calls getName(), which it inherited from Bird."
+    }
+  ]
+}

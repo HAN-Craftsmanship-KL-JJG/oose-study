@@ -1,0 +1,38 @@
+{
+  "java": [
+    {
+      "at": "double amountDue(",
+      "say": "CashRegister works out the amount due. The promotion comes in as a word."
+    },
+    {
+      "at": "switch (promotion) {",
+      "say": "A switch picks the promotion. \"TEN_PERCENT\" gives 10 percent off."
+    },
+    {
+      "at": "case \"FIVE_EURO\"",
+      "say": "\"FIVE_EURO\" gives 5 euro off."
+    },
+    {
+      "at": "\"3 for the price of 2\"?",
+      "say": "A new promotion means opening CashRegister and adding a case. Every change can break the promotions that already work."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "double amountDue(",
+      "say": "CashRegister works out the amount due. The promotion comes in as a word."
+    },
+    {
+      "at": "if (promotion == \"TEN_PERCENT\")",
+      "say": "An if checks the promotion. \"TEN_PERCENT\" gives 10 percent off."
+    },
+    {
+      "at": "else if (promotion == \"FIVE_EURO\")",
+      "say": "\"FIVE_EURO\" gives 5 euro off."
+    },
+    {
+      "at": "\"3 for the price of 2\"?",
+      "say": "A new promotion means opening CashRegister and adding an else if. Every change can break the promotions that already work."
+    }
+  ]
+}

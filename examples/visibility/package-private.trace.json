@@ -1,0 +1,39 @@
+{
+  "java": [
+    {
+      "at": "package com.spotify.model;",
+      "nth": 1,
+      "say": "Artist.java is in the package com.spotify.model."
+    },
+    {
+      "at": "class Artist {",
+      "say": "Artist has no modifier, so only classes in the same package can use it."
+    },
+    {
+      "at": "public class Album {",
+      "say": "Album is public: every package can use it."
+    },
+    {
+      "at": "private final Artist artist = new Artist();",
+      "say": "Album can use Artist, because they are in the same package."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "namespace {",
+      "say": "An anonymous namespace: what is inside it is only known in this one file."
+    },
+    {
+      "at": "class Artist {",
+      "say": "Artist is inside it, so only album.cpp can use it."
+    },
+    {
+      "at": "class Album {",
+      "say": "Album is declared in album.h, so every file that includes that header can use it."
+    },
+    {
+      "at": "Artist artist;",
+      "say": "Album can use Artist, because they are in the same file."
+    }
+  ]
+}

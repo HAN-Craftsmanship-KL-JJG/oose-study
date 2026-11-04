@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "private double stockKg;",
+      "say": "The stock is private. Only FoodStore's own methods can change it."
+    },
+    {
+      "at": "public void add(double kg) {",
+      "say": "Other code adds food through add()."
+    },
+    {
+      "at": "if (kg <= 0) throw",
+      "say": "add() checks the amount first. Zero or a negative amount is refused."
+    },
+    {
+      "at": "if (kg > stockKg) throw",
+      "say": "take() checks too: you cannot take more than there is. So the stock can never go below zero."
+    },
+    {
+      "at": "public double getStockKg() {",
+      "say": "Other code may read the stock, but there is no setter. Every change goes through a method that checks it."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "double stockKg = 0;",
+      "say": "The stock is private. Only FoodStore's own methods can change it."
+    },
+    {
+      "at": "void add(double kg) {",
+      "say": "Other code adds food through add()."
+    },
+    {
+      "at": "if (kg <= 0) throw",
+      "say": "add() checks the amount first. Zero or a negative amount is refused."
+    },
+    {
+      "at": "if (kg > stockKg) throw",
+      "say": "take() checks too: you cannot take more than there is. So the stock can never go below zero."
+    },
+    {
+      "at": "double getStockKg() {",
+      "say": "Other code may read the stock, but there is no setter. Every change goes through a method that checks it."
+    }
+  ]
+}

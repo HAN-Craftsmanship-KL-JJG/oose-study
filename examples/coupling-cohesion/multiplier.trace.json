@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "public int i;",
+      "say": "The fields i and j are public. Any other class can read and change them."
+    },
+    {
+      "at": "public int calculate() {",
+      "say": "calculate() should give i × j."
+    },
+    {
+      "at": "return new Calculator().mul(i, j);",
+      "say": "It does not multiply itself. It makes a new Calculator and passes both numbers on. So Multiplier depends on Calculator."
+    },
+    {
+      "at": "public int mul(int i, int j) {",
+      "say": "Calculator gets the numbers as parameters. It has no data of its own."
+    },
+    {
+      "at": "return i * j;",
+      "say": "The real work is one multiplication. The data is in Multiplier, and the work on it is in Calculator."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "int i;",
+      "say": "The fields i and j are public. Any other class can read and change them."
+    },
+    {
+      "at": "int calculate() {",
+      "say": "calculate() should give i × j."
+    },
+    {
+      "at": "return Calculator().mul(i, j);",
+      "say": "It does not multiply itself. It makes a new Calculator and passes both numbers on. So Multiplier depends on Calculator."
+    },
+    {
+      "at": "int mul(int i, int j) {",
+      "say": "Calculator gets the numbers as parameters. It has no data of its own."
+    },
+    {
+      "at": "return i * j;",
+      "say": "The real work is one multiplication. The data is in Multiplier, and the work on it is in Calculator."
+    }
+  ]
+}

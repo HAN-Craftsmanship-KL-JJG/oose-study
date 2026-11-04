@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "void onLendClicked() {",
+      "say": "The user clicks \"Lend\". The screen runs this method."
+    },
+    {
+      "at": "library.lend(",
+      "say": "It reads the two text fields and passes them on to the controller. That is all the screen does."
+    },
+    {
+      "at": "public void lend(String cardNumber, String isbn) {",
+      "say": "The controller, Library, handles the system operation lend."
+    },
+    {
+      "at": "Borrower borrower = borrowers.get(cardNumber);",
+      "say": "It looks up the borrower in its own map."
+    },
+    {
+      "at": "Book book = books.get(isbn);",
+      "say": "And the book."
+    },
+    {
+      "at": "borrower.borrow(book);",
+      "say": "Then it asks the borrower to borrow the book; Borrower creates the Loan (Creator). The controller coordinates, but does not do the work itself."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "void onLendClicked() {",
+      "say": "The user clicks \"Lend\". The screen runs this method."
+    },
+    {
+      "at": "library->lend(",
+      "say": "It reads the two text fields and passes them on to the controller. That is all the screen does."
+    },
+    {
+      "at": "void lend(std::string cardNumber, std::string isbn) {",
+      "say": "The controller, Library, handles the system operation lend."
+    },
+    {
+      "at": "Borrower* borrower = borrowers.at(cardNumber);",
+      "say": "It looks up the borrower in its own map."
+    },
+    {
+      "at": "Book* book = books.at(isbn);",
+      "say": "And the book."
+    },
+    {
+      "at": "borrower->borrow(book);",
+      "say": "Then it asks the borrower to borrow the book; Borrower creates the Loan (Creator). The controller coordinates, but does not do the work itself."
+    }
+  ]
+}

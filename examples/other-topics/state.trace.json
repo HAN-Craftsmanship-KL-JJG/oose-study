@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "private EnclosureState state = new ClosedState();",
+      "say": "An enclosure starts in the closed state. It keeps its current state in a field."
+    },
+    {
+      "at": "void open() { state = state.open(); }",
+      "say": "To open the enclosure, it asks its current state to handle it, and keeps the state that comes back."
+    },
+    {
+      "at": "The gate opens",
+      "say": "In the closed state, open() opens the gate and returns a new OpenState. From now on, the enclosure is open."
+    },
+    {
+      "at": "The enclosure is already open",
+      "say": "In the open state, open() changes nothing and returns this: the state stays the same."
+    },
+    {
+      "at": "void close() { state = state.close(); }",
+      "say": "close() works the same way. Enclosure has no if or switch on its state; each state class knows what to do."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "EnclosureState* state = new ClosedState();",
+      "say": "An enclosure starts in the closed state. It keeps its current state in a field."
+    },
+    {
+      "at": "void open() { state = state->open(); }",
+      "say": "To open the enclosure, it asks its current state to handle it, and keeps the state that comes back."
+    },
+    {
+      "at": "The gate opens",
+      "say": "In the closed state, open() opens the gate and returns a new OpenState. From now on, the enclosure is open."
+    },
+    {
+      "at": "The enclosure is already open",
+      "say": "In the open state, open() changes nothing and returns this: the state stays the same."
+    },
+    {
+      "at": "void close() { state = state->close(); }",
+      "say": "close() works the same way. Enclosure has no if or switch on its state; each state class knows what to do."
+    }
+  ]
+}

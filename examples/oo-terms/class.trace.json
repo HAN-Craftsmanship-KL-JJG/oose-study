@@ -1,0 +1,132 @@
+{
+  "java": [
+    {
+      "at": "Keeper a = new Keeper(",
+      "say": "The program makes an object from the class Keeper. The class is the blueprint; the object is one thing built from it."
+    },
+    {
+      "at": "this.area = area;",
+      "say": "The constructor runs and fills in the object's fields.",
+      "call": {
+        "on": "a",
+        "method": "Keeper(\"Anna\", \"Reptiles\")"
+      },
+      "objects": [
+        {
+          "name": "a",
+          "class": "Keeper",
+          "fields": {
+            "name": "= \"Anna\"",
+            "area": "= \"Reptiles\""
+          }
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "Keeper b = new Keeper(",
+      "say": "A second object from the same class. It has its own fields, with its own values.",
+      "objects": [
+        {
+          "name": "a",
+          "class": "Keeper",
+          "fields": {
+            "name": "= \"Anna\"",
+            "area": "= \"Reptiles\""
+          }
+        },
+        {
+          "name": "b",
+          "class": "Keeper",
+          "fields": {
+            "name": "= \"Ben\"",
+            "area": "= \"Birds\""
+          }
+        }
+      ]
+    },
+    {
+      "at": "System.out.println(a.description());",
+      "say": "The program asks a for its description."
+    },
+    {
+      "at": "return name + \" (\" + area + \")\";",
+      "say": "description() uses the fields of the object it was called on: Anna's, not Ben's.",
+      "call": {
+        "on": "a",
+        "method": "description()"
+      },
+      "done": true
+    },
+    {
+      "at": "System.out.println(a.description());",
+      "say": "The program prints it.",
+      "print": "Anna (Reptiles)"
+    }
+  ],
+  "cpp": [
+    {
+      "at": "Keeper a(",
+      "say": "The program makes an object from the class Keeper. The class is the blueprint; the object is one thing built from it."
+    },
+    {
+      "at": "Keeper(std::string name, std::string area)",
+      "say": "The constructor runs and fills in the object's fields.",
+      "call": {
+        "on": "a",
+        "method": "Keeper(\"Anna\", \"Reptiles\")"
+      },
+      "objects": [
+        {
+          "name": "a",
+          "class": "Keeper",
+          "fields": {
+            "name": "= \"Anna\"",
+            "area": "= \"Reptiles\""
+          }
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "Keeper b(",
+      "say": "A second object from the same class. It has its own fields, with its own values.",
+      "objects": [
+        {
+          "name": "a",
+          "class": "Keeper",
+          "fields": {
+            "name": "= \"Anna\"",
+            "area": "= \"Reptiles\""
+          }
+        },
+        {
+          "name": "b",
+          "class": "Keeper",
+          "fields": {
+            "name": "= \"Ben\"",
+            "area": "= \"Birds\""
+          }
+        }
+      ]
+    },
+    {
+      "at": "std::cout << a.description()",
+      "say": "The program asks a for its description."
+    },
+    {
+      "at": "return name + \" (\" + area + \")\";",
+      "say": "description() uses the fields of the object it was called on: Anna's, not Ben's.",
+      "call": {
+        "on": "a",
+        "method": "description()"
+      },
+      "done": true
+    },
+    {
+      "at": "std::cout << a.description()",
+      "say": "The program prints it.",
+      "print": "Anna (Reptiles)"
+    }
+  ]
+}

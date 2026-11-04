@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "public void c() {",
+      "say": "c() still belongs to A. It now asks B to do the work."
+    },
+    {
+      "at": "b.f();",
+      "say": "This is the only call from A to B. A still has one dependency on B, as before."
+    },
+    {
+      "at": "public void f() {",
+      "say": "f() now lives in B."
+    },
+    {
+      "at": "System.out.println(j);",
+      "say": "It prints B's own field j. B needs no getter anymore, and A needs to know less about B."
+    },
+    {
+      "at": "private int i;",
+      "say": "A keeps only its own data. Both classes keep their data and the work on it together: cohesion went up."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "void c() {",
+      "say": "c() still belongs to A. It now asks B to do the work."
+    },
+    {
+      "at": "b->f();",
+      "say": "This is the only call from A to B. A still has one dependency on B, as before."
+    },
+    {
+      "at": "void f() {",
+      "say": "f() now lives in B."
+    },
+    {
+      "at": "std::cout << j",
+      "say": "It prints B's own field j. B needs no getter anymore, and A needs to know less about B."
+    },
+    {
+      "at": "int i = 0;",
+      "say": "A keeps only its own data. Both classes keep their data and the work on it together: cohesion went up."
+    }
+  ]
+}

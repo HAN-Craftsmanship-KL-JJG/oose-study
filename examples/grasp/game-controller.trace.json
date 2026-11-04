@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "void joinGame(String name) {",
+      "say": "The player clicked \"join\" in the user interface. The UI calls one method on Game, the controller."
+    },
+    {
+      "at": "Character character = new Character(name);",
+      "say": "Game makes the new character."
+    },
+    {
+      "at": "board.placeOnFreeSquare(character);",
+      "say": "Placing it is not Game's job: the board knows its squares. So Game passes the work on. A controller coordinates and delegates."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "void joinGame(std::string name) {",
+      "say": "The player clicked \"join\" in the user interface. The UI calls one method on Game, the controller."
+    },
+    {
+      "at": "Character* character = new Character(name);",
+      "say": "Game makes the new character."
+    },
+    {
+      "at": "board.placeOnFreeSquare(character);",
+      "say": "Placing it is not Game's job: the board knows its squares. So Game passes the work on. A controller coordinates and delegates."
+    }
+  ]
+}

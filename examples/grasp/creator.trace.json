@@ -1,0 +1,116 @@
+{
+  "java": [
+    {
+      "at": "order.add(bike, 1);",
+      "say": "The caller wants one bike in the order. It does not make the order line itself.",
+      "objects": [
+        {
+          "name": "order",
+          "class": "Order",
+          "fields": {
+            "lines": "= empty"
+          }
+        },
+        {
+          "name": "bike",
+          "class": "Product"
+        }
+      ]
+    },
+    {
+      "at": "void add(Product product, int quantity) {",
+      "say": "add() runs in Order.",
+      "call": {
+        "on": "order",
+        "method": "add(bike, 1)"
+      }
+    },
+    {
+      "at": "lines.add(new OrderLine(product, quantity));",
+      "say": "Order makes the new OrderLine and keeps it in its list. Order contains its lines, so Order is the Creator.",
+      "objects": [
+        {
+          "name": "order",
+          "class": "Order",
+          "fields": {
+            "lines": "= [line]"
+          }
+        },
+        {
+          "name": "line",
+          "class": "OrderLine",
+          "fields": {
+            "product": "→ bike",
+            "quantity": "= 1"
+          }
+        },
+        {
+          "name": "bike",
+          "class": "Product"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "order.add(bike, 1);",
+      "say": "Back at the caller. It never named OrderLine, so it does not depend on that class."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "order.add(bike, 1);",
+      "say": "The caller wants one bike in the order. It does not make the order line itself.",
+      "objects": [
+        {
+          "name": "order",
+          "class": "Order",
+          "fields": {
+            "lines": "= empty"
+          }
+        },
+        {
+          "name": "bike",
+          "class": "Product"
+        }
+      ]
+    },
+    {
+      "at": "void add(Product* product, int quantity) {",
+      "say": "add() runs in Order.",
+      "call": {
+        "on": "order",
+        "method": "add(bike, 1)"
+      }
+    },
+    {
+      "at": "lines.push_back(OrderLine(product, quantity));",
+      "say": "Order makes the new OrderLine and keeps it in its list. Order contains its lines, so Order is the Creator.",
+      "objects": [
+        {
+          "name": "order",
+          "class": "Order",
+          "fields": {
+            "lines": "= [line]"
+          }
+        },
+        {
+          "name": "line",
+          "class": "OrderLine",
+          "fields": {
+            "product": "→ bike",
+            "quantity": "= 1"
+          }
+        },
+        {
+          "name": "bike",
+          "class": "Product"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "order.add(bike, 1);",
+      "say": "Back at the caller. It never named OrderLine, so it does not depend on that class."
+    }
+  ]
+}

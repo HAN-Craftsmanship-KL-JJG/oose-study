@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "private final Keeper keeper;",
+      "say": "Enclosure keeps a Keeper in a field. That field is the association: an Enclosure knows its Keeper for as long as it exists."
+    },
+    {
+      "at": "public Enclosure(Keeper keeper) {",
+      "say": "The keeper comes in through the constructor. Enclosure does not create it."
+    },
+    {
+      "at": "return \"Keeper: \" + keeper.description();",
+      "say": "Enclosure calls a method of its Keeper. Because of the field, it can do that in every method."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "Keeper* keeper;",
+      "say": "Enclosure keeps a Keeper in a field. That field is the association: an Enclosure knows its Keeper for as long as it exists."
+    },
+    {
+      "at": "Enclosure(Keeper* keeper)",
+      "say": "The keeper comes in through the constructor. Enclosure does not create it."
+    },
+    {
+      "at": "return \"Keeper: \" + keeper->description();",
+      "say": "Enclosure calls a method of its Keeper. Because of the field, it can do that in every method."
+    }
+  ]
+}

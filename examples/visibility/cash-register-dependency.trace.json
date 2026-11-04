@@ -1,0 +1,22 @@
+{
+  "java": [
+    {
+      "at": "void calculate() {",
+      "say": "calculate() needs to pay."
+    },
+    {
+      "at": "new IDeal().pay(10);",
+      "say": "It makes an IDeal right here and uses it once. There is no field, so this is a dependency, not an association. And it is tied to the concrete class IDeal."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "void calculate() {",
+      "say": "calculate() needs to pay."
+    },
+    {
+      "at": "IDeal().pay(10);",
+      "say": "It makes an IDeal right here and uses it once. There is no field, so this is a dependency, not an association. And it is tied to the concrete class IDeal."
+    }
+  ]
+}

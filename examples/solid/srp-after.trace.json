@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "double calculatePrice()",
+      "say": "Ticket now only knows its price."
+    },
+    {
+      "at": "makePdf(",
+      "say": "TicketPdfMaker makes the PDF. It gets the ticket as a parameter."
+    },
+    {
+      "at": "void send(",
+      "say": "TicketMailer sends it. Each class now has one reason to change."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "double calculatePrice()",
+      "say": "Ticket now only knows its price."
+    },
+    {
+      "at": "makePdf(",
+      "say": "TicketPdfMaker makes the PDF. It gets the ticket as a parameter."
+    },
+    {
+      "at": "void send(",
+      "say": "TicketMailer sends it. Each class now has one reason to change."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "java": [
+    {
+      "at": "interface Animal {",
+      "say": "One big interface: every animal must eat, fly and swim."
+    },
+    {
+      "at": "class Lion implements Animal {",
+      "say": "Lion must implement all three."
+    },
+    {
+      "at": "public void fly()",
+      "say": "A lion cannot fly, so fly() throws an error. Code that calls fly() on an Animal can now crash."
+    },
+    {
+      "at": "public void swim()",
+      "say": "The same for swim(). Lion depends on methods it does not use."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class Animal {",
+      "say": "One big interface: every animal must eat, fly and swim."
+    },
+    {
+      "at": "class Lion : public Animal {",
+      "say": "Lion must implement all three."
+    },
+    {
+      "at": "void fly() override",
+      "say": "A lion cannot fly, so fly() throws an error. Code that calls fly() on an Animal can now crash."
+    },
+    {
+      "at": "void swim() override",
+      "say": "The same for swim(). Lion depends on methods it does not use."
+    }
+  ]
+}

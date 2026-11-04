@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "public interface DiscountRule {",
+      "say": "Each promotion is a DiscountRule: it says how much discount an order gets."
+    },
+    {
+      "at": "private final List<DiscountRule> rules;",
+      "say": "CashRegister has a list of rules. It does not know which promotions they are."
+    },
+    {
+      "at": "total -= rule.discount(order);",
+      "say": "It asks each rule for its discount and subtracts it."
+    },
+    {
+      "at": "public class ThreeForTwo implements DiscountRule {",
+      "say": "A new promotion is a new class."
+    },
+    {
+      "at": "int free = line.getQuantity() / 3;",
+      "say": "For every 3 of a product, 1 is free."
+    },
+    {
+      "at": "discount += free * line.getPrice();",
+      "say": "The free items are the discount. CashRegister and the other rules did not change: open for extension, closed for change."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class DiscountRule {",
+      "say": "Each promotion is a DiscountRule: it says how much discount an order gets."
+    },
+    {
+      "at": "std::vector<DiscountRule*> rules;",
+      "say": "CashRegister has a list of rules. It does not know which promotions they are."
+    },
+    {
+      "at": "total -= rule->discount(order);",
+      "say": "It asks each rule for its discount and subtracts it."
+    },
+    {
+      "at": "class ThreeForTwo : public DiscountRule {",
+      "say": "A new promotion is a new class."
+    },
+    {
+      "at": "int free = line.getQuantity() / 3;",
+      "say": "For every 3 of a product, 1 is free."
+    },
+    {
+      "at": "discount += free * line.getPrice();",
+      "say": "The free items are the discount. CashRegister and the other rules did not change: open for extension, closed for change."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "java": [
+    {
+      "at": "private PaymentMethod method;",
+      "say": "CashRegister keeps a PaymentMethod in a field. That field is the association in the class diagram."
+    },
+    {
+      "at": "CashRegister(PaymentMethod method) {",
+      "say": "The payment method comes in through the constructor. The field has the interface type, so any payment method fits."
+    },
+    {
+      "at": "method.pay(amount);",
+      "say": "checkout() calls the payment method. It does not know which kind it is."
+    },
+    {
+      "at": "CashRegister register = new CashRegister(new IDeal());",
+      "say": "Here the caller chooses iDEAL."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "PaymentMethod* method;",
+      "say": "CashRegister keeps a PaymentMethod in a field. That field is the association in the class diagram."
+    },
+    {
+      "at": "CashRegister(PaymentMethod* method)",
+      "say": "The payment method comes in through the constructor. The field has the interface type, so any payment method fits."
+    },
+    {
+      "at": "method->pay(amount);",
+      "say": "checkout() calls the payment method. It does not know which kind it is."
+    },
+    {
+      "at": "CashRegister cashRegister(new IDeal());",
+      "say": "Here the caller chooses iDEAL."
+    }
+  ]
+}

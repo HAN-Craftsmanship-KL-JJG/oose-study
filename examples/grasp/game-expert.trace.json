@@ -1,0 +1,38 @@
+{
+  "java": [
+    {
+      "at": "Square findFreeSquare() {",
+      "say": "Someone needs a free square. Only the board has the list of squares, so the board is the expert."
+    },
+    {
+      "at": "for (Square square : squares) {",
+      "say": "It looks through its own squares, one by one."
+    },
+    {
+      "at": "if (square.isEmpty()) return square;",
+      "say": "It asks each square whether it is empty, and returns the first empty one. The square is the expert for that question."
+    },
+    {
+      "at": "return null;",
+      "say": "When no square is free, it returns null: nothing."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "Square* findFreeSquare() {",
+      "say": "Someone needs a free square. Only the board has the list of squares, so the board is the expert."
+    },
+    {
+      "at": "for (Square& square : squares) {",
+      "say": "It looks through its own squares, one by one."
+    },
+    {
+      "at": "if (square.isEmpty()) return &square;",
+      "say": "It asks each square whether it is empty, and returns the address of the first empty one. The square is the expert for that question."
+    },
+    {
+      "at": "return nullptr;",
+      "say": "When no square is free, it returns nullptr: nothing."
+    }
+  ]
+}
