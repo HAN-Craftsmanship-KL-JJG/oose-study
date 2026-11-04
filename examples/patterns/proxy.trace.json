@@ -1,93 +1,120 @@
 {
   "java": [
     {
-      "at": "QuestionStorage storage = new EncryptingQuestionStorage(",
-      "say": "Read this line from the inside out. First `new FlatFileQuestionStorage()` makes the real storage. It saves questions as they are, in plain text.",
+      "at": "AnswerKey file = new AnswerFile();",
+      "say": "First the program makes the real answer key. It knows the answer to each question.",
       "objects": [
         {
-          "name": "real",
-          "class": "FlatFileQuestionStorage",
+          "name": "file",
+          "class": "AnswerFile",
           "fields": {
-            "file": "= empty"
+            "answers": "= { 1: B, 2: D }"
           }
         }
       ]
     },
     {
-      "at": "this.real = real;",
-      "call": {
-        "on": "storage",
-        "method": "EncryptingQuestionStorage(real)"
-      },
-      "say": "Then `new EncryptingQuestionStorage(...)` builds the proxy and hands it the real storage, which it keeps in its field `real`. Both classes implement the same interface, QuestionStorage.",
+      "at": "AnswerKey forStudent =",
+      "say": "Then it makes a proxy for a student. The proxy keeps the real answer key in its field `real`, and remembers that this user is not a teacher.",
       "objects": [
         {
-          "name": "storage",
-          "class": "EncryptingQuestionStorage",
+          "name": "forStudent",
+          "class": "TeacherOnlyAnswerKey",
           "fields": {
-            "real": "→ real"
+            "real": "→ file",
+            "teacher": "= false"
           }
         },
         {
-          "name": "real",
-          "class": "FlatFileQuestionStorage",
+          "name": "file",
+          "class": "AnswerFile",
           "fields": {
-            "file": "= empty"
+            "answers": "= { 1: B, 2: D }"
           }
         }
-      ],
-      "done": true
+      ]
     },
     {
-      "at": "storage.save(\"q1\", \"What is polymorphism?\");",
-      "say": "The program saves a question. The variable `storage` has the type QuestionStorage, so the program cannot see that a proxy stands in front of the real storage."
-    },
-    {
-      "at": "real.save(id, encrypt(text));",
-      "call": {
-        "on": "storage",
-        "method": "save(\"q1\", \"What is polymorphism?\")"
-      },
-      "say": "The proxy gets the call first. It offers the same save() as the real storage, but it does something extra before it passes the call on: it encrypts the text."
-    },
-    {
-      "at": "private String encrypt(String t)",
-      "call": {
-        "on": "storage",
-        "method": "encrypt(text)"
-      },
-      "say": "\"What is polymorphism?\" is scrambled to \"V2hhdCBpcyBwb2x5bW9ycGhpc20/\". (This example uses Base64 as stand-in encryption.)",
-      "done": true
-    },
-    {
-      "at": "public void save(String id, String text) { file.put(id, text); }",
-      "call": {
-        "on": "real",
-        "method": "save(\"q1\", \"V2hhdCBp…\")"
-      },
-      "say": "Now the proxy passes the call on to the real storage, with the scrambled text. The real storage saves whatever it gets; it does not know about encryption.",
+      "at": "AnswerKey forTeacher =",
+      "say": "And a second proxy for a teacher, in front of the same real answer key.",
       "objects": [
         {
-          "name": "storage",
-          "class": "EncryptingQuestionStorage",
+          "name": "forStudent",
+          "class": "TeacherOnlyAnswerKey",
           "fields": {
-            "real": "→ real"
+            "real": "→ file",
+            "teacher": "= false"
           }
         },
         {
-          "name": "real",
-          "class": "FlatFileQuestionStorage",
+          "name": "forTeacher",
+          "class": "TeacherOnlyAnswerKey",
           "fields": {
-            "file": "= { q1: \"V2hhdCBp…\" }"
+            "real": "→ file",
+            "teacher": "= true"
+          }
+        },
+        {
+          "name": "file",
+          "class": "AnswerFile",
+          "fields": {
+            "answers": "= { 1: B, 2: D }"
           }
         }
-      ],
+      ]
+    },
+    {
+      "at": "System.out.println(forStudent.answer(1));",
+      "say": "The student asks for the answer to question 1. The variable has the type AnswerKey, so the program cannot see that a proxy stands in front of the real object."
+    },
+    {
+      "at": "if (!teacher)",
+      "call": {
+        "on": "forStudent",
+        "method": "answer(1)"
+      },
+      "say": "The proxy gets the call first and checks the access. This user is not a teacher, so it returns \"No access\". The real answer key is never called.",
       "done": true
     },
     {
-      "at": "real.save(id, encrypt(text));",
-      "say": "Done. The program, the interface and the real storage did not change. The only new part is the proxy in between, and you can leave it out again.",
+      "at": "System.out.println(forStudent.answer(1));",
+      "say": "The program prints \"No access\".",
+      "print": "No access"
+    },
+    {
+      "at": "System.out.println(forTeacher.answer(1));",
+      "say": "Now the teacher asks the same question, through the other proxy."
+    },
+    {
+      "at": "if (!teacher)",
+      "call": {
+        "on": "forTeacher",
+        "method": "answer(1)"
+      },
+      "say": "The proxy checks the access again. This user is a teacher, so the check passes."
+    },
+    {
+      "at": "return real.answer(question);",
+      "say": "The proxy passes the call on to the real answer key."
+    },
+    {
+      "at": "public String answer(int question) { return answers.get(question); }",
+      "call": {
+        "on": "file",
+        "method": "answer(1)"
+      },
+      "say": "The real answer key looks up the answer: \"B\". It does not know about the access check.",
       "done": true
+    },
+    {
+      "at": "return real.answer(question);",
+      "say": "The proxy returns \"B\" as it is. A proxy does not change the result.",
+      "done": true
+    },
+    {
+      "at": "System.out.println(forTeacher.answer(1));",
+      "say": "The program prints B. The interface and the real answer key did not change; the only new part is the proxy in between.",
+      "print": "B"
     }
   ]
 }
