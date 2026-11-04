@@ -21,7 +21,17 @@ const primary =
 const heading = "mb-1.5 text-xs font-semibold tracking-wide text-stone-500 uppercase";
 
 /** Start, then back, next and reset, with the step number. The reader moves every step. */
-function Controls({ index, count, go }: { index: number; count: number; go: (i: number) => void }) {
+function Controls({
+  index,
+  count,
+  go,
+  runs,
+}: {
+  index: number;
+  count: number;
+  go: (i: number) => void;
+  runs: boolean;
+}) {
   const started = index >= 0;
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -69,7 +79,7 @@ function Controls({ index, count, go }: { index: number; count: number; go: (i: 
           }}
         >
           <Footprints className="size-3.5" aria-hidden />
-          Run step by step
+          {runs ? "Run step by step" : "Read step by step"}
         </button>
       )}
       <span className="ml-auto text-sm text-stone-500 tabular-nums">
@@ -79,8 +89,11 @@ function Controls({ index, count, go }: { index: number; count: number; go: (i: 
   );
 }
 
-/** What the current step shows: the explanation, the call stack, the objects and the output. */
-function StepView({ step }: { step: TraceStep }) {
+/**
+ * What the current step shows: the explanation, the call stack, the objects and the output.
+ * A walk through code that does not run (only declarations) shows just the explanation.
+ */
+function StepView({ step, runs }: { step: TraceStep; runs: boolean }) {
   return (
     <div className="mb-3">
       <p
@@ -92,16 +105,18 @@ function StepView({ step }: { step: TraceStep }) {
         </span>
         <Inline text={step.say} />
       </p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <section>
-          <h3 className={heading}>Running now</h3>
-          <Stack stack={step.stack} />
-        </section>
-        <section>
-          <h3 className={heading}>Objects</h3>
-          <Objects objects={step.objects} active={step.stack.at(-1)?.on} />
-        </section>
-      </div>
+      {runs && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <section>
+            <h3 className={heading}>Running now</h3>
+            <Stack stack={step.stack} />
+          </section>
+          <section>
+            <h3 className={heading}>Objects</h3>
+            <Objects objects={step.objects} active={step.stack.at(-1)?.on} />
+          </section>
+        </div>
+      )}
       {step.output.length > 0 && (
         <section className="mt-4">
           <h3 className={heading}>Printed</h3>
@@ -145,6 +160,8 @@ export default function TracePlayer({
   };
 
   const step = steps[index];
+  // A trace with no calls and no objects reads through the code instead of running it.
+  const runs = steps.some((s) => s.stack.length > 0 || s.objects.length > 0);
   return (
     <div
       ref={box}
@@ -152,8 +169,8 @@ export default function TracePlayer({
       onKeyDown={onKey}
       className="sticky bottom-0 z-10 border-t border-stone-200 bg-stone-50 px-4 py-3 shadow-[0_-4px_12px_rgb(0_0_0/0.06)] outline-none dark:border-stone-800 dark:bg-stone-900"
     >
-      {step && <StepView step={step} />}
-      <Controls index={index} count={steps.length} go={go} />
+      {step && <StepView step={step} runs={runs} />}
+      <Controls index={index} count={steps.length} go={go} runs={runs} />
     </div>
   );
 }
