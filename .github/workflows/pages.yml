@@ -15,6 +15,12 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+# Name the branch that actions/checkout creates, which silences the git default branch hint.
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+
 jobs:
   build:
     runs-on: ubuntu-latest
