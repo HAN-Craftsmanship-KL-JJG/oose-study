@@ -39,3 +39,7 @@ class SmartLockAdapter : BikeLock {
         $this.api.open([int]$bikeNumber, $this.token)      # other name, types and data
     }
 }
+
+# The domain only knows BikeLock; it never sees SmartLockApi.
+[BikeLock]$lock = [SmartLockAdapter]::new([SmartLockApi]::new(), "secret-token")
+$lock.Unlock("42")
