@@ -1,3 +1,3 @@
 {
-  "powershell": "The parameter type is [object] because Animal is declared after FeedingObserver. PowerShell has no interfaces of its own, so FeedingObserver is a base class whose method throws."
+  "cpp": "FeedingObserver needs the name Animal before Animal is defined, so the first line declares it. C++ has no interface keyword: FeedingObserver is a class with one pure virtual method (= 0)."
 }

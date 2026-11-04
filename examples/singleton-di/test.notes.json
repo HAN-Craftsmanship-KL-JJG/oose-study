@@ -1,3 +1,3 @@
 {
-  "powershell": "Pester is the standard test framework for PowerShell. 'using module' must be the first statement, so the classes RateSource and PriceCalculator are known when PowerShell reads the stub class."
+  "cpp": "GoogleTest is a common test framework for C++. TEST names the test group and the test. The stub lives on the stack, and the calculator gets its address with &."
 }

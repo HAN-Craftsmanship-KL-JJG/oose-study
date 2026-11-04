@@ -1,3 +1,3 @@
 {
-  "powershell": "PowerShell can implement .NET interfaces, but it cannot declare a new one. A base class whose methods throw is the usual replacement."
+  "cpp": "C++ has no interface keyword. A class with only pure virtual methods (= 0) plays that role. A class can inherit from several of them, just as a Java class can implement several interfaces."
 }

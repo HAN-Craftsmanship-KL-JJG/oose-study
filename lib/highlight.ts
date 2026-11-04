@@ -14,7 +14,7 @@ const blockLines: ShikiTransformer = {
 /**
  * Colours code. A line that ends with the comment "[!code highlight]" gets a coloured band,
  * and the marker itself is removed.
- * Java uses `// [!code highlight]`, PowerShell `# [!code highlight]`.
+ * Java and C++ both use `// [!code highlight]`.
  */
 export function highlight(code: string, lang: string): Promise<string> {
   return codeToHtml(code.trimEnd(), {

@@ -3,7 +3,7 @@
 
 export const LANGUAGES = [
   { id: "java", label: "Java", ext: "java", shiki: "java" },
-  { id: "powershell", label: "PowerShell", ext: "ps1", shiki: "powershell" },
+  { id: "cpp", label: "C++", ext: "cpp", shiki: "cpp" },
 ] as const;
 
 export type LanguageId = (typeof LANGUAGES)[number]["id"];

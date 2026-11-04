@@ -52,7 +52,7 @@ This runs every check, and any warning fails it:
 | `.ts`, `.tsx`, `.mjs`    | 250                    | 100                               |
 | `content/**/*.ts` (data) | 450                    | 100, strings excepted             |
 | `.mdx` pages             | 500                    | 160, tables and diagrams excepted |
-| `.java`, `.ps1` examples | 120                    | 100                               |
+| `.java`, `.cpp` examples | 120                    | 100                               |
 
 A page that grows over 500 lines moves its sections into `app/<topic>/_sections/*.mdx`.
 
@@ -62,7 +62,7 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
 | ---------------------- | ------------------------------------------------------------------------------------ |
 | `app/<topic>/page.mdx` | One page per topic, in MDX (Markdown with components)                                |
 | `lib/pages.ts`         | The list of pages: menu order, sections and titles                                   |
-| `examples/<topic>/`    | Code examples: `<name>.java`, `<name>.ps1`, optional `.notes.json` and `.trace.json` |
+| `examples/<topic>/`    | Code examples: `<name>.java`, `<name>.cpp`, optional `.notes.json` and `.trace.json` |
 | `content/questions/`   | The question bank, one file per topic                                                |
 | `components/`          | The React components that pages use                                                  |
 | `lib/`                 | Shared types and helpers                                                             |
@@ -79,7 +79,7 @@ A page that grows over 500 lines moves its sections into `app/<topic>/_sections/
   It holds a list of steps per language; a language without steps gets no button.
   Each step names its line with `at`, a piece of that line's code (add `nth` when the piece is on several lines).
   The other fields are `say`, `call`, `done`, `objects` and `print`; `lib/trace.ts` explains them, and the build fails on a step that does not match.
-- End a code line with the comment `// [!code highlight]` (`# [!code highlight]` in PowerShell) to give it a coloured band.
+- End a code line with the comment `// [!code highlight]` to give it a coloured band.
   This works in example files, fenced code blocks and question code. Use it for the one line that the reader should look at.
   When the line is too long, put the marker on its own line just above it.
 - A fenced code block with the language `plantuml` becomes a UML diagram. See "Diagrams" below.

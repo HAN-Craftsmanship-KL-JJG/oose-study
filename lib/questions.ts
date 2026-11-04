@@ -18,7 +18,7 @@ interface BaseQuestion {
   prompt: string;
   /** Optional code shown under the prompt. */
   code?: string;
-  codeLang?: "java" | "powershell";
+  codeLang?: "java" | "cpp";
   /** Optional PlantUML diagram shown under the prompt, written like a `plantuml` block in MDX. */
   uml?: string;
   /** Shown after checking: why the answer is right and the others are wrong. */
