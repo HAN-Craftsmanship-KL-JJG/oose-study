@@ -43,3 +43,4 @@ public class TimeBonus implements Question {
 Question q1 = new OpenQuestion();                                   // 3 points
 Question q2 = new SourceBonus(new OpenQuestion());                  // 3 + 2 = 5 points
 Question q3 = new TimeBonus(new SourceBonus(new MultipleChoiceQuestion()));   // (1 + 2) * 2 = 6
+System.out.println(q3.points());                                    // 6

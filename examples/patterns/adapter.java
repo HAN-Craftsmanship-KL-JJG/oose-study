@@ -41,3 +41,7 @@ public class SmartLockAdapter implements BikeLock {
         api.open(Integer.parseInt(bikeNumber), token);      // other name, types and data
     }
 }
+
+// The domain only knows BikeLock; it never sees SmartLockApi.
+BikeLock lock = new SmartLockAdapter(new SmartLockApi(), "secret-token");
+lock.unlock("42");
