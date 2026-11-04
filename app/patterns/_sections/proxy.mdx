@@ -6,36 +6,40 @@ Examples: an access check, encryption, caching, or loading a big object only whe
 Solution: a proxy implements the same interface as the real object and holds a reference to it.
 It does its extra work and then passes the call on.
 
-Example: a quiz app stores questions in a file or a database, and encryption is optional.
-`EncryptingQuestionStorage` implements the interface and also holds an object of that same interface.
+Example: only a teacher may read the answer key of a quiz.
+`TeacherOnlyAnswerKey` implements `AnswerKey` and also holds an object of that same interface.
+It checks who asks, and only then passes the call on to the real `AnswerFile`.
 
 ```plantuml
-class QuestionManager
-interface QuestionStorage <<interface>> {
-  +save(id : String, text : String) : void
-  +load(id : String) : String
+class Client
+interface AnswerKey <<interface>> {
+  +answer(question : int) : String
 }
-class FlatFileQuestionStorage {
-  +save(id : String, text : String) : void
-  +load(id : String) : String
+class AnswerFile {
+  +answer(question : int) : String
 }
-class EncryptingQuestionStorage {
-  +save(id : String, text : String) : void
-  +load(id : String) : String
+class TeacherOnlyAnswerKey {
+  -teacher : boolean
+  +answer(question : int) : String
 }
-QuestionManager --> QuestionStorage
-FlatFileQuestionStorage ..|> QuestionStorage
-EncryptingQuestionStorage ..|> QuestionStorage
-EncryptingQuestionStorage --> QuestionStorage : real
+Client --> AnswerKey
+AnswerFile ..|> AnswerKey
+TeacherOnlyAnswerKey ..|> AnswerKey
+TeacherOnlyAnswerKey --> AnswerKey : real
 ```
 
 ```plantuml
-participant ":QuestionManager" as V
-participant ":EncryptingQuestionStorage" as P
-participant ":FlatFileQuestionStorage" as F
-V -> P : save("q1", "What is OCP?")
-P -> P : encrypt(text)
-P -> F : save("q1", "V2hhdCBpcy...")
+participant "Client" as C
+participant ":TeacherOnlyAnswerKey" as P
+participant ":AnswerFile" as A
+C -> P : answer(1)
+alt teacher
+  P -> A : answer(1)
+  A --> P : "B"
+  P --> C : "B"
+else student
+  P --> C : "No access"
+end
 ```
 
 <Example name="patterns/proxy" label="Proxy" tone="stone" />
