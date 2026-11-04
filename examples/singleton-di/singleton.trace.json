@@ -1,0 +1,66 @@
+{
+  "java": [
+    {
+      "at": "Database db = Database.getInstance();",
+      "say": "The program needs the database. It cannot make one itself, because the constructor is private. So it asks the class."
+    },
+    {
+      "at": "if (instance == null) {",
+      "say": "getInstance() is static, so it runs on the class, without an object. The first time, there is no object yet.",
+      "call": {
+        "method": "Database.getInstance()"
+      }
+    },
+    {
+      "at": "instance = new Database();",
+      "say": "So it makes the one object and keeps it in the static field.",
+      "objects": [
+        {
+          "name": "instance",
+          "class": "Database"
+        }
+      ]
+    },
+    {
+      "at": "return instance;",
+      "say": "It returns that object. Every later call skips the if and returns the same object.",
+      "done": true
+    },
+    {
+      "at": "Database db = Database.getInstance();",
+      "say": "db now points to the one Database. Every caller that asks gets this same object."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "Database* db = Database::getInstance();",
+      "say": "The program needs the database. It cannot make one itself, because the constructor is private. So it asks the class."
+    },
+    {
+      "at": "if (instance == nullptr) {",
+      "say": "getInstance() is static, so it runs on the class, without an object. The first time, there is no object yet.",
+      "call": {
+        "method": "Database::getInstance()"
+      }
+    },
+    {
+      "at": "instance = new Database();",
+      "say": "So it makes the one object and keeps it in the static field.",
+      "objects": [
+        {
+          "name": "instance",
+          "class": "Database"
+        }
+      ]
+    },
+    {
+      "at": "return instance;",
+      "say": "It returns that object. Every later call skips the if and returns the same object.",
+      "done": true
+    },
+    {
+      "at": "Database* db = Database::getInstance();",
+      "say": "db now points to the one Database. Every caller that asks gets this same object."
+    }
+  ]
+}

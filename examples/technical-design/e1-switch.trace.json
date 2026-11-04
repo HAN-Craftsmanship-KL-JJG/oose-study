@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "private final String rateType;",
+      "say": "Ride keeps the tariff as a word, such as \"minute\" or \"day\"."
+    },
+    {
+      "at": "switch (rateType) {",
+      "say": "A switch picks the rule for the word. \"minute\": 0.25 per minute."
+    },
+    {
+      "at": "return Math.ceil(minutes / 1440.0) * 15.00;",
+      "say": "\"day\": 15.00 for every started day of 1440 minutes."
+    },
+    {
+      "at": "// A student subscription? Change this method again.",
+      "say": "Every new tariff adds another rule to this method. Ride must change each time, so it breaks Open/Closed."
+    },
+    {
+      "at": "throw new IllegalStateException(",
+      "say": "A word with a typo is only found when the program runs."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "std::string rateType;",
+      "say": "Ride keeps the tariff as a word, such as \"minute\" or \"day\"."
+    },
+    {
+      "at": "if (rateType == \"minute\")",
+      "say": "An if picks the rule for the word. \"minute\": 0.25 per minute."
+    },
+    {
+      "at": "if (rateType == \"day\")",
+      "say": "\"day\": 15.00 for every started day of 1440 minutes."
+    },
+    {
+      "at": "// A student subscription? Change this method again.",
+      "say": "Every new tariff adds another rule to this method. Ride must change each time, so it breaks Open/Closed."
+    },
+    {
+      "at": "throw std::logic_error(",
+      "say": "A word with a typo is only found when the program runs."
+    }
+  ]
+}

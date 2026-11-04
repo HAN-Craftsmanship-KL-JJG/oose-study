@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "class GradeCalculator {",
+      "say": "GradeCalculator only calculates. It changes only when the grade rules change."
+    },
+    {
+      "at": "class ReportMailer {",
+      "say": "ReportMailer only sends. It gets the report as a parameter."
+    },
+    {
+      "at": "class ReportStorage {",
+      "say": "ReportStorage only saves. Each class now has one task: high cohesion."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class GradeCalculator {",
+      "say": "GradeCalculator only calculates. It changes only when the grade rules change."
+    },
+    {
+      "at": "class ReportMailer {",
+      "say": "ReportMailer only sends. It gets the report as a parameter."
+    },
+    {
+      "at": "class ReportStorage {",
+      "say": "ReportStorage only saves. Each class now has one task: high cohesion."
+    }
+  ]
+}

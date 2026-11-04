@@ -1,0 +1,30 @@
+{
+  "java": [
+    {
+      "at": "double price(Ride ride) {",
+      "say": "PriceCalculator works out the price of a ride."
+    },
+    {
+      "at": "Database.getInstance().getRate(",
+      "say": "It gets the rate straight from the Singleton. You cannot see that from outside, because the constructor takes nothing. And a test cannot swap the database for something simpler."
+    },
+    {
+      "at": "return rate * ride.getMinutes();",
+      "say": "The price is the rate times the minutes."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "double price(Ride& ride) {",
+      "say": "PriceCalculator works out the price of a ride."
+    },
+    {
+      "at": "Database::getInstance()->getRate(",
+      "say": "It gets the rate straight from the Singleton. You cannot see that from outside, because the constructor takes nothing. And a test cannot swap the database for something simpler."
+    },
+    {
+      "at": "return rate * ride.getMinutes();",
+      "say": "The price is the rate times the minutes."
+    }
+  ]
+}

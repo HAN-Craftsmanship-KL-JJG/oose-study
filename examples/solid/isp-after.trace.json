@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "interface Animal {",
+      "say": "Animal now only asks for eat()."
+    },
+    {
+      "at": "interface Flyer {",
+      "say": "Flying is its own small interface."
+    },
+    {
+      "at": "interface Swimmer {",
+      "say": "And so is swimming."
+    },
+    {
+      "at": "class Lion implements Animal {",
+      "say": "Lion implements only Animal. It has no fly() to fake."
+    },
+    {
+      "at": "class Duck implements",
+      "say": "A duck can do all three, so it implements all three interfaces."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class Animal {",
+      "say": "Animal now only asks for eat()."
+    },
+    {
+      "at": "class Flyer {",
+      "say": "Flying is its own small interface."
+    },
+    {
+      "at": "class Swimmer {",
+      "say": "And so is swimming."
+    },
+    {
+      "at": "class Lion : public Animal {",
+      "say": "Lion implements only Animal. It has no fly() to fake."
+    },
+    {
+      "at": "class Duck :",
+      "say": "A duck can do all three, so it inherits from all three. A C++ class can have several base classes."
+    }
+  ]
+}

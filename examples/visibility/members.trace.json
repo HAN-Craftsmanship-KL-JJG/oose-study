@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "public String name;",
+      "say": "name is public (+): every class can use it."
+    },
+    {
+      "at": "protected int badgeNumber;",
+      "say": "badgeNumber is protected (#): Keeper's subclasses can use it, and in Java also the classes in the same package."
+    },
+    {
+      "at": "int age;",
+      "say": "age has no modifier, so it is package-private (~). Only classes in the same package can use it."
+    },
+    {
+      "at": "private int pinCode;",
+      "say": "pinCode is private (-): only Keeper itself can use it."
+    },
+    {
+      "at": "public void feed()",
+      "say": "Methods get a visibility in the same way. feed() is public."
+    },
+    {
+      "at": "private void checkBadge()",
+      "say": "checkBadge() is private: a helper for Keeper's own code."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "std::string name;",
+      "say": "name is under `public:` (+): every class can use it."
+    },
+    {
+      "at": "int badgeNumber;",
+      "say": "badgeNumber is under `protected:` (#): only Keeper and its subclasses can use it."
+    },
+    {
+      "at": "C++ has no package level",
+      "say": "C++ has no package level (~), so this Keeper has no age field."
+    },
+    {
+      "at": "int pinCode;",
+      "say": "pinCode is under `private:` (-): only Keeper itself can use it."
+    },
+    {
+      "at": "void feed()",
+      "say": "Methods get a visibility in the same way. feed() is public."
+    },
+    {
+      "at": "void checkBadge()",
+      "say": "checkBadge() is private: a helper for Keeper's own code."
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "void onLendClicked() {",
+      "say": "The user clicks \"Lend\". This method in the user interface runs."
+    },
+    {
+      "at": "library.findBorrower(",
+      "say": "The screen looks up the borrower by card number."
+    },
+    {
+      "at": "library.findBook(",
+      "say": "And the book by its ISBN."
+    },
+    {
+      "at": "Loan loan = new Loan(",
+      "say": "The screen creates the Loan itself."
+    },
+    {
+      "at": "borrower.add(loan);",
+      "say": "It adds the loan to the borrower."
+    },
+    {
+      "at": "book.setLent(true);",
+      "say": "And it marks the book as lent. The user interface now does the whole system operation. A second screen, or a test, would have to repeat all of it."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "void onLendClicked() {",
+      "say": "The user clicks \"Lend\". This method in the user interface runs."
+    },
+    {
+      "at": "library->findBorrower(",
+      "say": "The screen looks up the borrower by card number."
+    },
+    {
+      "at": "library->findBook(",
+      "say": "And the book by its ISBN."
+    },
+    {
+      "at": "Loan* loan = new Loan(",
+      "say": "The screen creates the Loan itself."
+    },
+    {
+      "at": "borrower->add(loan);",
+      "say": "It adds the loan to the borrower."
+    },
+    {
+      "at": "book->setLent(true);",
+      "say": "And it marks the book as lent. The user interface now does the whole system operation. A second screen, or a test, would have to repeat all of it."
+    }
+  ]
+}

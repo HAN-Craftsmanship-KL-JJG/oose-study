@@ -1,0 +1,38 @@
+{
+  "java": [
+    {
+      "at": "class Ticket {",
+      "say": "Ticket does three things."
+    },
+    {
+      "at": "double calculatePrice()",
+      "say": "It calculates its price. This changes when the price rules change."
+    },
+    {
+      "at": "makePdf()",
+      "say": "It makes a PDF. This changes when the layout changes."
+    },
+    {
+      "at": "sendByEmail(",
+      "say": "And it sends itself by email. This changes when the email server changes. That is three reasons to change in one class."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class Ticket {",
+      "say": "Ticket does three things."
+    },
+    {
+      "at": "double calculatePrice()",
+      "say": "It calculates its price. This changes when the price rules change."
+    },
+    {
+      "at": "makePdf()",
+      "say": "It makes a PDF. This changes when the layout changes."
+    },
+    {
+      "at": "sendByEmail(",
+      "say": "And it sends itself by email. This changes when the email server changes. That is three reasons to change in one class."
+    }
+  ]
+}

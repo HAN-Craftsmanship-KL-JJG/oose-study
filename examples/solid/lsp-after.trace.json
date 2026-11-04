@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "void eat() {",
+      "say": "Bird only promises what every bird can do: eat."
+    },
+    {
+      "at": "class FlyingBird extends Bird {",
+      "say": "FlyingBird adds fly(). Only birds that can fly extend it."
+    },
+    {
+      "at": "class Parrot extends FlyingBird",
+      "say": "A parrot can fly, so it is a FlyingBird."
+    },
+    {
+      "at": "class Penguin extends Bird {",
+      "say": "A penguin is just a Bird. It never promised to fly; it swims."
+    },
+    {
+      "at": "for (FlyingBird bird : flyingBirds) {",
+      "say": "This loop only takes flying birds."
+    },
+    {
+      "at": "bird.fly();",
+      "say": "So every call to fly() works. No subclass breaks a promise."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "void eat() {",
+      "say": "Bird only promises what every bird can do: eat."
+    },
+    {
+      "at": "class FlyingBird : public Bird {",
+      "say": "FlyingBird adds fly(). Only birds that can fly extend it."
+    },
+    {
+      "at": "class Parrot : public FlyingBird",
+      "say": "A parrot can fly, so it is a FlyingBird."
+    },
+    {
+      "at": "class Penguin : public Bird {",
+      "say": "A penguin is just a Bird. It never promised to fly; it swims."
+    },
+    {
+      "at": "for (FlyingBird* bird : flyingBirds) {",
+      "say": "This loop only takes flying birds."
+    },
+    {
+      "at": "bird->fly();",
+      "say": "So every call to fly() works. No subclass breaks a promise."
+    }
+  ]
+}

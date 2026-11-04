@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "public interface BikeLock {",
+      "say": "The domain owns the interface BikeLock. It knows no vendor."
+    },
+    {
+      "at": "public void unlock() { lock.unlock(); }",
+      "say": "A Bike unlocks through its BikeLock, whatever is behind it."
+    },
+    {
+      "at": "public void unlock() { sdk.unlockBike(lockId); }",
+      "say": "The LockIt adapter translates unlock() to the vendor's unlockBike(id)."
+    },
+    {
+      "at": "public void unlock() { api.open(number, token); }",
+      "say": "The SmartLock adapter translates it to open(number, token)."
+    },
+    {
+      "at": "case \"LockIt\":",
+      "say": "The factory reads the vendor from the configuration and makes the matching adapter."
+    },
+    {
+      "at": "default: throw",
+      "say": "An unknown vendor is an error. The factory is the only class that knows which adapters exist."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class BikeLock {",
+      "say": "The domain owns the interface BikeLock. It knows no vendor."
+    },
+    {
+      "at": "void unlock() { lock->unlock(); }",
+      "say": "A Bike unlocks through its BikeLock, whatever is behind it."
+    },
+    {
+      "at": "void unlock() override { sdk.unlockBike(lockId); }",
+      "say": "The LockIt adapter translates unlock() to the vendor's unlockBike(id)."
+    },
+    {
+      "at": "void unlock() override { api.open(number, token); }",
+      "say": "The SmartLock adapter translates it to open(number, token)."
+    },
+    {
+      "at": "if (config.vendor == \"LockIt\")",
+      "say": "The factory reads the vendor from the configuration and makes the matching adapter."
+    },
+    {
+      "at": "throw std::invalid_argument(",
+      "say": "An unknown vendor is an error. The factory is the only class that knows which adapters exist."
+    }
+  ]
+}

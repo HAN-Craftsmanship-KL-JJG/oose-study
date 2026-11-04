@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "class A {",
+      "say": "A has two fields: its own number i, and a link to a B. Through that field, A is coupled to B."
+    },
+    {
+      "at": "public void c() {",
+      "say": "c() is A's own method. It only calls f()."
+    },
+    {
+      "at": "public void f() {",
+      "say": "f() is also a method of A. Look at what it uses."
+    },
+    {
+      "at": "System.out.println(b.getJ());",
+      "say": "It asks B for j and prints it. It uses nothing of A itself: not i, and no other method of A."
+    },
+    {
+      "at": "public int getJ() {",
+      "say": "B offers a getter, only so that A can read j. The data is in B, but the work on it is in A. That is low cohesion."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class A {",
+      "say": "A has two fields: its own number i, and a link to a B. Through that field, A is coupled to B."
+    },
+    {
+      "at": "void c() {",
+      "say": "c() is A's own method. It only calls f()."
+    },
+    {
+      "at": "void f() {",
+      "say": "f() is also a method of A. Look at what it uses."
+    },
+    {
+      "at": "std::cout << b->getJ()",
+      "say": "It asks B for j and prints it. It uses nothing of A itself: not i, and no other method of A."
+    },
+    {
+      "at": "int getJ() {",
+      "say": "B offers a getter, only so that A can read j. The data is in B, but the work on it is in A. That is low cohesion."
+    }
+  ]
+}

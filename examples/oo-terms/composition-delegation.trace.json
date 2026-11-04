@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "private final List<OrderLine> lines",
+      "say": "Order keeps a list of its lines. Nobody else gets this list: Order owns its lines (composition)."
+    },
+    {
+      "at": "lines.add(new OrderLine(price, quantity));",
+      "say": "Order makes each line itself. The caller only gives a price and a quantity."
+    },
+    {
+      "at": "total += line.subtotal();",
+      "say": "To get the total, Order asks each line for its subtotal. That is delegation: Order passes part of the work to another object."
+    },
+    {
+      "at": "double subtotal() { return price * quantity; }",
+      "say": "Each line works out its own subtotal from its own data."
+    },
+    {
+      "at": "return order.getTotal();",
+      "say": "CashRegister also delegates: it asks the order for the total. But it does not own the order; the order comes in as a parameter. That is delegation without composition."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "std::vector<OrderLine> lines;",
+      "say": "Order holds its lines by value, inside itself. When the order goes, its lines go too (composition)."
+    },
+    {
+      "at": "lines.push_back(OrderLine(price, quantity));",
+      "say": "Order makes each line itself. The caller only gives a price and a quantity."
+    },
+    {
+      "at": "total += line.subtotal();",
+      "say": "To get the total, Order asks each line for its subtotal. That is delegation: Order passes part of the work to another object."
+    },
+    {
+      "at": "double subtotal() { return price * quantity; }",
+      "say": "Each line works out its own subtotal from its own data."
+    },
+    {
+      "at": "return order.getTotal();",
+      "say": "CashRegister also delegates: it asks the order for the total. But it does not own the order; the order comes in as a parameter. That is delegation without composition."
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "java": [
+    {
+      "at": "public interface Animal {",
+      "say": "Animal is an interface: it promises the method makeSound(), but has no code for it."
+    },
+    {
+      "at": "String makeSound();",
+      "say": "Every class that implements Animal must have this method."
+    },
+    {
+      "at": "public class Lion implements Animal {",
+      "say": "Lion implements Animal."
+    },
+    {
+      "at": "return \"Roar\";",
+      "say": "Lion keeps the promise in its own way."
+    },
+    {
+      "at": "return \"Squawk\";",
+      "say": "Penguin keeps the same promise in another way. Code that only knows Animal can use both."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class Animal {",
+      "say": "C++ has no interface keyword. Animal is a class with only a pure virtual method (= 0): a promise without code."
+    },
+    {
+      "at": "virtual std::string makeSound() = 0;",
+      "say": "Every class that implements Animal must have this method."
+    },
+    {
+      "at": "class Lion : public Animal {",
+      "say": "Lion implements Animal."
+    },
+    {
+      "at": "return \"Roar\";",
+      "say": "Lion keeps the promise in its own way."
+    },
+    {
+      "at": "return \"Squawk\";",
+      "say": "Penguin keeps the same promise in another way. Code that only knows Animal can use both."
+    }
+  ]
+}

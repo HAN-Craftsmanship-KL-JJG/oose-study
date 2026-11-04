@@ -1,0 +1,104 @@
+{
+  "java": [
+    {
+      "at": "Ride ride = new Ride(new StudentSubscription(), 45);",
+      "say": "The app chooses the tariff for this ride: a student subscription. The ride took 45 minutes.",
+      "objects": [
+        {
+          "name": "ride",
+          "class": "Ride",
+          "fields": {
+            "rate": "→ rate",
+            "minutes": "= 45"
+          }
+        },
+        {
+          "name": "rate",
+          "class": "StudentSubscription"
+        }
+      ]
+    },
+    {
+      "at": "System.out.println(ride.calculatePrice());",
+      "say": "The program asks the ride for its price."
+    },
+    {
+      "at": "return rate.calculate(this);",
+      "say": "The ride passes the question on to its tariff.",
+      "call": {
+        "on": "ride",
+        "method": "calculatePrice()"
+      }
+    },
+    {
+      "at": "Math.max(0, ride.getMinutes() - 30) * 0.10",
+      "say": "The student subscription gives the first 30 minutes free, then 0.10 per minute: (45 − 30) × 0.10 = 1.50.",
+      "call": {
+        "on": "rate",
+        "method": "calculate(ride)"
+      },
+      "done": true
+    },
+    {
+      "at": "return rate.calculate(this);",
+      "say": "The ride hands 1.50 back.",
+      "done": true
+    },
+    {
+      "at": "System.out.println(ride.calculatePrice());",
+      "say": "The program prints 1.5. StudentSubscription was added later, and no other class had to change.",
+      "print": "1.5"
+    }
+  ],
+  "cpp": [
+    {
+      "at": "Ride ride(new StudentSubscription(), 45);",
+      "say": "The app chooses the tariff for this ride: a student subscription. The ride took 45 minutes.",
+      "objects": [
+        {
+          "name": "ride",
+          "class": "Ride",
+          "fields": {
+            "rate": "→ rate",
+            "minutes": "= 45"
+          }
+        },
+        {
+          "name": "rate",
+          "class": "StudentSubscription"
+        }
+      ]
+    },
+    {
+      "at": "std::cout << ride.calculatePrice()",
+      "say": "The program asks the ride for its price."
+    },
+    {
+      "at": "return rate->calculate(*this);",
+      "say": "The ride passes the question on to its tariff.",
+      "call": {
+        "on": "ride",
+        "method": "calculatePrice()"
+      }
+    },
+    {
+      "at": "std::max(0, ride.getMinutes() - 30) * 0.10",
+      "say": "The student subscription gives the first 30 minutes free, then 0.10 per minute: (45 − 30) × 0.10 = 1.50.",
+      "call": {
+        "on": "rate",
+        "method": "calculate(ride)"
+      },
+      "done": true
+    },
+    {
+      "at": "return rate->calculate(*this);",
+      "say": "The ride hands 1.50 back.",
+      "done": true
+    },
+    {
+      "at": "std::cout << ride.calculatePrice()",
+      "say": "The program prints 1.5. StudentSubscription was added later, and no other class had to change.",
+      "print": "1.5"
+    }
+  ]
+}

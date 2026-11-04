@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "double openFines(LocalDate today) {",
+      "say": "Someone asks a borrower for the total of its open fines. Borrower knows all its loans, so it is the expert for the total."
+    },
+    {
+      "at": "for (Loan loan : loans) total += loan.fine(today);",
+      "say": "It does not work out each fine itself. It asks each loan for its own fine and adds them up."
+    },
+    {
+      "at": "double fine(LocalDate today) {",
+      "say": "A loan knows its book and its due date, so it is the expert for its own fine."
+    },
+    {
+      "at": "long daysLate = ChronoUnit.DAYS.between(dueDate, today);",
+      "say": "It counts the days from the due date to today."
+    },
+    {
+      "at": "return daysLate > 0 ? daysLate * book.getFinePerDay() : 0;",
+      "say": "When the book is late, the fine is the days late times the fine per day. Otherwise it is 0."
+    },
+    {
+      "at": "double getFinePerDay() { return finePerDay; }",
+      "say": "The fine per day belongs to the book, so the loan asks the book for it. Each class works with the data it has."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "double openFines(Date today) {",
+      "say": "Someone asks a borrower for the total of its open fines. Borrower knows all its loans, so it is the expert for the total."
+    },
+    {
+      "at": "for (Loan* loan : loans) total += loan->fine(today);",
+      "say": "It does not work out each fine itself. It asks each loan for its own fine and adds them up."
+    },
+    {
+      "at": "double fine(Date today) {",
+      "say": "A loan knows its book and its due date, so it is the expert for its own fine."
+    },
+    {
+      "at": "long daysLate = (today - dueDate).count();",
+      "say": "It counts the days from the due date to today. Both are dates counted in days, so subtracting them gives a number of days."
+    },
+    {
+      "at": "return daysLate > 0 ? daysLate * book->getFinePerDay() : 0;",
+      "say": "When the book is late, the fine is the days late times the fine per day. Otherwise it is 0."
+    },
+    {
+      "at": "double getFinePerDay() { return finePerDay; }",
+      "say": "The fine per day belongs to the book, so the loan asks the book for it. Each class works with the data it has."
+    }
+  ]
+}

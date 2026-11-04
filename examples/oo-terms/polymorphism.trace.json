@@ -1,0 +1,70 @@
+{
+  "java": [
+    {
+      "at": "List<Animal> animals",
+      "say": "The list holds a Lion and a Penguin. It only knows them as Animal.",
+      "objects": [
+        {
+          "name": "lion",
+          "class": "Lion"
+        },
+        {
+          "name": "penguin",
+          "class": "Penguin"
+        }
+      ]
+    },
+    {
+      "at": "for (Animal animal : animals) {",
+      "say": "The loop takes the first animal, the Lion."
+    },
+    {
+      "at": "System.out.println(animal.makeSound());",
+      "say": "The call makeSound() runs the Lion's method, because the real object is a Lion.",
+      "print": "Roar"
+    },
+    {
+      "at": "for (Animal animal : animals) {",
+      "say": "The loop takes the next animal, the Penguin."
+    },
+    {
+      "at": "System.out.println(animal.makeSound());",
+      "say": "The same line now runs the Penguin's method. One call, different behaviour: that is polymorphism.",
+      "print": "Squawk"
+    }
+  ],
+  "cpp": [
+    {
+      "at": "std::vector<Animal*> animals",
+      "say": "The list holds a Lion and a Penguin. It only knows them as Animal.",
+      "objects": [
+        {
+          "name": "lion",
+          "class": "Lion"
+        },
+        {
+          "name": "penguin",
+          "class": "Penguin"
+        }
+      ]
+    },
+    {
+      "at": "for (Animal* animal : animals) {",
+      "say": "The loop takes the first animal, the Lion."
+    },
+    {
+      "at": "std::cout << animal->makeSound()",
+      "say": "makeSound() is virtual, so C++ runs the method of the real object, a Lion.",
+      "print": "Roar"
+    },
+    {
+      "at": "for (Animal* animal : animals) {",
+      "say": "The loop takes the next animal, the Penguin."
+    },
+    {
+      "at": "std::cout << animal->makeSound()",
+      "say": "The same line now runs the Penguin's method. One call, different behaviour: that is polymorphism.",
+      "print": "Squawk"
+    }
+  ]
+}

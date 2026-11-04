@@ -1,0 +1,54 @@
+{
+  "java": [
+    {
+      "at": "public interface PaymentProvider {",
+      "say": "The domain defines the interface it needs, PaymentProvider. It belongs to the high level."
+    },
+    {
+      "at": "private final PaymentProvider provider;",
+      "say": "CashRegister only knows that interface."
+    },
+    {
+      "at": "public CashRegister(PaymentProvider provider) {",
+      "say": "It gets a provider through its constructor. It does not choose which one."
+    },
+    {
+      "at": "public class MolliePaymentProvider implements PaymentProvider {",
+      "say": "The Mollie class implements the domain's interface. Now the detail depends on the abstraction: the dependency is turned around."
+    },
+    {
+      "at": "mollie.createPayment(",
+      "say": "Only this class knows the Mollie library."
+    },
+    {
+      "at": "CashRegister register = new CashRegister(",
+      "say": "At start-up, one place chooses the provider. Another provider is a new class; CashRegister does not change."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class PaymentProvider {",
+      "say": "The domain defines the interface it needs, PaymentProvider. It belongs to the high level."
+    },
+    {
+      "at": "PaymentProvider* provider;",
+      "say": "CashRegister only knows that interface."
+    },
+    {
+      "at": "CashRegister(PaymentProvider* provider)",
+      "say": "It gets a provider through its constructor. It does not choose which one."
+    },
+    {
+      "at": "class MolliePaymentProvider : public PaymentProvider {",
+      "say": "The Mollie class implements the domain's interface. Now the detail depends on the abstraction: the dependency is turned around."
+    },
+    {
+      "at": "mollie.createPayment(",
+      "say": "Only this class knows the Mollie library."
+    },
+    {
+      "at": "CashRegister cashRegister(",
+      "say": "At start-up, one place chooses the provider. Another provider is a new class; CashRegister does not change."
+    }
+  ]
+}

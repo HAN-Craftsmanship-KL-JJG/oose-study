@@ -1,0 +1,86 @@
+{
+  "java": [
+    {
+      "at": "PriceCalculator calculator = new PriceCalculator(",
+      "say": "At start-up, the program makes the real rate source and gives it to the calculator.",
+      "objects": [
+        {
+          "name": "source",
+          "class": "DatabaseRateSource"
+        }
+      ]
+    },
+    {
+      "at": "this.rateSource = rateSource;",
+      "say": "The calculator keeps the source in a field. It only knows it as RateSource, the interface. This is constructor injection.",
+      "call": {
+        "on": "calculator",
+        "method": "PriceCalculator(source)"
+      },
+      "objects": [
+        {
+          "name": "calculator",
+          "class": "PriceCalculator",
+          "fields": {
+            "rateSource": "→ source"
+          }
+        },
+        {
+          "name": "source",
+          "class": "DatabaseRateSource"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "double rate = rateSource.getRate(ride.getBikeType());",
+      "say": "Later, price() asks its source for the rate. It does not know whether a database is behind it."
+    },
+    {
+      "at": "return Database.getInstance().getRate(bikeType);",
+      "say": "In the application, the source asks the database. In a test, another RateSource can take its place."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "PriceCalculator calculator(",
+      "say": "At start-up, the program makes the real rate source and gives it to the calculator.",
+      "objects": [
+        {
+          "name": "source",
+          "class": "DatabaseRateSource"
+        }
+      ]
+    },
+    {
+      "at": "PriceCalculator(RateSource* rateSource) : rateSource(rateSource) {}",
+      "say": "The calculator keeps the source in a field. It only knows it as RateSource, the interface. This is constructor injection.",
+      "call": {
+        "on": "calculator",
+        "method": "PriceCalculator(source)"
+      },
+      "objects": [
+        {
+          "name": "calculator",
+          "class": "PriceCalculator",
+          "fields": {
+            "rateSource": "→ source"
+          }
+        },
+        {
+          "name": "source",
+          "class": "DatabaseRateSource"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "double rate = rateSource->getRate(ride.getBikeType());",
+      "say": "Later, price() asks its source for the rate. It does not know whether a database is behind it."
+    },
+    {
+      "at": "return Database::getInstance()->getRate(bikeType);",
+      "say": "In the application, the source asks the database. In a test, another RateSource can take its place."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "java": [
+    {
+      "at": "class Report {",
+      "say": "Report is one class with three tasks."
+    },
+    {
+      "at": "double calculateAverage(",
+      "say": "Task 1: calculate the average grade. This changes when the grade rules change."
+    },
+    {
+      "at": "sendByEmail(",
+      "say": "Task 2: send the report by email. This changes when the email server changes."
+    },
+    {
+      "at": "saveInDatabase(",
+      "say": "Task 3: save it in a database. This changes when the database changes. Three reasons to change: low cohesion."
+    }
+  ],
+  "cpp": [
+    {
+      "at": "class Report {",
+      "say": "Report is one class with three tasks."
+    },
+    {
+      "at": "double calculateAverage(",
+      "say": "Task 1: calculate the average grade. This changes when the grade rules change."
+    },
+    {
+      "at": "sendByEmail(",
+      "say": "Task 2: send the report by email. This changes when the email server changes."
+    },
+    {
+      "at": "saveInDatabase(",
+      "say": "Task 3: save it in a database. This changes when the database changes. Three reasons to change: low cohesion."
+    }
+  ]
+}
