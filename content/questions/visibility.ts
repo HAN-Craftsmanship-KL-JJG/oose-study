@@ -67,6 +67,15 @@ Options A and B are about B and I, not about A and I.`,
     title: "CashRegister and PaymentMethod",
     prompt:
       "In the diagram, there is a solid arrow from `CashRegister` to the interface `PaymentMethod`. `IDeal` and `CreditCard` implement `PaymentMethod`. Which code implements the relation between CashRegister and PaymentMethod?",
+    uml: `class CashRegister
+interface PaymentMethod {
+  +pay(amount : double) : boolean
+}
+class IDeal
+class CreditCard
+CashRegister --> PaymentMethod
+IDeal ..|> PaymentMethod
+CreditCard ..|> PaymentMethod`,
     options: [
       "`class CashRegister implements PaymentMethod { ... }`",
       "`class CashRegister extends PaymentMethod { ... }`",
@@ -204,6 +213,9 @@ An association needs a field. A triangle means inheritance. A filled diamond mea
     title: "Name the keyword",
     prompt:
       "The diagram has a dashed line with an open triangle from `Lion` to the interface `Animal`. Which Java keyword do you write after `class Lion`? Type only the keyword.",
+    uml: `interface Animal
+class Lion
+Lion ..|> Animal`,
     accept: ["implements"],
     explain: `A dashed line with an open triangle is realization: the class implements the interface. You write \`class Lion implements Animal\`.`,
   },

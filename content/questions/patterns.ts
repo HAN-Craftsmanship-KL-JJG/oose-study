@@ -10,6 +10,16 @@ export const questions: Question[] = [
     prompt: `A client uses an interface. A class implements that interface by calling an existing class with a different interface.
 
 Which pattern is this?`,
+    uml: `interface Printer {
+  +print(text : String) : void
+}
+class ThermalPrinting
+class ThermalPrinter {
+  +sendBytes(data : byte[]) : void
+}
+TicketShop --> Printer
+ThermalPrinting ..|> Printer
+ThermalPrinting --> ThermalPrinter`,
     options: ["Adapter", "Facade", "Proxy", "Strategy"],
     answer: 0,
     explain: `Adapter. The class in the middle translates the interface the client expects to the interface of the existing class.
