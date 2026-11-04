@@ -12,23 +12,21 @@ class PerMinuteRate : RateStrategy {
 
 class DailyRate : RateStrategy {
     [double] Calculate([Ride]$ride) {
-        return [math]::Ceiling($ride.GetMinutes() / 1440) * 15.00
+        return 15.00                        # one price for the whole day
     }
 }
 
 class Ride {
-    hidden [datetime]$startTime
-    hidden [datetime]$endTime
+    hidden [int]$minutes
     hidden [RateStrategy]$rate              # composition: Ride has a strategy [!code highlight]
 
-    Ride([datetime]$startTime, [datetime]$endTime, [RateStrategy]$rate) {
-        $this.startTime = $startTime
-        $this.endTime = $endTime
+    Ride([int]$minutes, [RateStrategy]$rate) {
+        $this.minutes = $minutes
         $this.rate = $rate
     }
 
     [int] GetMinutes() {
-        return [int]($this.endTime - $this.startTime).TotalMinutes
+        return $this.minutes
     }
 
     [double] CalculatePrice() {
@@ -37,5 +35,5 @@ class Ride {
 }
 
 # The rate is chosen per ride. A new rate is a new class; Ride does not change.
-$ride = [Ride]::new((Get-Date).AddMinutes(-30), (Get-Date), [PerMinuteRate]::new())
-$ride.CalculatePrice()
+$ride = [Ride]::new(30, [PerMinuteRate]::new())
+$ride.CalculatePrice()      # 7.5

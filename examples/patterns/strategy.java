@@ -12,23 +12,21 @@ public class PerMinuteRate implements RateStrategy {
 public class DailyRate implements RateStrategy {
     @Override
     public double calculate(Ride ride) {
-        return Math.ceil(ride.getMinutes() / 1440.0) * 15.00;
+        return 15.00;                       // one price for the whole day
     }
 }
 
 public class Ride {
-    private final LocalDateTime startTime;
-    private final LocalDateTime endTime;
+    private final int minutes;
     private final RateStrategy rate;        // composition: Ride has a strategy [!code highlight]
 
-    public Ride(LocalDateTime startTime, LocalDateTime endTime, RateStrategy rate) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public Ride(int minutes, RateStrategy rate) {
+        this.minutes = minutes;
         this.rate = rate;
     }
 
     public int getMinutes() {
-        return (int) Duration.between(startTime, endTime).toMinutes();
+        return minutes;
     }
 
     public double calculatePrice() {
@@ -37,5 +35,5 @@ public class Ride {
 }
 
 // The rate is chosen per ride. A new rate is a new class; Ride does not change.
-Ride ride = new Ride(start, end, new PerMinuteRate());
-System.out.println(ride.calculatePrice());
+Ride ride = new Ride(30, new PerMinuteRate());
+System.out.println(ride.calculatePrice());      // 7.5

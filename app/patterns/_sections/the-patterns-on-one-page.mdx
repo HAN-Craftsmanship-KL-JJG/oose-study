@@ -59,9 +59,8 @@ Each tariff class is small and easy to test.
 
 ```plantuml
 class Ride {
-  -startTime : LocalDateTime
-  -endTime : LocalDateTime
-  +Ride(rate : RateStrategy)
+  -minutes : int
+  +Ride(minutes : int, rate : RateStrategy)
   +calculatePrice() : double
   +getMinutes() : int
 }
