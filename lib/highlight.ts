@@ -1,6 +1,7 @@
 import { transformerNotationHighlight } from "@shikijs/transformers";
 import { codeToHtml, type ShikiTransformer } from "shiki";
 import type { Question, RenderedQuestion } from "./questions";
+import { readUml } from "./uml";
 
 /** Drops the newlines between lines: each line is a block with a number (see globals.css). */
 const blockLines: ShikiTransformer = {
@@ -23,11 +24,14 @@ export function highlight(code: string, lang: string): Promise<string> {
   });
 }
 
-/** Adds highlighted HTML for the code of each question. Runs on the server. */
+/** Adds the highlighted code and the diagram SVG of each question. Runs on the server. */
 export async function renderQuestions(questions: Question[]): Promise<RenderedQuestion[]> {
   return Promise.all(
-    questions.map(async (q) =>
-      q.code ? { ...q, codeHtml: await highlight(q.code, q.codeLang ?? "java") } : q,
-    ),
+    questions.map(async (q) => {
+      const rendered: RenderedQuestion = { ...q };
+      if (q.code) rendered.codeHtml = await highlight(q.code, q.codeLang ?? "java");
+      if (q.uml) rendered.umlSvg = await readUml(q.uml);
+      return rendered;
+    }),
   );
 }

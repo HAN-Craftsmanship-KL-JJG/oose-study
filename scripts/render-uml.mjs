@@ -1,5 +1,6 @@
-// Renders every ```plantuml block in the pages to an SVG file in uml/svg/, with PlantUML in a
-// container. The site build reads those files, so it needs no Java and no container.
+// Renders every ```plantuml block in the pages, and the `uml` field of every question, to an
+// SVG file in uml/svg/, with PlantUML in a container. The site build reads those files, so it
+// needs no Java and no container.
 //
 //   npm run uml          render the new and changed diagrams, delete the unused ones
 //   npm run uml -- --check   only check that every diagram has an up-to-date SVG
@@ -12,6 +13,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync } from "n
 import { rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
+import { pathToFileURL } from "node:url";
 import { umlHash } from "../lib/uml-hash.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -33,8 +35,8 @@ function* walk(dir) {
   }
 }
 
-/** Every diagram in the pages, by hash. */
-function findDiagrams() {
+/** Every diagram in the pages and in the question bank, by hash. */
+async function findDiagrams() {
   const diagrams = new Map();
   for (const file of walk(join(ROOT, "app"))) {
     const text = readFileSync(file, "utf8");
@@ -42,6 +44,15 @@ function findDiagrams() {
       const body = match[1];
       const line = text.slice(0, match.index).split("\n").length;
       diagrams.set(umlHash(STYLE, body), { body, where: `${relative(ROOT, file)}:${line}` });
+    }
+  }
+  // Node runs the question files as TypeScript; index.ts is skipped, it only joins them.
+  const questionDir = join(ROOT, "content", "questions");
+  for (const name of readdirSync(questionDir)) {
+    if (!name.endsWith(".ts") || name === "index.ts") continue;
+    const { questions } = await import(pathToFileURL(join(questionDir, name)).href);
+    for (const q of questions) {
+      if (q.uml) diagrams.set(umlHash(STYLE, q.uml), { body: q.uml, where: `question ${q.id}` });
     }
   }
   return diagrams;
@@ -96,7 +107,7 @@ function render(todo) {
   for (const [hash, { body }] of todo) {
     writeFileSync(
       join(work, `${hash}.puml`),
-      `@startuml\n${STYLE}\n${labelInterfaces(body)}@enduml\n`,
+      `@startuml\n${STYLE}\n${labelInterfaces(body.trimEnd())}\n@enduml\n`,
     );
   }
   const result = spawnSync(
@@ -125,7 +136,7 @@ function render(todo) {
   }
 }
 
-const diagrams = findDiagrams();
+const diagrams = await findDiagrams();
 mkdirSync(SVG_DIR, { recursive: true });
 const existing = new Set(readdirSync(SVG_DIR).map((f) => f.replace(/\.svg$/, "")));
 const todo = [...diagrams].filter(([hash]) => !existing.has(hash));

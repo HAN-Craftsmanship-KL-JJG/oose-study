@@ -20,7 +20,7 @@ There is no test suite.
 
 ## Things that are easy to get wrong
 
-- **Diagrams need a rendered SVG.** A `plantuml` block in MDX is looked up at build time as `uml/svg/<hash>.svg`, where the hash covers `uml/style.puml` and the block body (`lib/uml-hash.mjs`).
+- **Diagrams need a rendered SVG.** A `plantuml` block in MDX (or the `uml` field of a question) is looked up at build time as `uml/svg/<hash>.svg`, where the hash covers `uml/style.puml` and the block body (`lib/uml-hash.mjs`).
   Never edit or write an SVG by hand: change the PlantUML source, then run `npm run uml` to render it with the PlantUML container, and commit the SVGs.
   The development machine uses Apple `container`, which the script picks first (Docker or Podman also work; `UML_RUNTIME` overrides the choice).
   Editing `uml/style.puml` changes every hash and re-renders every diagram.

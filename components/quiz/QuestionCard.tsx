@@ -16,6 +16,7 @@ import {
   type Value,
 } from "./grading";
 import { JudgeInput, MatchInput, TextInput } from "./OtherInputs";
+import UmlFigure from "../UmlFigure";
 import RichText from "./RichText";
 
 interface Props {
@@ -111,6 +112,7 @@ export default function QuestionCard({
       <CardHeader q={q} number={number} before={mode === "practice" ? before : undefined} />
       <div className="px-5 py-4 text-[15px] leading-relaxed">
         <RichText text={q.prompt} />
+        {q.umlSvg && <UmlFigure svg={q.umlSvg.svg} minWidth={q.umlSvg.minWidth} />}
         {q.codeHtml && (
           <div
             className="my-3 overflow-x-auto rounded-sm border border-stone-200 text-[13px] dark:border-stone-800 [&_.shiki]:[--code-pad:1rem]"

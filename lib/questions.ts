@@ -19,6 +19,8 @@ interface BaseQuestion {
   /** Optional code shown under the prompt. */
   code?: string;
   codeLang?: "java" | "powershell";
+  /** Optional PlantUML diagram shown under the prompt, written like a `plantuml` block in MDX. */
+  uml?: string;
   /** Shown after checking: why the answer is right and the others are wrong. */
   explain: string;
 }
@@ -56,5 +58,8 @@ export interface TextQuestion extends BaseQuestion {
 
 export type Question = ChoiceQuestion | MatchQuestion | JudgeQuestion | TextQuestion;
 
-/** A question after the server has highlighted its code. */
-export type RenderedQuestion = Question & { codeHtml?: string };
+/** A question after the server has highlighted its code and read its diagram. */
+export type RenderedQuestion = Question & {
+  codeHtml?: string;
+  umlSvg?: { svg: string; minWidth: number };
+};
