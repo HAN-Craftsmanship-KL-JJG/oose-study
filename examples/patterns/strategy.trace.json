@@ -1,7 +1,7 @@
 {
   "java": [
     {
-      "at": "Ride ride = new Ride(start, end, new PerMinuteRate());",
+      "at": "Ride ride = new Ride(30, new PerMinuteRate());",
       "say": "Read this line from the inside out. `new PerMinuteRate()` makes a new object from the class PerMinuteRate. That object is the tariff: it knows how to price a ride by the minute.",
       "objects": [
         {
@@ -14,14 +14,15 @@
       "at": "this.rate = rate;",
       "call": {
         "on": "ride",
-        "method": "Ride(start, end, rate)"
+        "method": "Ride(30, rate)"
       },
-      "say": "Now `new Ride(...)` builds the ride, and Java runs the setup code of Ride. This line stores the tariff in the ride's field `rate`. A field is a value that an object keeps. From now on, the ride holds on to its tariff.",
+      "say": "Now `new Ride(...)` builds the ride, and Java runs the setup code of Ride. The ride stores its length, 30 minutes, and this line stores the tariff in the field `rate`. A field is a value that an object keeps. From now on, the ride holds on to its tariff.",
       "objects": [
         {
           "name": "ride",
           "class": "Ride",
           "fields": {
+            "minutes": "= 30",
             "rate": "→ rate"
           }
         },
@@ -53,7 +54,7 @@
       "say": "The tariff's code runs now. Ride only knows its field as a RateStrategy, the interface. Java runs the code of the real object, a PerMinuteRate. With a DailyRate in the field, the DailyRate code would run here instead."
     },
     {
-      "at": "return (int) Duration.between(startTime, endTime).toMinutes();",
+      "at": "return minutes;",
       "call": {
         "on": "ride",
         "method": "getMinutes()"
