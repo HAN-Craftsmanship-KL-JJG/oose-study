@@ -59,5 +59,66 @@
       "say": "The adapter is done. Neither side changed: the program kept its interface, and the supplier kept its code. A second supplier gets an adapter of its own.",
       "done": true
     }
+  ],
+  "cpp": [
+    {
+      "at": "BikeLock* lock = new SmartLockAdapter(",
+      "say": "Read this line from the inside out. `new SmartLockApi()` makes an object from the supplier's library. You cannot change that code. To open a lock, it wants open(number, token), not unlock(text).",
+      "objects": [
+        {
+          "name": "api",
+          "class": "SmartLockApi"
+        }
+      ]
+    },
+    {
+      "at": "SmartLockAdapter(SmartLockApi* api, std::string token)",
+      "call": {
+        "on": "lock",
+        "method": "SmartLockAdapter(api, token)"
+      },
+      "say": "`new SmartLockAdapter(...)` builds the adapter and gives it a pointer to the supplier's object and a token, a kind of password. The adapter keeps both in its fields.",
+      "objects": [
+        {
+          "name": "lock",
+          "class": "SmartLockAdapter",
+          "fields": {
+            "api": "→ api",
+            "token": "= \"secret-token\""
+          }
+        },
+        {
+          "name": "api",
+          "class": "SmartLockApi"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "lock->unlock(\"42\");",
+      "say": "The program wants bike 42 open. It speaks the language of its own interface BikeLock: unlock(\"42\"). The type of `lock` is BikeLock*, so the program does not know that SmartLockApi exists."
+    },
+    {
+      "at": "api->open(std::stoi(bikeNumber), token);",
+      "call": {
+        "on": "lock",
+        "method": "unlock(\"42\")"
+      },
+      "say": "Now the adapter translates. The name: unlock becomes open. The data: `std::stoi` turns the text \"42\" into the number 42. The extra: it adds the token. Then it calls the supplier in the supplier's own language."
+    },
+    {
+      "at": "void open(int nr, std::string token)",
+      "call": {
+        "on": "api",
+        "method": "open(42, \"secret-token\")"
+      },
+      "say": "The supplier's code runs and the lock opens. It got a call it understands.",
+      "done": true
+    },
+    {
+      "at": "api->open(std::stoi(bikeNumber), token);",
+      "say": "The adapter is done. Neither side changed: the program kept its interface, and the supplier kept its code. A second supplier gets an adapter of its own.",
+      "done": true
+    }
   ]
 }
