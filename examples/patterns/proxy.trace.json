@@ -116,5 +116,123 @@
       "say": "The program prints B. The interface and the real answer key did not change; the only new part is the proxy in between.",
       "print": "B"
     }
+  ],
+  "cpp": [
+    {
+      "at": "AnswerKey* file = new AnswerFile();",
+      "say": "First the program makes the real answer key. It knows the answer to each question.",
+      "objects": [
+        {
+          "name": "file",
+          "class": "AnswerFile",
+          "fields": {
+            "answers": "= { 1: B, 2: D }"
+          }
+        }
+      ]
+    },
+    {
+      "at": "AnswerKey* forStudent =",
+      "say": "Then it makes a proxy for a student. The proxy keeps a pointer to the real answer key in its field `real`, and remembers that this user is not a teacher.",
+      "objects": [
+        {
+          "name": "forStudent",
+          "class": "TeacherOnlyAnswerKey",
+          "fields": {
+            "real": "→ file",
+            "teacher": "= false"
+          }
+        },
+        {
+          "name": "file",
+          "class": "AnswerFile",
+          "fields": {
+            "answers": "= { 1: B, 2: D }"
+          }
+        }
+      ]
+    },
+    {
+      "at": "AnswerKey* forTeacher =",
+      "say": "And a second proxy for a teacher, in front of the same real answer key.",
+      "objects": [
+        {
+          "name": "forStudent",
+          "class": "TeacherOnlyAnswerKey",
+          "fields": {
+            "real": "→ file",
+            "teacher": "= false"
+          }
+        },
+        {
+          "name": "forTeacher",
+          "class": "TeacherOnlyAnswerKey",
+          "fields": {
+            "real": "→ file",
+            "teacher": "= true"
+          }
+        },
+        {
+          "name": "file",
+          "class": "AnswerFile",
+          "fields": {
+            "answers": "= { 1: B, 2: D }"
+          }
+        }
+      ]
+    },
+    {
+      "at": "std::cout << forStudent->answer(1)",
+      "say": "The student asks for the answer to question 1. The variable has the type AnswerKey*, so the program cannot see that a proxy stands in front of the real object."
+    },
+    {
+      "at": "if (!teacher)",
+      "call": {
+        "on": "forStudent",
+        "method": "answer(1)"
+      },
+      "say": "The proxy gets the call first and checks the access. This user is not a teacher, so it returns \"No access\". The real answer key is never called.",
+      "done": true
+    },
+    {
+      "at": "std::cout << forStudent->answer(1)",
+      "say": "The program prints \"No access\".",
+      "print": "No access"
+    },
+    {
+      "at": "std::cout << forTeacher->answer(1)",
+      "say": "Now the teacher asks the same question, through the other proxy."
+    },
+    {
+      "at": "if (!teacher)",
+      "call": {
+        "on": "forTeacher",
+        "method": "answer(1)"
+      },
+      "say": "The proxy checks the access again. This user is a teacher, so the check passes."
+    },
+    {
+      "at": "return real->answer(question);",
+      "say": "The proxy passes the call on to the real answer key."
+    },
+    {
+      "at": "std::string answer(int question) override { return answers[question]; }",
+      "call": {
+        "on": "file",
+        "method": "answer(1)"
+      },
+      "say": "The real answer key looks up the answer: \"B\". It does not know about the access check.",
+      "done": true
+    },
+    {
+      "at": "return real->answer(question);",
+      "say": "The proxy returns \"B\" as it is. A proxy does not change the result.",
+      "done": true
+    },
+    {
+      "at": "std::cout << forTeacher->answer(1)",
+      "say": "The program prints B. The interface and the real answer key did not change; the only new part is the proxy in between.",
+      "print": "B"
+    }
   ]
 }

@@ -75,5 +75,82 @@
       "at": "new ZooDesk().bookVisit(",
       "say": "Back in the user interface. It made one call and only knows ZooDesk. The desk knew which services to call, and in which order."
     }
+  ],
+  "cpp": [
+    {
+      "at": "ZooDesk().bookVisit(",
+      "say": "`ZooDesk()` makes the desk. The desk holds its three services as fields, so they are made together with it. The user interface never sees them.",
+      "objects": [
+        {
+          "name": "desk",
+          "class": "ZooDesk",
+          "fields": {
+            "tickets": "→ tickets",
+            "payment": "→ payment",
+            "tours": "→ tours"
+          }
+        },
+        {
+          "name": "tickets",
+          "class": "TicketService"
+        },
+        {
+          "name": "payment",
+          "class": "PaymentService"
+        },
+        {
+          "name": "tours",
+          "class": "TourService"
+        }
+      ]
+    },
+    {
+      "at": "if (!tickets.isAvailable(date)) return false;",
+      "call": {
+        "on": "desk",
+        "method": "bookVisit(\"v7\", \"2026-11-14\", 24.50)"
+      },
+      "say": "The user interface asks for one thing: book a visit for visitor v7 on 14 November. Behind that one call, the desk works through the steps. First: is the date still free?"
+    },
+    {
+      "at": "bool isAvailable(std::string date)",
+      "call": {
+        "on": "tickets",
+        "method": "isAvailable(\"2026-11-14\")"
+      },
+      "say": "The ticket service answers yes. With no, the desk would stop here and answer false.",
+      "done": true
+    },
+    {
+      "at": "if (!payment.pay(visitorId, price)) return false;",
+      "say": "Next, the desk asks the payment service to charge the visitor."
+    },
+    {
+      "at": "bool pay(std::string visitorId, double amount)",
+      "call": {
+        "on": "payment",
+        "method": "pay(\"v7\", 24.50)"
+      },
+      "say": "The payment works.",
+      "done": true
+    },
+    {
+      "at": "tickets.reserve(date);",
+      "say": "The desk reserves the ticket for that date."
+    },
+    {
+      "at": "tours.book(date, visitorId);",
+      "say": "And it books the tour."
+    },
+    {
+      "at": "return true;",
+      "nth": 3,
+      "say": "Everything worked, so the desk answers true.",
+      "done": true
+    },
+    {
+      "at": "ZooDesk().bookVisit(",
+      "say": "Back in the user interface. It made one call and only knows ZooDesk. The desk knew which services to call, and in which order."
+    }
   ]
 }
