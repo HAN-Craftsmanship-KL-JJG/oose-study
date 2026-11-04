@@ -1,0 +1,93 @@
+{
+  "java": [
+    {
+      "at": "QuestionStorage storage = new EncryptingQuestionStorage(",
+      "say": "Read this line from the inside out. First `new FlatFileQuestionStorage()` makes the real storage. It saves questions as they are, in plain text.",
+      "objects": [
+        {
+          "name": "real",
+          "class": "FlatFileQuestionStorage",
+          "fields": {
+            "file": "= empty"
+          }
+        }
+      ]
+    },
+    {
+      "at": "this.real = real;",
+      "call": {
+        "on": "storage",
+        "method": "EncryptingQuestionStorage(real)"
+      },
+      "say": "Then `new EncryptingQuestionStorage(...)` builds the proxy and hands it the real storage, which it keeps in its field `real`. Both classes implement the same interface, QuestionStorage.",
+      "objects": [
+        {
+          "name": "storage",
+          "class": "EncryptingQuestionStorage",
+          "fields": {
+            "real": "→ real"
+          }
+        },
+        {
+          "name": "real",
+          "class": "FlatFileQuestionStorage",
+          "fields": {
+            "file": "= empty"
+          }
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "storage.save(\"q1\", \"What is polymorphism?\");",
+      "say": "The program saves a question. The variable `storage` has the type QuestionStorage, so the program cannot see that a proxy stands in front of the real storage."
+    },
+    {
+      "at": "real.save(id, encrypt(text));",
+      "call": {
+        "on": "storage",
+        "method": "save(\"q1\", \"What is polymorphism?\")"
+      },
+      "say": "The proxy gets the call first. It offers the same save() as the real storage, but it does something extra before it passes the call on: it encrypts the text."
+    },
+    {
+      "at": "private String encrypt(String t)",
+      "call": {
+        "on": "storage",
+        "method": "encrypt(text)"
+      },
+      "say": "\"What is polymorphism?\" is scrambled to \"V2hhdCBpcyBwb2x5bW9ycGhpc20/\". (This example uses Base64 as stand-in encryption.)",
+      "done": true
+    },
+    {
+      "at": "public void save(String id, String text) { file.put(id, text); }",
+      "call": {
+        "on": "real",
+        "method": "save(\"q1\", \"V2hhdCBp…\")"
+      },
+      "say": "Now the proxy passes the call on to the real storage, with the scrambled text. The real storage saves whatever it gets; it does not know about encryption.",
+      "objects": [
+        {
+          "name": "storage",
+          "class": "EncryptingQuestionStorage",
+          "fields": {
+            "real": "→ real"
+          }
+        },
+        {
+          "name": "real",
+          "class": "FlatFileQuestionStorage",
+          "fields": {
+            "file": "= { q1: \"V2hhdCBp…\" }"
+          }
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "real.save(id, encrypt(text));",
+      "say": "Done. The program, the interface and the real storage did not change. The only new part is the proxy in between, and you can leave it out again.",
+      "done": true
+    }
+  ]
+}

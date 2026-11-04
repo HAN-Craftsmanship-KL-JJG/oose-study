@@ -1,0 +1,80 @@
+{
+  "java": [
+    {
+      "at": "Ride ride = new Ride(start, end, new PerMinuteRate());",
+      "say": "Read this line from the inside out. `new PerMinuteRate()` makes a new object from the class PerMinuteRate. That object is the tariff: it knows how to price a ride by the minute.",
+      "objects": [
+        {
+          "name": "rate",
+          "class": "PerMinuteRate"
+        }
+      ]
+    },
+    {
+      "at": "this.rate = rate;",
+      "call": {
+        "on": "ride",
+        "method": "Ride(start, end, rate)"
+      },
+      "say": "Now `new Ride(...)` builds the ride, and Java runs the setup code of Ride. This line stores the tariff in the ride's field `rate`. A field is a value that an object keeps. From now on, the ride holds on to its tariff.",
+      "objects": [
+        {
+          "name": "ride",
+          "class": "Ride",
+          "fields": {
+            "rate": "→ rate"
+          }
+        },
+        {
+          "name": "rate",
+          "class": "PerMinuteRate"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "System.out.println(ride.calculatePrice());",
+      "say": "The program asks the ride: what is your price? It does not say how to work it out, and it does not know which tariff the ride has."
+    },
+    {
+      "at": "return rate.calculate(this);",
+      "call": {
+        "on": "ride",
+        "method": "calculatePrice()"
+      },
+      "say": "Ride does not work out the price itself. It passes the question on to the tariff object it holds. `this` means \"me\": the ride sends itself along, so the tariff can look up how long the ride took."
+    },
+    {
+      "at": "return ride.getMinutes() * 0.25;",
+      "call": {
+        "on": "rate",
+        "method": "calculate(ride)"
+      },
+      "say": "The tariff's code runs now. Ride only knows its field as a RateStrategy, the interface. Java runs the code of the real object, a PerMinuteRate. With a DailyRate in the field, the DailyRate code would run here instead."
+    },
+    {
+      "at": "return (int) Duration.between(startTime, endTime).toMinutes();",
+      "call": {
+        "on": "ride",
+        "method": "getMinutes()"
+      },
+      "say": "To work out the price, the tariff needs the length of the ride, so it asks the ride. The ride answers: 30 minutes.",
+      "done": true
+    },
+    {
+      "at": "return ride.getMinutes() * 0.25;",
+      "say": "Back in the tariff: 30 × 0.25 = 7.50. `return` hands the answer back to whoever asked, here the ride.",
+      "done": true
+    },
+    {
+      "at": "return rate.calculate(this);",
+      "say": "The ride hands 7.50 back to the program. Ride holds no price rule at all; it only knows whom to ask.",
+      "done": true
+    },
+    {
+      "at": "System.out.println(ride.calculatePrice());",
+      "say": "The program prints the price (Java writes 7.50 as 7.5). A weekend tariff is one new class. Ride and this program stay as they are.",
+      "print": "7.5"
+    }
+  ]
+}

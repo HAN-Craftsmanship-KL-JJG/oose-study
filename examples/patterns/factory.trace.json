@@ -1,0 +1,52 @@
+{
+  "java": [
+    {
+      "at": "BikeLock lock = new LockFactory().createLock(",
+      "say": "`new LockFactory()` makes a factory object. The program reads the setting lock.supplier from a configuration file; say it is \"smartlock\". It passes that word to createLock().",
+      "objects": [
+        {
+          "name": "factory",
+          "class": "LockFactory"
+        }
+      ]
+    },
+    {
+      "at": "return switch (supplier) {",
+      "call": {
+        "on": "factory",
+        "method": "createLock(\"smartlock\")"
+      },
+      "say": "A switch compares the word with each case, from top to bottom, and runs the one that matches."
+    },
+    {
+      "at": "case \"smartlock\" ->",
+      "say": "It matches \"smartlock\". The factory makes a SmartLockApi, the supplier's code, and puts it inside a new SmartLockAdapter. No other class in the program names these classes.",
+      "objects": [
+        {
+          "name": "factory",
+          "class": "LockFactory"
+        },
+        {
+          "name": "lock",
+          "class": "SmartLockAdapter",
+          "fields": {
+            "api": "→ api"
+          }
+        },
+        {
+          "name": "api",
+          "class": "SmartLockApi"
+        }
+      ],
+      "done": true
+    },
+    {
+      "at": "BikeLock lock = new LockFactory().createLock(",
+      "say": "The factory hands the new object back. The program keeps it in `lock`, whose type is BikeLock, the interface. It does not know which class is behind it, and it does not need to."
+    },
+    {
+      "at": "lock.unlock(\"42\");",
+      "say": "The program opens bike 42 through BikeLock. If the configuration file says \"lockit\" tomorrow, the factory makes another adapter, and this line does not change."
+    }
+  ]
+}
